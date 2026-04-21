@@ -72,22 +72,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const trigger = dropdown.querySelector('.dropdown-trigger');
         if (!trigger) return;
 
-        // CLICK en el trigger → toggle .open
-        // Usamos stopPropagation para que el listener del documento
-        // no lo cierre inmediatamente
+        // CLICK en el trigger:
+        // – Móvil (≤768px): previene la navegación y hace toggle del dropdown
+        // – Desktop: deja que el enlace navegue normalmente (hover abre el dropdown vía CSS)
         trigger.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isOpen = dropdown.classList.toggle('open');
-            trigger.setAttribute('aria-expanded', String(isOpen));
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                e.stopPropagation();
+                const isOpen = dropdown.classList.toggle('open');
+                trigger.setAttribute('aria-expanded', String(isOpen));
 
-            // Cerrar el resto de dropdowns
-            dropdowns.forEach(d => {
-                if (d !== dropdown) {
-                    d.classList.remove('open');
-                    const t = d.querySelector('.dropdown-trigger');
-                    if (t) t.setAttribute('aria-expanded', 'false');
-                }
-            });
+                dropdowns.forEach(d => {
+                    if (d !== dropdown) {
+                        d.classList.remove('open');
+                        const t = d.querySelector('.dropdown-trigger');
+                        if (t) t.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
         });
 
         // Escape cierra este dropdown
