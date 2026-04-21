@@ -438,6 +438,7 @@ a { color: inherit; }
     border: 1px solid rgba(255,255,255,0.08);
     padding: 1.25rem 1.25rem 1.5rem;
     border-radius: 18px;
+    overflow: hidden;
     transition: background 0.25s, transform 0.25s;
 }
 
@@ -449,11 +450,16 @@ a { color: inherit; }
 .feature-logo {
     display: block;
     width: 100%;
-    height: clamp(170px, 20vw, 260px);
+    height: clamp(140px, 15vw, 200px);
     object-fit: contain;
     object-position: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
 }
+
+.feature-logo--balance { transform: scale(1.52); }
+.feature-logo--energy  { transform: scale(1.58); }
+.feature-logo--focus   { transform: scale(1.58); }
+.feature-logo--power   { transform: scale(1.38); }
 
 .feature-card .badge { margin-bottom: 0.75rem; }
 
@@ -557,6 +563,7 @@ a { color: inherit; }
 .carta-filtros {
     display: flex;
     flex-wrap: nowrap;
+    justify-content: center;
     gap: 0;
     max-width: 1200px;
     margin: 0 auto;
@@ -572,6 +579,9 @@ a { color: inherit; }
 /* Móvil: scrollbar finísima, solo visible en touch */
 @media (max-width: 768px) {
     .carta-filtros {
+        justify-content: flex-start;
+        padding-left: 1rem;
+        padding-right: 1rem;
         scrollbar-width: thin;
         scrollbar-color: rgba(0,0,0,0.10) transparent;
         padding-bottom: 3px;
@@ -624,14 +634,14 @@ a { color: inherit; }
    CARTA — LISTA VERTICAL
    ============================================================ */
 .carta-lista-wrap {
-    padding: 2.5rem 5% 5rem;
+    padding: 2.5rem 3% 5rem;
 }
 
 .carta-lista {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 860px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
@@ -754,83 +764,118 @@ a { color: inherit; }
 /* ============================================================
    PÁGINA QUIÉNES SOMOS (full page)
    ============================================================ */
-.quienes-page {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 6rem 5%;
+/* ---- QUIÉNES SOMOS — alternating layout ---- */
+.qs-page {
+    padding: 5rem 0 6rem;
 }
 
-.quienes-intro { margin-bottom: 3rem; }
-
-.quienes-intro h2 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 1.25rem;
-    line-height: 1.2;
+.qs-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5rem;
+    max-width: 1100px;
+    margin: 0 auto 7rem;
+    padding: 0 5%;
 }
 
-.quienes-lead {
-    font-size: 1.15rem;
-    line-height: 1.8;
-    color: #333;
-    font-weight: 300;
+.qs-section > .qs-text,
+.qs-section > .qs-img {
+    flex: 1;
 }
 
-.quienes-body { margin-bottom: 3.5rem; }
-
-.quienes-body p {
-    font-size: 1.02rem;
-    line-height: 1.9;
-    color: #4a4c49;
-    margin-bottom: 1.5rem;
+.qs-section--reverse {
+    flex-direction: row-reverse;
 }
 
-.quienes-oferta {
-    background: var(--gris-suave);
+.qs-img {
     border-radius: 20px;
-    padding: 2.5rem;
-    margin-bottom: 3rem;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.10);
 }
 
-.quienes-oferta h3 {
-    font-size: 0.98rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
+.qs-img img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    display: block;
 }
 
-.oferta-list { list-style: none; margin-bottom: 1.5rem; }
+.qs-text .section-label {
+    color: var(--naranja);
+    margin-bottom: 0.75rem;
+    display: block;
+}
 
-.oferta-list li {
+.qs-text h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.25;
+    margin-bottom: 1.25rem;
+    color: var(--texto-oscuro);
+}
+
+.qs-text p {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: #4a4c49;
+    margin-bottom: 1.1rem;
+    text-align: justify;
+}
+
+.qs-list {
+    list-style: none;
+    margin: 0.5rem 0 1.25rem;
+}
+
+.qs-list li {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 0.75rem 0;
+    gap: 0.85rem;
+    padding: 0.6rem 0;
     border-bottom: 1px solid rgba(0,0,0,0.06);
     font-size: 0.95rem;
     color: #333;
 }
 
-.oferta-list li:last-child { border-bottom: none; }
+.qs-list li:last-child { border-bottom: none; }
 
-.oferta-dot {
+.qs-dot {
     width: 9px;
     height: 9px;
     border-radius: 50%;
     background: var(--naranja);
-    margin-top: 0.42rem;
+    margin-top: 0.45rem;
     flex-shrink: 0;
 }
 
-.quienes-cierre {
-    font-size: 0.92rem;
-    color: #777;
-    font-style: italic;
-    margin: 0;
+.qs-cierre {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 5%;
 }
 
-.quienes-cta { text-align: center; }
+.qs-cierre p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4a4c49;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .qs-section,
+    .qs-section--reverse {
+        flex-direction: column;
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .qs-img img {
+        height: 280px;
+    }
+}
 
 /* ============================================================
    FOOTER

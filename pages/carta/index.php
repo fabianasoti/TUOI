@@ -8,14 +8,11 @@ require $base . 'includes/header.php';
 
 // Categorías disponibles (orden de aparición en los filtros)
 $categorias = [
-    'desayunos'           => 'Desayunos',
-    'bocadillos'          => 'Bocadillos',
-    'ensaladas'           => 'Ensaladas',
-    'plant-based'         => 'Plant Based',
-    'gluten-free'         => 'Gluten Free',
-    'bebidas'             => 'Bebidas',
-    'momento-dulce'       => 'Momento Dulce',
-    'ingredientes-extras' => 'Ingredientes Extras',
+    'desayunos'    => 'Desayunos',
+    'toque-salado' => 'Toque Salado',
+    'momento-dulce'=> 'Momento Dulce',
+    'bebidas'      => 'Bebidas',
+    'superalimentos' => 'Superalimentos',
 ];
 
 // Cargar todas las imágenes de todas las categorías
