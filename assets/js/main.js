@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!trigger) return;
 
         // CLICK en el trigger:
-        //   Mobile (≤768px): previene navegación y hace toggle del dropdown
-        //   Desktop: navega al href normalmente (hover ya abre el dropdown vía CSS)
+        // – Móvil (≤768px): previene la navegación y hace toggle del dropdown
+        // – Desktop: deja que el enlace navegue normalmente (hover abre el dropdown vía CSS)
         trigger.addEventListener('click', (e) => {
             if (window.innerWidth <= 768) {
                 e.preventDefault();
