@@ -13,7 +13,7 @@ require 'includes/header.php';
     ========================================================== -->
     <section class="hero">
         <div class="hero-content">
-            <span class="hero-label">Work café · Valencia</span>
+            <span class="hero-label">Cafetería · Valencia</span>
             <h1>Functional coffee<br>&amp; smart food</h1>
             <p>Come como piensas.<br>Comida adaptada a las necesidades de tu día.</p>
             <a href="<?= $base ?>pages/carta/" class="btn-primary">Ver la carta</a>
@@ -29,15 +29,17 @@ require 'includes/header.php';
                 <span class="section-label">¿Quiénes somos?</span>
                 <h2>Del alto rendimiento<br>a tu mesa.</h2>
                 <p>
-                    TUOI nace de la experiencia y el conocimiento de <strong>MIOBIO</strong>,
-                    nuestra empresa matriz, especializada en alimentación funcional aplicada
-                    al alto rendimiento deportivo.
+                    TUOI es mucho más que una cafetería: es tu lugar para disfrutar, cuidarte y sentirte bien.
+                    Un espacio donde puedes hacer una pausa, empezar el día o recargar energía
+                    mientras disfrutas de un buen café y comida saludable, rica y pensada para tu día a día.
                 </p>
                 <p>
-                    Avalados por años de trabajo en el deporte de élite, trasladamos todo ese
-                    conocimiento al ámbito cotidiano: acercando la alimentación funcional a
-                    deportistas amateur y a cualquier persona que busque mejorar su bienestar
-                    y rendimiento diario.
+                    Aquí cuidarte no es complicado. Es natural, accesible… y apetecible.
+                    Detrás de TUOI está el conocimiento de <strong><a href="https://miobiosport.com/" target="_blank">MIOBIO</a></strong>, especialistas en alimentación funcional
+                    aplicada al deporte de élite.
+                    Toda esa experiencia se traduce en algo muy simple:
+                    ofrecerte opciones que no solo te gustan, sino que te ayudan a tener más energía,
+                    sentirte mejor y mantener tu ritmo.
                 </p>
                 <a href="<?= $base ?>pages/quienes-somos.php" class="link-arrow">
                     Conoce nuestra historia <span aria-hidden="true">→</span>
@@ -68,28 +70,28 @@ require 'includes/header.php';
             <div class="features-grid">
 
                 <div class="feature-card">
-                    <img src="assets/img/carteles/balance.png" alt="Logo Balance" class="feature-logo">
+                    <img src="assets/img/carteles/balance.png" alt="Logo Balance" class="feature-logo feature-logo--balance">
                     <span class="badge badge-verde">Balance</span>
                     <h3>Nutrición en equilibrio</h3>
                     <p>Cada plato diseñado para darte lo que necesitas, sin excesos ni carencias. Nutrición real en cada bocado.</p>
                 </div>
 
                 <div class="feature-card">
-                    <img src="assets/img/carteles/energy.png" alt="Logo Energy" class="feature-logo">
+                    <img src="assets/img/carteles/energy.png" alt="Logo Energy" class="feature-logo feature-logo--energy">
                     <span class="badge badge-naranja">Energy</span>
                     <h3>Activa tu mañana</h3>
                     <p>Desayunos pensados para despertar tu rendimiento desde la primera hora del día. Sin estimulantes artificiales.</p>
                 </div>
 
                 <div class="feature-card">
-                    <img src="assets/img/carteles/focus.png" alt="Logo Focus" class="feature-logo">
+                    <img src="assets/img/carteles/focus.png" alt="Logo Focus" class="feature-logo feature-logo--focus">
                     <span class="badge badge-morado">Focus</span>
                     <h3>Concentración sostenida</h3>
                     <p>Sin picos de azúcar, sin bajones a media tarde. Comida que mantiene tu mente activa cuando más lo necesitas.</p>
                 </div>
 
                 <div class="feature-card">
-                    <img src="assets/img/carteles/power.png" alt="Logo Power" class="feature-logo">
+                    <img src="assets/img/carteles/power.png" alt="Logo Power" class="feature-logo feature-logo--power">
                     <span class="badge badge-amarillo">Power</span>
                     <h3>Rinde al máximo</h3>
                     <p>Proteínas, carbohidratos y grasas en su justa medida para que tu cuerpo funcione a pleno rendimiento, siempre.</p>

@@ -39,18 +39,15 @@
 
         <!-- Dropdown Carta -->
         <div class="nav-dropdown <?= ($current_page ?? '') === 'carta' ? 'active' : '' ?>">
-            <button class="nav-link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+            <a href="<?= $base ?>pages/carta/" class="nav-link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
                 Carta <span class="arrow" aria-hidden="true">▾</span>
-            </button>
+            </a>
             <div class="dropdown-menu" role="menu">
                 <a href="<?= $base ?>pages/carta/" role="menuitem">Desayunos</a>
-                <a href="<?= $base ?>pages/carta/?cat=bocadillos" role="menuitem">Bocadillos</a>
-                <a href="<?= $base ?>pages/carta/?cat=ensaladas" role="menuitem">Ensaladas</a>
-                <a href="<?= $base ?>pages/carta/?cat=plant-based" role="menuitem">Plant Based</a>
-                <a href="<?= $base ?>pages/carta/?cat=gluten-free" role="menuitem">Gluten Free</a>
-                <a href="<?= $base ?>pages/carta/?cat=bebidas" role="menuitem">Bebidas</a>
+                <a href="<?= $base ?>pages/carta/?cat=toque-salado" role="menuitem">Toque Salado</a>
                 <a href="<?= $base ?>pages/carta/?cat=momento-dulce" role="menuitem">Momento Dulce</a>
-                <a href="<?= $base ?>pages/carta/?cat=ingredientes-extras" role="menuitem">Ingredientes Extras</a>
+                <a href="<?= $base ?>pages/carta/?cat=bebidas" role="menuitem">Bebidas</a>
+                <a href="<?= $base ?>pages/carta/?cat=superalimentos" role="menuitem">Superalimentos</a>
             </div>
         </div>
 

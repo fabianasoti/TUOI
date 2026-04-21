@@ -16,71 +16,95 @@ require $base . 'includes/header.php';
     </section>
 
     <!-- Contenido principal -->
-    <article class="quienes-page">
+    <div class="qs-page">
 
-        <div class="quienes-intro">
-            <h2>TUOI – Functional Coffee &amp; Smart Food</h2>
-            <p class="quienes-lead">
-                TUOI nace de la experiencia y el conocimiento de <strong>MIOBIO</strong>,
-                nuestra empresa matriz, especializada en alimentación funcional aplicada
-                al alto rendimiento deportivo.
-            </p>
+        <!-- Bloque 1: texto izquierda · imagen derecha -->
+        <div class="qs-section">
+            <div class="qs-text">
+                <span class="section-label">Quiénes somos</span>
+                <h2>Tu lugar para cuidarte sin complicaciones</h2>
+                <p>
+                    TUOI es una cafetería donde comer bien se vuelve fácil, accesible y realmente apetecible.
+                    Un espacio pensado para que disfrutes de café, desayunos y comidas saludables que encajan
+                    con tu día a día, sin complicaciones y sin renunciar al sabor.
+                </p>
+                <p>
+                    Aquí cuidarte no es complicado. Es natural, accesible… y apetecible.
+                </p>
+            </div>
+            <div class="qs-img">
+                <img src="<?= $base ?>assets/img/quienes_somos/tuoi_quienes_somos.jpg"
+                     alt="Interior de TUOI, espacio de cafetería saludable">
+            </div>
         </div>
 
-        <div class="quienes-body">
-            <p>
-                Avalados por años de trabajo en el deporte de élite, hemos desarrollado un
-                sólido <em>know-how</em> sobre cómo la alimentación impacta directamente en el
-                rendimiento, la recuperación y la salud. Esta experiencia nos ha permitido crear
-                un modelo propio, centrado en ofrecer soluciones de alimentación adaptadas a las
-                necesidades reales de cada persona y cada entorno.
-            </p>
-            <p>
-                Nuestra capacidad de adaptación es uno de nuestros principales diferenciales.
-                Trabajamos en el diseño de soluciones específicas para clubes, federaciones,
-                deportistas y empresas, ajustándonos a sus objetivos, exigencias y dinámicas
-                del día a día.
-            </p>
-            <p>
-                <strong>TUOI representa el siguiente paso:</strong> trasladar todo ese conocimiento
-                del alto rendimiento al ámbito cotidiano, acercando la alimentación funcional a
-                deportistas amateur y a cualquier persona que busque mejorar su bienestar y
-                rendimiento diario.
-            </p>
+        <!-- Bloque 2: texto derecha · imagen izquierda (CSS gestiona el orden) -->
+        <div class="qs-section qs-section--reverse">
+            <div class="qs-text">
+                <span class="section-label">Nuestro origen</span>
+                <h2>El conocimiento del deporte de élite, en tu mesa</h2>
+                <p>
+                    Detrás de TUOI está <strong>MIOBIO</strong>, nuestra empresa matriz especializada
+                    en alimentación funcional aplicada al deporte de élite. Durante años hemos trabajado
+                    entendiendo cómo la alimentación influye directamente en el rendimiento, la recuperación
+                    y la salud.
+                </p>
+                <p>
+                    Esa experiencia es la base de todo lo que hacemos. TUOI nace con una idea clara:
+                    acercar ese conocimiento a la vida cotidiana. Porque no hace falta ser deportista
+                    profesional para querer sentirte mejor, tener más energía o cuidar lo que comes.
+                </p>
+            </div>
+            <div class="qs-img">
+                <img src="<?= $base ?>assets/img/quienes_somos/superalimentos.png"
+                     alt="Superalimentos y alimentación funcional">
+            </div>
         </div>
 
-        <!-- Oferta -->
-        <div class="quienes-oferta">
-            <h3>En TUOI ofrecemos soluciones pensadas para acompañar un estilo de vida activo:</h3>
-            <ul class="oferta-list">
-                <li>
-                    <span class="oferta-dot" aria-hidden="true"></span>
-                    <span><strong>Desayunos</strong> enfocados en activar la energía</span>
-                </li>
-                <li>
-                    <span class="oferta-dot" aria-hidden="true"></span>
-                    <span><strong>Almuerzos</strong> diseñados para sostener el rendimiento</span>
-                </li>
-                <li>
-                    <span class="oferta-dot" aria-hidden="true"></span>
-                    <span><strong>Comidas</strong> orientadas a la recuperación</span>
-                </li>
-                <li>
-                    <span class="oferta-dot" aria-hidden="true"></span>
-                    <span><strong>Opciones</strong> adaptadas a diferentes necesidades nutricionales</span>
-                </li>
-            </ul>
-            <p class="quienes-cierre">
-                Todo ello bajo una misma filosofía: <em>alimentación funcional, equilibrada, práctica y con sabor.</em>
-            </p>
+        <!-- Bloque 3: texto izquierda · imagen derecha -->
+        <div class="qs-section">
+            <div class="qs-text">
+                <span class="section-label">Nuestra propuesta</span>
+                <h2>Adaptado a tu ritmo, pensado para ti</h2>
+                <p>
+                    Una propuesta basada en alimentación funcional, adaptada a ritmos reales y pensada
+                    para acompañarte en cualquier momento del día:
+                </p>
+                <ul class="qs-list">
+                    <li>
+                        <span class="qs-dot" aria-hidden="true"></span>
+                        <span><strong>Desayunos</strong> que activan tu energía</span>
+                    </li>
+                    <li>
+                        <span class="qs-dot" aria-hidden="true"></span>
+                        <span><strong>Opciones equilibradas</strong> para mantenerte activo</span>
+                    </li>
+                    <li>
+                        <span class="qs-dot" aria-hidden="true"></span>
+                        <span><strong>Comidas</strong> que te ayudan a recuperarte y seguir</span>
+                    </li>
+                </ul>
+                <p>
+                    Todo ello con ingredientes de calidad, combinaciones equilibradas y un enfoque
+                    práctico que hace que cuidarte no sea un esfuerzo.
+                </p>
+            </div>
+            <div class="qs-img">
+                <img src="<?= $base ?>assets/img/quienes_somos/nourishing_bowls.png"
+                     alt="Bowls nutritivos y coloridos de TUOI">
+            </div>
         </div>
 
-        <!-- CTA -->
-        <div class="quienes-cta">
+        <!-- Cierre -->
+        <div class="qs-cierre">
+            <p>
+                Porque cuando comes mejor, te sientes mejor. Y cuando te sientes mejor, todo fluye.<br>
+                <strong>TUOI es ese lugar donde lo saludable pasa a formar parte natural de tu rutina.</strong>
+            </p>
             <a href="<?= $base ?>pages/carta/" class="btn-primary">Explorar la carta</a>
         </div>
 
-    </article>
+    </div>
 
 </main>
 
