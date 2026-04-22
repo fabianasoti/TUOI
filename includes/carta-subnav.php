@@ -1,18 +1,17 @@
 <?php
 /**
  * Subnav de categorías de la carta.
- * Requiere: $base, $current_carta (slug de la categoría activa)
+ * Requiere: $base, $current_carta (slug de la categoría activa), $lang (set by header)
  */
+global $carta_info;
+
 $carta_categorias = [
-    'index'               => 'Carta entera',
-    'desayunos'           => 'Desayunos',
-    'bocadillos'          => 'Bocadillos',
-    'ensaladas'           => 'Ensaladas',
-    'plant-based'         => 'Plant Based',
-    'gluten-free'         => 'Gluten Free',
-    'bebidas'             => 'Bebidas',
-    'momento-dulce'       => 'Momento Dulce',
-    'ingredientes-extras' => 'Ingredientes Extras',
+    'index'          => t_raw('subnav_all'),
+    'desayunos'      => t_raw('cat_desayunos'),
+    'toque-salado'   => t_raw('cat_toque'),
+    'momento-dulce'  => t_raw('cat_dulce'),
+    'bebidas'        => t_raw('cat_bebidas'),
+    'superalimentos' => t_raw('cat_super'),
 ];
 ?>
 <nav class="carta-subnav" aria-label="Categorías de la carta">

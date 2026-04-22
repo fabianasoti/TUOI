@@ -3,7 +3,11 @@ $base         = '';
 $current_page = 'inicio';
 $page_title   = 'TUOI | Functional Coffee & Smart Food';
 require 'config/conexion.php';
+require 'config/content_helper.php';
 require 'includes/header.php';
+// $lang is set by header.php via config/lang.php
+
+$c = load_site_content($conexion, $lang);
 ?>
 
 <main>
@@ -13,12 +17,13 @@ require 'includes/header.php';
     ========================================================== -->
     <section class="hero">
         <div class="hero-content">
-            <span class="hero-label">Cafetería · Valencia</span>
-            <h1>Functional coffee<br>&amp; smart food</h1>
-            <p>Come como piensas.<br>Comida adaptada a las necesidades de tu día.</p>
-            <a href="<?= $base ?>pages/carta/" class="btn-primary">Ver la carta</a>
+            <span class="hero-label"><?= $c['hero_label'] ?></span>
+            <h1><?= $c['hero_h1'] ?></h1>
+            <p><?= $c['hero_subtitle'] ?></p>
+            <a href="<?= $base ?>pages/carta/" class="btn-primary"><?= t('btn_see_menu') ?></a>
         </div>
     </section>
+
     <!-- =========================================================
          ¿QUIÉNES SOMOS? — Preview con enlace a página completa
     ========================================================== -->
@@ -26,28 +31,16 @@ require 'includes/header.php';
         <div class="section-quienes-inner">
 
             <div class="quienes-text">
-                <span class="section-label">¿Quiénes somos?</span>
-                <h2>Del alto rendimiento<br>a tu mesa.</h2>
-                <p>
-                    TUOI es mucho más que una cafetería: es tu lugar para disfrutar, cuidarte y sentirte bien.
-                    Un espacio donde puedes hacer una pausa, empezar el día o recargar energía
-                    mientras disfrutas de un buen café y comida saludable, rica y pensada para tu día a día.
-                </p>
-                <p>
-                    Aquí cuidarte no es complicado. Es natural, accesible… y apetecible.
-                    Detrás de TUOI está el conocimiento de <strong><a href="https://miobiosport.com/" target="_blank">MIOBIO</a></strong>, especialistas en alimentación funcional
-                    aplicada al deporte de élite.
-                    Toda esa experiencia se traduce en algo muy simple:
-                    ofrecerte opciones que no solo te gustan, sino que te ayudan a tener más energía,
-                    sentirte mejor y mantener tu ritmo.
-                </p>
+                <span class="section-label"><?= $c['qs_label'] ?></span>
+                <h2><?= $c['qs_h2'] ?></h2>
+                <p><?= $c['qs_p1'] ?></p>
+                <p><?= $c['qs_p2'] ?></p>
                 <a href="<?= $base ?>pages/quienes-somos.php" class="link-arrow">
-                    Conoce nuestra historia <span aria-hidden="true">→</span>
+                    <?= t('btn_our_story') ?> <span aria-hidden="true">→</span>
                 </a>
             </div>
 
             <div class="quienes-visual">
-                <!-- Placeholder: reemplazar con imagen real cuando esté disponible -->
                 <div class="img-placeholder" aria-hidden="true">
                     <img src="assets/img/tuoi_quienes_somos.jpg" alt="Imagen representativa del equipo de TUOI">
                 </div>
@@ -63,8 +56,8 @@ require 'includes/header.php';
         <div class="section-filosofia-inner">
 
             <div class="section-header">
-                <span class="section-label">Nuestra filosofía</span>
-                <h2>Todo bajo una misma filosofía:<br>alimentación funcional, equilibrada y con sabor.</h2>
+                <span class="section-label"><?= $c['fil_label'] ?></span>
+                <h2><?= $c['fil_h2'] ?></h2>
             </div>
 
             <div class="features-grid">
@@ -72,29 +65,29 @@ require 'includes/header.php';
                 <div class="feature-card">
                     <img src="assets/img/carteles/balance.png" alt="Logo Balance" class="feature-logo feature-logo--balance">
                     <span class="badge badge-verde">Balance</span>
-                    <h3>Nutrición en equilibrio</h3>
-                    <p>Cada plato diseñado para darte lo que necesitas, sin excesos ni carencias. Nutrición real en cada bocado.</p>
+                    <h3><?= htmlspecialchars($c['card_balance_title']) ?></h3>
+                    <p><?= htmlspecialchars($c['card_balance_desc']) ?></p>
                 </div>
 
                 <div class="feature-card">
                     <img src="assets/img/carteles/energy.png" alt="Logo Energy" class="feature-logo feature-logo--energy">
                     <span class="badge badge-naranja">Energy</span>
-                    <h3>Activa tu mañana</h3>
-                    <p>Desayunos pensados para despertar tu rendimiento desde la primera hora del día. Sin estimulantes artificiales.</p>
+                    <h3><?= htmlspecialchars($c['card_energy_title']) ?></h3>
+                    <p><?= htmlspecialchars($c['card_energy_desc']) ?></p>
                 </div>
 
                 <div class="feature-card">
                     <img src="assets/img/carteles/focus.png" alt="Logo Focus" class="feature-logo feature-logo--focus">
                     <span class="badge badge-morado">Focus</span>
-                    <h3>Concentración sostenida</h3>
-                    <p>Sin picos de azúcar, sin bajones a media tarde. Comida que mantiene tu mente activa cuando más lo necesitas.</p>
+                    <h3><?= htmlspecialchars($c['card_focus_title']) ?></h3>
+                    <p><?= htmlspecialchars($c['card_focus_desc']) ?></p>
                 </div>
 
                 <div class="feature-card">
                     <img src="assets/img/carteles/power.png" alt="Logo Power" class="feature-logo feature-logo--power">
                     <span class="badge badge-amarillo">Power</span>
-                    <h3>Rinde al máximo</h3>
-                    <p>Proteínas, carbohidratos y grasas en su justa medida para que tu cuerpo funcione a pleno rendimiento, siempre.</p>
+                    <h3><?= htmlspecialchars($c['card_power_title']) ?></h3>
+                    <p><?= htmlspecialchars($c['card_power_desc']) ?></p>
                 </div>
 
             </div>
@@ -103,19 +96,19 @@ require 'includes/header.php';
             <div class="values-list">
                 <div class="value-item">
                     <span class="value-dot" aria-hidden="true"></span>
-                    <p>Desayunos enfocados en activar la energía</p>
+                    <p><?= htmlspecialchars($c['value1']) ?></p>
                 </div>
                 <div class="value-item">
                     <span class="value-dot" aria-hidden="true"></span>
-                    <p>Almuerzos diseñados para sostener el rendimiento</p>
+                    <p><?= htmlspecialchars($c['value2']) ?></p>
                 </div>
                 <div class="value-item">
                     <span class="value-dot" aria-hidden="true"></span>
-                    <p>Comidas orientadas a la recuperación</p>
+                    <p><?= htmlspecialchars($c['value3']) ?></p>
                 </div>
                 <div class="value-item">
                     <span class="value-dot" aria-hidden="true"></span>
-                    <p>Opciones adaptadas a diferentes necesidades nutricionales</p>
+                    <p><?= htmlspecialchars($c['value4']) ?></p>
                 </div>
             </div>
 

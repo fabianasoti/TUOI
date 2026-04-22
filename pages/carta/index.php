@@ -4,34 +4,38 @@ $current_page = 'carta';
 $page_title   = 'Carta | TUOI';
 
 require $base . 'config/conexion.php';
+require $base . 'config/content_helper.php';
 require $base . 'includes/header.php';
 
-// Categorías disponibles (orden de aparición en los filtros)
+// $lang is set by header.php → lang.php
+global $carta_info;
 $categorias = [
-    'desayunos'    => 'Desayunos',
-    'toque-salado' => 'Toque Salado',
-    'momento-dulce'=> 'Momento Dulce',
-    'bebidas'      => 'Bebidas',
-    'superalimentos' => 'Superalimentos',
+    'desayunos'      => t_raw('cat_desayunos'),
+    'toque-salado'   => t_raw('cat_toque'),
+    'momento-dulce'  => t_raw('cat_dulce'),
+    'bebidas'        => t_raw('cat_bebidas'),
+    'superalimentos' => t_raw('cat_super'),
 ];
 
-// Cargar todas las imágenes de todas las categorías
-// Soporta: .webp .jpg .jpeg .png .pdf
+// Cargar imágenes respetando orden y idioma (EN dirs con fallback a ES)
 $all_images = [];
 foreach ($categorias as $slug => $label) {
-    $dir = __DIR__ . '/../../assets/img/carta/' . $slug . '/';
-    if (!is_dir($dir)) continue;
+    $img_slug = ($lang === 'en') ? $slug . '-en' : $slug;
+    $dir      = __DIR__ . '/../../assets/img/carta/' . $img_slug . '/';
+    $section  = 'carta/' . $img_slug;
 
-    $found = glob($dir . '*.{webp,jpg,jpeg,png,pdf}', GLOB_BRACE);
-    if (!$found) continue;
+    // Fall back to ES if EN dir is empty or missing
+    if ($lang === 'en' && (!is_dir($dir) || empty(glob($dir . '*.{webp,jpg,jpeg,png,pdf}', GLOB_BRACE)))) {
+        $img_slug = $slug;
+        $dir      = __DIR__ . '/../../assets/img/carta/' . $slug . '/';
+        $section  = 'carta/' . $slug;
+    }
 
-    // Ordenar por fecha de modificación (más reciente primero)
-    usort($found, fn($a, $b) => filemtime($b) - filemtime($a));
-
+    $found = load_ordered_images($conexion, $section, $dir, '*.{webp,jpg,jpeg,png,pdf}');
     foreach ($found as $filepath) {
         $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
         $all_images[] = [
-            'src'       => $base . 'assets/img/carta/' . $slug . '/' . basename($filepath),
+            'src'       => $base . 'assets/img/carta/' . $img_slug . '/' . basename($filepath),
             'categoria' => $slug,
             'label'     => $label,
             'tipo'      => ($ext === 'pdf') ? 'pdf' : 'img',
@@ -50,9 +54,9 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
 
     <!-- Hero de página -->
     <section class="page-hero">
-        <span class="section-label">Menú</span>
-        <h1>Nuestra carta</h1>
-        <p>Funcional, equilibrado y con sabor.</p>
+        <span class="section-label"><?= t('carta_page_label') ?></span>
+        <h1><?= t('carta_page_title') ?></h1>
+        <p><?= t('carta_page_sub') ?></p>
     </section>
 
     <!-- Subnav / filtros de categoría -->
@@ -73,14 +77,7 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
     <!-- Lista de imágenes -->
     <div class="carta-lista-wrap">
 
-        <?php if (empty($all_images)): ?>
-            <div class="carta-empty">
-                <div class="empty-icon" aria-hidden="true">🍽️</div>
-                <h3>Próximamente</h3>
-                <p>Las imágenes de la carta se cargarán desde el panel de administración.</p>
-            </div>
-
-        <?php else: ?>
+        <?php if (!empty($all_images)): ?>
             <div class="carta-lista" id="carta-lista">
                 <?php foreach ($all_images as $item): ?>
                     <div class="carta-item"
@@ -88,23 +85,21 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
                          <?= ($cat_activa !== null && $cat_activa !== $item['categoria']) ? 'hidden' : '' ?>>
 
                         <?php if ($item['tipo'] === 'pdf'): ?>
-                            <!-- PDF: embed con fallback -->
                             <div class="carta-pdf-wrap">
                                 <object
                                     data="<?= htmlspecialchars($item['src']) ?>"
                                     type="application/pdf"
                                     class="carta-pdf">
                                     <div class="carta-pdf-fallback">
-                                        <p>Tu navegador no puede mostrar el PDF.</p>
+                                        <p><?= t('pdf_no_show') ?></p>
                                         <a href="<?= htmlspecialchars($item['src']) ?>"
                                            target="_blank" rel="noopener" class="btn-primary">
-                                            Abrir PDF
+                                            <?= t('open_pdf') ?>
                                         </a>
                                     </div>
                                 </object>
                             </div>
                         <?php else: ?>
-                            <!-- Imagen normal -->
                             <img
                                 src="<?= htmlspecialchars($item['src']) ?>"
                                 alt="<?= htmlspecialchars($item['label']) ?>"
@@ -113,13 +108,6 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
 
                     </div>
                 <?php endforeach; ?>
-            </div>
-
-            <!-- Mensaje si no hay resultados para el filtro activo -->
-            <div class="carta-sin-resultados" id="carta-sin-resultados" hidden>
-                <div class="empty-icon" aria-hidden="true">🔍</div>
-                <h3>Sin imágenes en esta categoría</h3>
-                <p>Próximamente se cargarán las imágenes desde el panel de administración.</p>
             </div>
         <?php endif; ?>
 
@@ -131,8 +119,6 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
 (function () {
     const filtros = document.querySelectorAll('.filtro-btn');
     const items   = document.querySelectorAll('.carta-item');
-    const sinRes  = document.getElementById('carta-sin-resultados');
-
     if (!filtros.length) return;
 
     function showAll() {
@@ -141,7 +127,6 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
             f.classList.remove('active');
             f.setAttribute('aria-selected', 'false');
         });
-        if (sinRes) sinRes.hidden = true;
         const url = new URL(window.location);
         url.searchParams.delete('cat');
         history.replaceState(null, '', url);
@@ -173,8 +158,6 @@ $cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias
                 item.hidden = !match;
                 if (match) visible++;
             });
-
-            if (sinRes) sinRes.hidden = visible > 0;
 
             // Actualizar URL sin recargar
             const url = new URL(window.location);
