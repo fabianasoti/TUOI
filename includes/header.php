@@ -1,14 +1,15 @@
 <?php
 /**
- * Header compartido — se incluye en todas las páginas.
+ * Header compartido — se incluye en todas las páginas públicas.
  * Variables requeridas antes de incluir este archivo:
- *   $base         → ruta relativa hasta la raíz del proyecto (ej: '' / '../' / '../../')
+ *   $base         → ruta relativa hasta la raíz del proyecto
  *   $current_page → 'inicio' | 'carta' | 'quienes-somos'
  *   $page_title   → (opcional) título personalizado de la pestaña
  */
+require_once $base . 'config/lang.php';
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="<?= $lang ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,34 +35,38 @@
 
         <a href="<?= $base ?>index.php"
            class="nav-link <?= ($current_page ?? '') === 'inicio' ? 'active' : '' ?>">
-            Inicio
+            <?= t('nav_home') ?>
         </a>
 
         <!-- Dropdown Carta -->
         <div class="nav-dropdown <?= ($current_page ?? '') === 'carta' ? 'active' : '' ?>">
             <a href="<?= $base ?>pages/carta/" class="nav-link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
-                Carta <span class="arrow" aria-hidden="true">▾</span>
+                <?= t('nav_menu') ?> <span class="arrow" aria-hidden="true">▾</span>
             </a>
             <div class="dropdown-menu" role="menu">
-                <a href="<?= $base ?>pages/carta/" role="menuitem">Desayunos</a>
-                <a href="<?= $base ?>pages/carta/?cat=toque-salado" role="menuitem">Toque Salado</a>
-                <a href="<?= $base ?>pages/carta/?cat=momento-dulce" role="menuitem">Momento Dulce</a>
-                <a href="<?= $base ?>pages/carta/?cat=bebidas" role="menuitem">Bebidas</a>
-                <a href="<?= $base ?>pages/carta/?cat=superalimentos" role="menuitem">Superalimentos</a>
+                <a href="<?= $base ?>pages/carta/" role="menuitem"><?= t('cat_desayunos') ?></a>
+                <a href="<?= $base ?>pages/carta/?cat=toque-salado" role="menuitem"><?= t('cat_toque') ?></a>
+                <a href="<?= $base ?>pages/carta/?cat=momento-dulce" role="menuitem"><?= t('cat_dulce') ?></a>
+                <a href="<?= $base ?>pages/carta/?cat=bebidas" role="menuitem"><?= t('cat_bebidas') ?></a>
+                <a href="<?= $base ?>pages/carta/?cat=superalimentos" role="menuitem"><?= t('cat_super') ?></a>
             </div>
         </div>
 
         <a href="<?= $base ?>pages/quienes-somos.php"
            class="nav-link <?= ($current_page ?? '') === 'quienes-somos' ? 'active' : '' ?>">
-            Quiénes somos
+            <?= t('nav_about') ?>
         </a>
 
-        <!-- Toggle de idioma (preparado, sin i18n todavía) -->
-        <button class="lang-toggle" aria-label="Cambiar idioma">
-            <span class="lang-option lang-active">ES</span>
+        <!-- Toggle de idioma -->
+        <div class="lang-toggle" role="group" aria-label="Cambiar idioma">
+            <a href="<?= $base ?>set-lang.php?lang=es"
+               class="lang-option <?= $lang === 'es' ? 'lang-active' : '' ?>"
+               aria-current="<?= $lang === 'es' ? 'true' : 'false' ?>">ES</a>
             <span class="lang-sep">/</span>
-            <span class="lang-option">EN</span>
-        </button>
+            <a href="<?= $base ?>set-lang.php?lang=en"
+               class="lang-option <?= $lang === 'en' ? 'lang-active' : '' ?>"
+               aria-current="<?= $lang === 'en' ? 'true' : 'false' ?>">EN</a>
+        </div>
 
     </nav>
 </header>

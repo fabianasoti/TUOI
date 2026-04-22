@@ -1,18 +1,22 @@
 <?php
 $base         = '../';
 $current_page = 'quienes-somos';
-$page_title   = 'Quiénes somos | TUOI';
 require $base . 'config/conexion.php';
-require $base . 'includes/header.php';
+require $base . 'config/content_helper.php';
+require_once $base . 'config/lang.php'; // sets $lang early so page_title can be translated
+$page_title = $lang === 'en' ? 'About us | TUOI' : 'Quiénes somos | TUOI';
+require $base . 'includes/header.php';  // uses require_once for lang.php — no double load
+
+$c = load_site_content($conexion, $lang);
 ?>
 
 <main>
 
     <!-- Hero interior -->
     <section class="page-hero">
-        <span class="section-label">Nuestra historia</span>
-        <h1>¿Quiénes somos?</h1>
-        <p>Del deporte de élite a tu mesa de trabajo.</p>
+        <span class="section-label"><?= $c['qs_page_hero_label'] ?></span>
+        <h1><?= $c['qs_page_hero_h1'] ?></h1>
+        <p><?= $c['qs_page_hero_sub'] ?></p>
     </section>
 
     <!-- Contenido principal -->
@@ -21,16 +25,11 @@ require $base . 'includes/header.php';
         <!-- Bloque 1: texto izquierda · imagen derecha -->
         <div class="qs-section">
             <div class="qs-text">
-                <span class="section-label">Quiénes somos</span>
-                <h2>Tu lugar para cuidarte sin complicaciones</h2>
-                <p>
-                    TUOI es una cafetería donde comer bien se vuelve fácil, accesible y realmente apetecible.
-                    Un espacio pensado para que disfrutes de café, desayunos y comidas saludables que encajan
-                    con tu día a día, sin complicaciones y sin renunciar al sabor.
-                </p>
-                <p>
-                    Aquí cuidarte no es complicado. Es natural, accesible… y apetecible.
-                </p>
+                <span class="section-label"><?= $c['qs_page_b1_label'] ?></span>
+                <h2><?= $c['qs_page_b1_h2'] ?></h2>
+                <p><?= $c['qs_page_b1_p1'] ?></p>
+                <p><?= $c['qs_page_b1_p2'] ?></p>
+                <?php if (!empty($c['qs_page_b1_p3'])): ?><p><?= $c['qs_page_b1_p3'] ?></p><?php endif; ?>
             </div>
             <div class="qs-img">
                 <img src="<?= $base ?>assets/img/quienes_somos/tuoi_quienes_somos.jpg"
@@ -38,22 +37,13 @@ require $base . 'includes/header.php';
             </div>
         </div>
 
-        <!-- Bloque 2: texto derecha · imagen izquierda (CSS gestiona el orden) -->
+        <!-- Bloque 2: texto derecha · imagen izquierda -->
         <div class="qs-section qs-section--reverse">
             <div class="qs-text">
-                <span class="section-label">Nuestro origen</span>
-                <h2>El conocimiento del deporte de élite, en tu mesa</h2>
-                <p>
-                    Detrás de TUOI está <strong>MIOBIO</strong>, nuestra empresa matriz especializada
-                    en alimentación funcional aplicada al deporte de élite. Durante años hemos trabajado
-                    entendiendo cómo la alimentación influye directamente en el rendimiento, la recuperación
-                    y la salud.
-                </p>
-                <p>
-                    Esa experiencia es la base de todo lo que hacemos. TUOI nace con una idea clara:
-                    acercar ese conocimiento a la vida cotidiana. Porque no hace falta ser deportista
-                    profesional para querer sentirte mejor, tener más energía o cuidar lo que comes.
-                </p>
+                <span class="section-label"><?= $c['qs_page_b2_label'] ?></span>
+                <h2><?= $c['qs_page_b2_h2'] ?></h2>
+                <p><?= $c['qs_page_b2_p1'] ?></p>
+                <p><?= $c['qs_page_b2_p2'] ?></p>
             </div>
             <div class="qs-img">
                 <img src="<?= $base ?>assets/img/quienes_somos/superalimentos.png"
@@ -64,30 +54,24 @@ require $base . 'includes/header.php';
         <!-- Bloque 3: texto izquierda · imagen derecha -->
         <div class="qs-section">
             <div class="qs-text">
-                <span class="section-label">Nuestra propuesta</span>
-                <h2>Adaptado a tu ritmo, pensado para ti</h2>
-                <p>
-                    Una propuesta basada en alimentación funcional, adaptada a ritmos reales y pensada
-                    para acompañarte en cualquier momento del día:
-                </p>
+                <span class="section-label"><?= $c['qs_page_b3_label'] ?></span>
+                <h2><?= $c['qs_page_b3_h2'] ?></h2>
+                <p><?= $c['qs_page_b3_intro'] ?></p>
                 <ul class="qs-list">
                     <li>
                         <span class="qs-dot" aria-hidden="true"></span>
-                        <span><strong>Desayunos</strong> que activan tu energía</span>
+                        <span><?= $c['qs_page_b3_li1'] ?></span>
                     </li>
                     <li>
                         <span class="qs-dot" aria-hidden="true"></span>
-                        <span><strong>Opciones equilibradas</strong> para mantenerte activo</span>
+                        <span><?= $c['qs_page_b3_li2'] ?></span>
                     </li>
                     <li>
                         <span class="qs-dot" aria-hidden="true"></span>
-                        <span><strong>Comidas</strong> que te ayudan a recuperarte y seguir</span>
+                        <span><?= $c['qs_page_b3_li3'] ?></span>
                     </li>
                 </ul>
-                <p>
-                    Todo ello con ingredientes de calidad, combinaciones equilibradas y un enfoque
-                    práctico que hace que cuidarte no sea un esfuerzo.
-                </p>
+                <p><?= $c['qs_page_b3_p'] ?></p>
             </div>
             <div class="qs-img">
                 <img src="<?= $base ?>assets/img/quienes_somos/nourishing_bowls.png"
@@ -97,11 +81,8 @@ require $base . 'includes/header.php';
 
         <!-- Cierre -->
         <div class="qs-cierre">
-            <p>
-                Porque cuando comes mejor, te sientes mejor. Y cuando te sientes mejor, todo fluye.<br>
-                <strong>TUOI es ese lugar donde lo saludable pasa a formar parte natural de tu rutina.</strong>
-            </p>
-            <a href="<?= $base ?>pages/carta/" class="btn-primary">Explorar la carta</a>
+            <p><?= $c['qs_page_close_p'] ?></p>
+            <a href="<?= $base ?>pages/carta/" class="btn-primary"><?= $c['qs_page_close_btn'] ?></a>
         </div>
 
     </div>

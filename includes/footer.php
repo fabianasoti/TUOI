@@ -2,18 +2,18 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <img src="<?= $base ?>assets/img/tuoi_blanco.png" alt="TUOI" class="footer-logo">
-                <p>Functional coffee & smart food.<br>Del alto rendimiento a tu mesa.</p>
+                <p>Functional coffee &amp; smart food.<br><?= t('footer_tagline') ?></p>
             </div>
 
             <div class="footer-nav">
-                <h3>Explora</h3>
-                <a href="<?= $base ?>index.php">Inicio</a>
-                <a href="<?= $base ?>pages/carta/">La carta</a>
-                <a href="<?= $base ?>pages/quienes-somos.php">Quiénes somos</a>
+                <h3><?= t('footer_explore') ?></h3>
+                <a href="<?= $base ?>index.php"><?= t('nav_home') ?></a>
+                <a href="<?= $base ?>pages/carta/"><?= t('footer_menu_link') ?></a>
+                <a href="<?= $base ?>pages/quienes-somos.php"><?= t('nav_about') ?></a>
             </div>
 
             <div class="footer-info">
-                <h3>Dónde encontrarnos</h3>
+                <h3><?= t('footer_find') ?></h3>
                 <a href="https://maps.app.goo.gl/w6a5cGWvKs6CbEWQ6">
                     <p>
                     C. de la Travesía, 15B<br>
@@ -24,7 +24,7 @@
             </div>
 
             <div class="footer-social">
-                <h3>Síguenos</h3>
+                <h3><?= t('footer_follow') ?></h3>
                 <a href="https://www.instagram.com/tuoi.coffee/" target="_blank" rel="noopener">Instagram</a>
                 <a href="#" target="_blank" rel="noopener">TikTok</a>
                 <a href="#" target="_blank" rel="noopener">X</a>
@@ -32,7 +32,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> TUOI. Todos los derechos reservados.</p>
+            <p>&copy; <?= date('Y') ?> TUOI. <?= t('footer_rights') ?></p>
         </div>
     </footer>
 
