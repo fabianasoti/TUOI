@@ -10,6 +10,7 @@
                 <a href="<?= $base ?>index.php"><?= t('nav_home') ?></a>
                 <a href="<?= $base ?>pages/carta/"><?= t('footer_menu_link') ?></a>
                 <a href="<?= $base ?>pages/quienes-somos.php"><?= t('nav_about') ?></a>
+                <a href="<?= $base ?>pages/eventos/"><?= t('nav_eventos') ?></a>
             </div>
 
             <div class="footer-info">

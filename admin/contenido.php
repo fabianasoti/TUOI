@@ -17,6 +17,15 @@ $base_keys = [
     'card_focus_title',   'card_focus_desc',
     'card_power_title',   'card_power_desc',
     'value1', 'value2', 'value3', 'value4',
+    // Eventos page — hero
+    'ev_hero_label', 'ev_hero_h1', 'ev_hero_sub',
+    // Eventos — secciones
+    'ev_ev_label', 'ev_ev_h2', 'ev_ev_desc',
+    'ev_nw_label', 'ev_nw_h2', 'ev_nw_desc',
+    'ev_tb_label', 'ev_tb_h2', 'ev_tb_desc',
+    'ev_cat_label', 'ev_cat_h2', 'ev_cat_desc',
+    // Contacto
+    'contact_phone', 'contact_email', 'contact_address',
     // Quiénes somos page
     'qs_page_hero_label', 'qs_page_hero_h1', 'qs_page_hero_sub',
     'qs_page_b1_label', 'qs_page_b1_h2', 'qs_page_b1_p1', 'qs_page_b1_p2', 'qs_page_b1_p3',
@@ -253,6 +262,103 @@ function cv($content, $key, $default = '') {
                     <?php endfor; ?>
 
                     <button type="submit" class="btn btn-primary">💾 Guardar filosofía</button>
+                </form>
+            </div>
+
+            <!-- ── EVENTOS ──────────────────────────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🎉</span> Eventos — Hero de página
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Etiqueta superior</label>
+                            <input name="ev_hero_label<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_hero_label' . $key_suffix) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subtítulo</label>
+                            <input name="ev_hero_sub<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_hero_sub' . $key_suffix) ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Título H1</label>
+                        <input name="ev_hero_h1<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_hero_h1' . $key_suffix) ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar hero</button>
+                </form>
+            </div>
+
+            <!-- ── EVENTOS — 4 SECCIONES ─────────────────── -->
+            <?php
+            $ev_sections_admin = [
+                ['prefix' => 'ev_ev',  'icon' => '🎉', 'name' => 'Sección Eventos'],
+                ['prefix' => 'ev_nw',  'icon' => '🤝', 'name' => 'Sección Networking'],
+                ['prefix' => 'ev_tb',  'icon' => '👥', 'name' => 'Sección Team Building'],
+                ['prefix' => 'ev_cat', 'icon' => '🍽️', 'name' => 'Sección Catering'],
+            ];
+            foreach ($ev_sections_admin as $sec):
+            ?>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span><?= $sec['icon'] ?></span> <?= $sec['name'] ?>
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Etiqueta</label>
+                            <input name="<?= $sec['prefix'] ?>_label<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, $sec['prefix'] . '_label' . $key_suffix) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Título H2</label>
+                            <input name="<?= $sec['prefix'] ?>_h2<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, $sec['prefix'] . '_h2' . $key_suffix) ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="<?= $sec['prefix'] ?>_desc<?= $key_suffix ?>" class="form-control" rows="3"><?= cv($content, $sec['prefix'] . '_desc' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar <?= $sec['name'] ?></button>
+                </form>
+            </div>
+            <?php endforeach; ?>
+
+            <!-- ── CONTACTO ──────────────────────────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📞</span> Información de contacto
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input name="contact_phone<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'contact_phone' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input name="contact_email<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'contact_email' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input name="contact_address<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'contact_address' . $key_suffix) ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar contacto</button>
                 </form>
             </div>
 

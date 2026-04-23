@@ -112,7 +112,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --------------------------------------------------------
-    // 4. TOGGLE IDIOMA (preparado, sin i18n todavía)
+    // 4. EVENTOS — subnav active state on scroll
+    // --------------------------------------------------------
+    const evSubnav = document.querySelector('.ev-subnav');
+
+    if (evSubnav) {
+        const evLinks    = evSubnav.querySelectorAll('.ev-subnav__link');
+        const evSections = [...evLinks].map(a => {
+            const id = a.getAttribute('href')?.replace(/^.*#/, '');
+            return id ? document.getElementById(id) : null;
+        });
+
+        const navbarH  = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-h')) || 72;
+        const subnavH  = evSubnav.offsetHeight;
+        const offset   = navbarH + subnavH + 20;
+
+        function updateActiveLink() {
+            let current = -1;
+            evSections.forEach((sec, i) => {
+                if (sec && sec.getBoundingClientRect().top <= offset) current = i;
+            });
+            evLinks.forEach((a, i) => a.classList.toggle('active', i === current));
+        }
+
+        window.addEventListener('scroll', updateActiveLink, { passive: true });
+        updateActiveLink();
+    }
+
+
+    // --------------------------------------------------------
+    // 5. TOGGLE IDIOMA (preparado, sin i18n todavía)
     // --------------------------------------------------------
     const langToggle = document.querySelector('.lang-toggle');
 

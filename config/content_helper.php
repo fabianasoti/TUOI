@@ -51,6 +51,30 @@ function load_site_content($conexion, string $lang = 'es') {
         // Quiénes somos page — Cierre
         'qs_page_close_p'    => 'TUOI es el punto de encuentro entre el conocimiento del alto rendimiento y tu día a día. <strong>Un lugar donde lo saludable se convierte en parte natural de tu rutina.</strong>',
         'qs_page_close_btn'  => 'Explorar la carta',
+        // Eventos — Hero de página
+        'ev_hero_label'      => 'Eventos · TUOI',
+        'ev_hero_h1'         => 'Celebra con nosotros',
+        'ev_hero_sub'        => 'Organizamos eventos únicos con comida funcional y saludable.',
+        // Eventos — Sección "Eventos"
+        'ev_ev_label'        => 'Eventos',
+        'ev_ev_h2'           => 'Tu evento, nuestro escenario',
+        'ev_ev_desc'         => 'Organizamos todo tipo de celebraciones y eventos especiales con una propuesta culinaria funcional y memorable.',
+        // Eventos — Sección "Networking"
+        'ev_nw_label'        => 'Networking',
+        'ev_nw_h2'           => 'Conecta mientras cuidas de ti',
+        'ev_nw_desc'         => 'Espacios y propuestas pensadas para que tus eventos de networking sean tan energizantes como productivos. Comida funcional que activa la conversación.',
+        // Eventos — Sección "Team Building"
+        'ev_tb_label'        => 'Team Building',
+        'ev_tb_h2'           => 'Team building con propósito',
+        'ev_tb_desc'         => 'Diseñamos experiencias de team building centradas en el bienestar y la cohesión de equipo. Talleres de cocina saludable, catas y actividades que unen a las personas.',
+        // Eventos — Sección "Catering"
+        'ev_cat_label'       => 'Catering',
+        'ev_cat_h2'          => 'Catering funcional y saludable',
+        'ev_cat_desc'        => 'Menús a medida para todo tipo de eventos: reuniones de empresa, inauguraciones, bodas y celebraciones. Basados en alimentación funcional, equilibrada y deliciosa.',
+        // Información de contacto
+        'contact_phone'      => '+34 000 000 000',
+        'contact_email'      => 'hola@tuoi.es',
+        'contact_address'    => 'C. de la Travesía, 15B, 46024 València',
     ];
 
     if (!$conexion) return $defaults;
