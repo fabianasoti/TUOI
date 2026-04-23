@@ -40,6 +40,22 @@ $_ui = [
     'footer_tagline'    => ['es' => 'Del alto rendimiento a tu mesa.', 'en' => 'From high performance to your table.'],
     // Quienes somos (link)
     'qs_link'           => ['es' => 'Conoce nuestra historia', 'en' => 'Our story'],
+    // Eventos
+    'nav_eventos'       => ['es' => 'Eventos',                 'en' => 'Events'],
+    'nav_networking'    => ['es' => 'Networking',              'en' => 'Networking'],
+    'nav_catering'      => ['es' => 'Catering',                'en' => 'Catering'],
+    'nav_team_building' => ['es' => 'Team Building',           'en' => 'Team Building'],
+    // Eventos — page strings
+    'ev_contact_title'  => ['es' => 'Contacto',                'en' => 'Contact'],
+    'ev_contact_name'   => ['es' => 'Nombre',                  'en' => 'Name'],
+    'ev_contact_email'  => ['es' => 'Email',                   'en' => 'Email'],
+    'ev_contact_phone'  => ['es' => 'Teléfono',                'en' => 'Phone'],
+    'ev_contact_msg'    => ['es' => 'Mensaje',                 'en' => 'Message'],
+    'ev_contact_send'   => ['es' => 'Enviar mensaje',          'en' => 'Send message'],
+    'ev_contact_ok'     => ['es' => '¡Mensaje enviado! Te contactaremos pronto.', 'en' => 'Message sent! We will contact you soon.'],
+    'ev_contact_err'    => ['es' => 'Por favor completa nombre, email y mensaje.', 'en' => 'Please fill in name, email and message.'],
+    'ev_read_more'      => ['es' => 'Leer más',                'en' => 'Read more'],
+    'ev_back'           => ['es' => '← Volver a Eventos',      'en' => '← Back to Events'],
 ];
 
 /** Translated string, HTML-escaped */

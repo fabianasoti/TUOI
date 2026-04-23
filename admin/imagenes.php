@@ -17,6 +17,11 @@ $sections = [
     'carta/momento-dulce'       => ['label' => 'Carta — Momento Dulce',         'path' => $base_img . 'carta/momento-dulce/'],
     'carta/bebidas'             => ['label' => 'Carta — Bebidas',               'path' => $base_img . 'carta/bebidas/'],
     'carta/superalimentos'      => ['label' => 'Carta — Superalimentos',        'path' => $base_img . 'carta/superalimentos/'],
+    // Eventos
+    'eventos/eventos'           => ['label' => 'Eventos — Eventos',             'path' => $base_img . 'eventos/eventos/'],
+    'eventos/networking'        => ['label' => 'Eventos — Networking',          'path' => $base_img . 'eventos/networking/'],
+    'eventos/team-building'     => ['label' => 'Eventos — Team Building',       'path' => $base_img . 'eventos/team-building/'],
+    'eventos/catering'          => ['label' => 'Eventos — Catering',            'path' => $base_img . 'eventos/catering/'],
     // Carta — English
     'carta/desayunos-en'        => ['label' => 'Carta — Desayunos (EN)',        'path' => $base_img . 'carta/desayunos-en/'],
     'carta/toque-salado-en'     => ['label' => 'Carta — Toque Salado (EN)',     'path' => $base_img . 'carta/toque-salado-en/'],

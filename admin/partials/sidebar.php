@@ -21,12 +21,19 @@ $current_admin_page = basename($_SERVER['PHP_SELF']);
             <span class="nav-icon">🖼️</span> Imágenes
         </a>
 
+        <a href="eventos.php" class="nav-item <?= $current_admin_page === 'eventos.php' ? 'active' : '' ?>">
+            <span class="nav-icon">🎉</span> Eventos
+        </a>
+
         <div class="nav-section" style="margin-top:12px;">Sitio</div>
         <a href="../index.php" target="_blank" class="nav-item">
             <span class="nav-icon">🌐</span> Ver sitio
         </a>
         <a href="../pages/carta/" target="_blank" class="nav-item">
             <span class="nav-icon">🍽️</span> Ver carta
+        </a>
+        <a href="../pages/eventos/" target="_blank" class="nav-item">
+            <span class="nav-icon">🎉</span> Ver Eventos
         </a>
     </nav>
 

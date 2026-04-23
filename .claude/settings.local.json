@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Read(///wsl$/Ubuntu/var/www/html/**)",
-      "Read(///wsl$/Ubuntu/var/www/**)"
+      "Read(///wsl$/Ubuntu/var/www/**)",
+      "Bash(wsl -e bash -c \"mkdir -p /var/www/html/proyectos/TUOI/assets/img/eventos/catering /var/www/html/proyectos/TUOI/assets/img/eventos/team-building && echo OK\")",
+      "Bash(grep -oP \\\\\"password.*?'\\\\\\\\K[^']+\\\\\" /var/www/html/proyectos/TUOI/config/conexion.php)",
+      "Bash(wsl -e bash -c \"mysql -u tuoi_admin2026 -p'$\\(grep -oP \\\\\"password.*?'\\\\\\\\K[^']+\\\\\" /var/www/html/proyectos/TUOI/config/conexion.php)",
+      "Bash(wsl -e bash -c \"mysql -u tuoi_admin2026 -p'Tuoi123\\\\$' tuoi_db < /var/www/html/proyectos/TUOI/db/eventos_migration.sql 2>&1 && echo DONE\")",
+      "Bash(wsl -e bash -c \"mysql -u tuoi_admin2026 -p'Tuoi123\\\\$' tuoi_db -e 'SHOW TABLES;' 2>/dev/null\")",
+      "Bash(wsl -e bash -c \"rm /var/www/html/proyectos/TUOI/pages/eventos/catering.php /var/www/html/proyectos/TUOI/pages/eventos/team-building.php /var/www/html/proyectos/TUOI/includes/eventos-contact.php && echo OK\")",
+      "Bash(wsl -e bash -c \"mkdir -p /var/www/html/proyectos/TUOI/assets/img/eventos/eventos /var/www/html/proyectos/TUOI/assets/img/eventos/networking && echo OK\")",
+      "Bash(wsl -e bash -c \"ls -la /var/www/html/proyectos/TUOI/assets/img/ && echo '---' && ls -la /var/www/html/proyectos/TUOI/assets/img/eventos/\")",
+      "Bash(wsl -e bash -c \"chown -R fabiana:www-data /var/www/html/proyectos/TUOI/assets/img/eventos && chmod -R 775 /var/www/html/proyectos/TUOI/assets/img/eventos && ls -la /var/www/html/proyectos/TUOI/assets/img/eventos/\")"
     ]
   }
 }

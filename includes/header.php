@@ -52,6 +52,19 @@ require_once $base . 'config/lang.php';
             </div>
         </div>
 
+        <!-- Dropdown Eventos -->
+        <div class="nav-dropdown <?= ($current_page ?? '') === 'eventos' ? 'active' : '' ?>">
+            <a href="<?= $base ?>pages/eventos/" class="nav-link dropdown-trigger" aria-haspopup="true" aria-expanded="false">
+                <?= t('nav_eventos') ?> <span class="arrow" aria-hidden="true">▾</span>
+            </a>
+            <div class="dropdown-menu" role="menu">
+                <a href="<?= $base ?>pages/eventos/#eventos"       role="menuitem"><?= t('nav_eventos') ?></a>
+                <a href="<?= $base ?>pages/eventos/#networking"    role="menuitem"><?= t('nav_networking') ?></a>
+                <a href="<?= $base ?>pages/eventos/#team-building" role="menuitem"><?= t('nav_team_building') ?></a>
+                <a href="<?= $base ?>pages/eventos/#catering"      role="menuitem"><?= t('nav_catering') ?></a>
+            </div>
+        </div>
+
         <a href="<?= $base ?>pages/quienes-somos.php"
            class="nav-link <?= ($current_page ?? '') === 'quienes-somos' ? 'active' : '' ?>">
             <?= t('nav_about') ?>
