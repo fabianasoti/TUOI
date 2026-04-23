@@ -156,3 +156,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+// --------------------------------------------------------
+// LÓGICA DE CARRUSELES DINÁMICOS
+// --------------------------------------------------------
+const carouselStates = {};
+
+window.moveSlide = function(trackId, direction) {
+    const track = document.getElementById(trackId);
+    if (!track) return;
+
+    const images = track.querySelectorAll('img');
+    const totalImages = images.length;
+    if (totalImages <= 1) return;
+
+    // Inicializamos el contador para este carrusel si no existe
+    if (typeof carouselStates[trackId] === 'undefined') {
+        carouselStates[trackId] = 0;
+    }
+
+    let currentIndex = carouselStates[trackId];
+    currentIndex += direction;
+
+    // Lógica de bucle infinito (de la última salta a la primera y viceversa)
+    if (currentIndex < 0) {
+        currentIndex = totalImages - 1; 
+    } else if (currentIndex >= totalImages) {
+        currentIndex = 0; 
+    }
+
+    carouselStates[trackId] = currentIndex;
+
+    // Desplazar visualmente las fotos
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    // Actualizar los puntos (dots) indicadores
+    const dotsContainer = document.getElementById(`dots-${trackId}`);
+    if (dotsContainer) {
+        const dots = dotsContainer.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+};

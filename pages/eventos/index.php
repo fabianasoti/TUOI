@@ -134,28 +134,67 @@ $sections = [
         <!-- Posts -->
         <?php if (!empty($posts)): ?>
         <div class="ev-posts">
-            <?php foreach ($posts as $i => $post):
-                $has_img = !empty($post['image_filename']);
-                $reverse = $i % 2 !== 0 ? ' ev-post--reverse' : '';
+            <?php foreach ($posts as $i => $post): 
+                // 1. Alternar dirección para el efecto zigzag (impares se invierten)
+                $isReverse = ($i % 2 !== 0) ? 'row-reverse' : ''; 
+                
+                // 2. Procesar imágenes desde la BD (Soporta JSON, separadas por comas, o un solo archivo)
+                $images = [];
+                // Adaptado a tu base de datos que usa 'image_filename', pero listo para recibir múltiples
+                $raw_images = $post['images'] ?? ($post['image_filename'] ?? '');
+                
+                if (!empty($raw_images)) {
+                    $decoded = json_decode($raw_images, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                        $images = $decoded;
+                    } else {
+                        $images = array_map('trim', explode(',', $raw_images));
+                    }
+                }
+                
+                // 3. ID único para controlar el carrusel de este evento
+                $trackId = "track-evento-" . ($post['id'] ?? $i);
             ?>
-            <article class="ev-post<?= $reverse ?><?= $has_img ? '' : ' ev-post--text-only' ?>">
 
-                <?php if ($has_img): ?>
-                <div class="ev-post__img">
-                    <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($post['image_filename']) ?>"
-                         alt="<?= htmlspecialchars($post['title']) ?>"
-                         loading="lazy">
-                </div>
-                <?php endif; ?>
-
-                <div class="ev-post__text<?= $has_img ? '' : ' ev-post__text--full' ?>">
-                    <h3><?= htmlspecialchars($post['title']) ?></h3>
-                    <?php if (!empty($post['body'])): ?>
-                    <p><?= nl2br(htmlspecialchars($post['body'])) ?></p>
+            <div class="project-row fade-up visible <?= $isReverse ?>">
+                <div class="project-image">
+                    <?php if (count($images) > 1): ?>
+                        <div class="carousel-container">
+                            <div class="carousel-track" id="<?= $trackId ?>">
+                                <?php foreach($images as $img): ?>
+                                    <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($img) ?>" 
+                                         alt="<?= htmlspecialchars($post['title']) ?>" loading="lazy">
+                                <?php endforeach; ?>
+                            </div>
+                            <button class="carousel-btn btn-prev" onclick="moveSlide('<?= $trackId ?>', -1)">❮</button>
+                            <button class="carousel-btn btn-next" onclick="moveSlide('<?= $trackId ?>', 1)">❯</button>
+                            <div class="carousel-dots" id="dots-<?= $trackId ?>">
+                                <?php foreach($images as $idx => $img): ?>
+                                    <div class="dot <?= $idx === 0 ? 'active' : '' ?>"></div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php elseif (count($images) === 1): ?>
+                        <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($images[0]) ?>" 
+                             alt="<?= htmlspecialchars($post['title']) ?>" 
+                             style="width: 100%; border-radius: 12px; object-fit: cover; aspect-ratio: 16/9;" loading="lazy">
+                    <?php else: ?>
+                        <div class="img-placeholder" style="aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; background: #e0e0e0; border-radius: 12px;">📸 Sin imagen</div>
                     <?php endif; ?>
                 </div>
 
-            </article>
+                <div class="project-text">
+                    <h3><?= htmlspecialchars($post['title']) ?></h3>
+                    <?php if (!empty($post['body'])): ?>
+                        <p><?= nl2br(htmlspecialchars($post['body'])) ?></p>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($post['tags'] ?? $post['tech'] ?? '')): ?>
+                        <div class="tech"><?= htmlspecialchars($post['tags'] ?? $post['tech']) ?></div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
             <?php endforeach; ?>
         </div>
 
