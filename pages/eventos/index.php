@@ -27,6 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
                  VALUES ('$n','$e','$p','$m','eventos')"
             );
         }
+
+        // Notificación por email al administrador
+        $admin_email = $c['contact_email'] ?? 'hola@tuoi.es';
+        $mail_subject = '=?UTF-8?B?' . base64_encode('Nuevo contacto desde Eventos · TUOI') . '?=';
+        $mail_body  = "Has recibido un nuevo mensaje desde el formulario de Eventos.\n\n";
+        $mail_body .= "Nombre:    $name\n";
+        $mail_body .= "Email:     $email\n";
+        $mail_body .= "Teléfono:  " . ($phone ?: '—') . "\n\n";
+        $mail_body .= "Mensaje:\n$message\n";
+        $mail_headers  = "From: TUOI Eventos <noreply@tuoi.es>\r\n";
+        $mail_headers .= "Reply-To: $email\r\n";
+        $mail_headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        @mail($admin_email, $mail_subject, $mail_body, $mail_headers);
+
         $contact_success = true;
         $_POST = [];
     } else {
@@ -38,7 +52,7 @@ require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);
 
 // ── Load posts by category ──────────────────────────────────────────────────
-$cats_order = ['eventos', 'networking', 'team-building', 'catering'];
+$cats_order = ['catering', 'team-building', 'networking'];
 $posts_by   = [];
 
 if ($conexion) {
@@ -55,36 +69,28 @@ if ($conexion) {
 // ── Section definitions ─────────────────────────────────────────────────────
 $sections = [
     [
-        'id'      => 'eventos',
-        'accent'  => 'naranja',
+        'id'      => 'catering',
+        'accent'  => 'amarillo',
         'num'     => '01',
-        'label'   => $c['ev_ev_label']  ?? 'Eventos',
-        'h2'      => $c['ev_ev_h2']     ?? 'Tu evento, nuestro escenario',
-        'desc'    => $c['ev_ev_desc']   ?? 'Organizamos todo tipo de celebraciones y eventos especiales con una propuesta culinaria funcional y memorable.',
-    ],
-    [
-        'id'      => 'networking',
-        'accent'  => 'morado',
-        'num'     => '02',
-        'label'   => $c['ev_nw_label']  ?? 'Networking',
-        'h2'      => $c['ev_nw_h2']     ?? 'Conecta mientras cuidas de ti',
-        'desc'    => $c['ev_nw_desc']   ?? 'Espacios y propuestas pensadas para que tus eventos de networking sean tan energizantes como productivos.',
+        'label'   => $c['ev_cat_label'] ?? 'Catering',
+        'h2'      => $c['ev_cat_h2']    ?? 'Catering funcional y saludable',
+        'desc'    => $c['ev_cat_desc']  ?? 'Menús a medida para cualquier tipo de evento. Siempre funcional, siempre delicioso.',
     ],
     [
         'id'      => 'team-building',
         'accent'  => 'verde',
-        'num'     => '03',
+        'num'     => '02',
         'label'   => $c['ev_tb_label']  ?? 'Team Building',
         'h2'      => $c['ev_tb_h2']     ?? 'Team building con propósito',
         'desc'    => $c['ev_tb_desc']   ?? 'Experiencias de bienestar y cohesión de equipo basadas en alimentación funcional.',
     ],
     [
-        'id'      => 'catering',
-        'accent'  => 'amarillo',
-        'num'     => '04',
-        'label'   => $c['ev_cat_label'] ?? 'Catering',
-        'h2'      => $c['ev_cat_h2']    ?? 'Catering funcional y saludable',
-        'desc'    => $c['ev_cat_desc']  ?? 'Menús a medida para cualquier tipo de evento. Siempre funcional, siempre delicioso.',
+        'id'      => 'networking',
+        'accent'  => 'morado',
+        'num'     => '03',
+        'label'   => $c['ev_nw_label']  ?? 'Networking',
+        'h2'      => $c['ev_nw_h2']     ?? 'Conecta mientras cuidas de ti',
+        'desc'    => $c['ev_nw_desc']   ?? 'Espacios y propuestas pensadas para que tus eventos de networking sean tan energizantes como productivos.',
     ],
 ];
 ?>
@@ -96,13 +102,6 @@ $sections = [
     <span class="section-label"><?= htmlspecialchars($c['ev_hero_label'] ?? 'Eventos · TUOI') ?></span>
     <h1><?= htmlspecialchars($c['ev_hero_h1'] ?? 'Celebra con nosotros') ?></h1>
     <p><?= htmlspecialchars($c['ev_hero_sub'] ?? 'Organizamos eventos únicos con comida funcional y saludable.') ?></p>
-    <div class="ev-hero__pills">
-        <?php foreach ($sections as $s): ?>
-        <a href="#<?= $s['id'] ?>" class="ev-hero__pill ev-hero__pill--<?= $s['accent'] ?>">
-            <?= htmlspecialchars($s['label']) ?>
-        </a>
-        <?php endforeach; ?>
-    </div>
 </section>
 
 <!-- ── SUBNAV ────────────────────────────────────────────────────────────── -->
@@ -201,7 +200,7 @@ $sections = [
         <?php else: ?>
         <div class="ev-empty">
             <p>Próximamente publicaremos más sobre esta modalidad.<br>¡Escríbenos para conocer todas las opciones!</p>
-            <a href="#contacto" class="btn-secondary" style="margin-top:1.25rem;display:inline-block;">Contactar →</a>
+            <a href="#contacto" class="btn-primary" style="margin-top:1.25rem;display:inline-block;">Contactar →</a>
         </div>
         <?php endif; ?>
 
