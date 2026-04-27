@@ -19,12 +19,3 @@ GRANT ALL PRIVILEGES ON tuoi_db.*
 TO 'tuoi_admin2026'@'localhost';
 
 FLUSH PRIVILEGES;
-
-CREATE TABLE productos (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT NOT NULL,
-    precio DECIMAL(5, 2) NOT NULL,
-    categoria VARCHAR(50) NOT NULL, -- Ej: 'cafe', 'brunch', 'plant-based', 'postres'
-    alergenos VARCHAR(100) DEFAULT NULL,
-);

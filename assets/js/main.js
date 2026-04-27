@@ -140,21 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --------------------------------------------------------
-    // 5. TOGGLE IDIOMA (preparado, sin i18n todavía)
-    // --------------------------------------------------------
-    const langToggle = document.querySelector('.lang-toggle');
-
-    if (langToggle) {
-        langToggle.addEventListener('click', () => {
-            const opts = langToggle.querySelectorAll('.lang-option');
-            opts.forEach(o => o.classList.toggle('lang-active'));
-            const newLang = langToggle.querySelector('.lang-active')?.textContent?.trim();
-            console.info(`[TUOI] Idioma: ${newLang} — i18n pendiente de implementar`);
-            // TODO: redirigir a versión EN cuando esté disponible
-        });
-    }
-
 });
 // --------------------------------------------------------
 // LÓGICA DE CARRUSELES DINÁMICOS

@@ -14,7 +14,7 @@ require_once $base . 'config/lang.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'TUOI | Functional Coffee & Smart Food') ?></title>
-    <link rel="stylesheet" href="<?= $base ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?= $base ?>assets/css/style.css?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -58,10 +58,9 @@ require_once $base . 'config/lang.php';
                 <?= t('nav_eventos') ?> <span class="arrow" aria-hidden="true">▾</span>
             </a>
             <div class="dropdown-menu" role="menu">
-                <a href="<?= $base ?>pages/eventos/#eventos"       role="menuitem"><?= t('nav_eventos') ?></a>
-                <a href="<?= $base ?>pages/eventos/#networking"    role="menuitem"><?= t('nav_networking') ?></a>
-                <a href="<?= $base ?>pages/eventos/#team-building" role="menuitem"><?= t('nav_team_building') ?></a>
                 <a href="<?= $base ?>pages/eventos/#catering"      role="menuitem"><?= t('nav_catering') ?></a>
+                <a href="<?= $base ?>pages/eventos/#team-building" role="menuitem"><?= t('nav_team_building') ?></a>
+                <a href="<?= $base ?>pages/eventos/#networking"    role="menuitem"><?= t('nav_networking') ?></a>
             </div>
         </div>
 
