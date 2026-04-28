@@ -22,7 +22,8 @@
       "Bash(wsl -e php -r \"echo 'upload_max_filesize: ' . ini_get\\('upload_max_filesize'\\) . PHP_EOL . 'post_max_size: ' . ini_get\\('post_max_size'\\) . PHP_EOL . 'php.ini: ' . php_ini_loaded_file\\(\\) . PHP_EOL . 'Scan dir: ' . php_ini_scanned_files\\(\\) . PHP_EOL;\")",
       "Bash(wsl -e bash -c \"find /etc/php -name 'php.ini' 2>/dev/null && apache2ctl -v 2>/dev/null | head -3\")",
       "Bash(wsl -e bash -c \"grep -n 'upload_max_filesize\\\\|post_max_size\\\\|max_file_uploads\\\\|max_execution_time' /etc/php/8.3/apache2/php.ini\")",
-      "Bash(wsl -e bash -c \"cat /var/www/html/proyectos/TUOI/admin/.htaccess\")"
+      "Bash(wsl -e bash -c \"cat /var/www/html/proyectos/TUOI/admin/.htaccess\")",
+      "PowerShell(wsl mysql -u tuoi_admin2026 -p'Tuoi123$' tuoi_db -e \"SELECT content_key, content_value, updated_at FROM site_content WHERE content_key LIKE 'contact_%' ORDER BY content_key;\" 2>&1)"
     ]
   }
 }
