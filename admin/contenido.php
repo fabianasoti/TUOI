@@ -6,6 +6,13 @@ require_once dirname(__DIR__) . '/config/content_helper.php';
 $edit_lang  = ($_GET['edit_lang'] ?? 'es') === 'en' ? 'en' : 'es';
 $key_suffix = $edit_lang === 'en' ? '_en' : '';
 
+// Active section (hub when null)
+$valid_sections = ['home', 'eventos', 'quienes'];
+$section = $_GET['section'] ?? null;
+if ($section !== null && !in_array($section, $valid_sections, true)) {
+    $section = null;
+}
+
 // Base keys (without suffix)
 $base_keys = [
     // Homepage
@@ -19,11 +26,20 @@ $base_keys = [
     'value1', 'value2', 'value3', 'value4',
     // Eventos page — hero
     'ev_hero_label', 'ev_hero_h1', 'ev_hero_sub',
-    // Eventos — secciones
-    'ev_ev_label', 'ev_ev_h2', 'ev_ev_desc',
-    'ev_nw_label', 'ev_nw_h2', 'ev_nw_desc',
-    'ev_tb_label', 'ev_tb_h2', 'ev_tb_desc',
-    'ev_cat_label', 'ev_cat_h2', 'ev_cat_desc',
+    // Eventos — Por qué TUOI
+    'ev_why_label', 'ev_why_h2',
+    'ev_why_b1_icon', 'ev_why_b1_title', 'ev_why_b1_desc',
+    'ev_why_b2_icon', 'ev_why_b2_title', 'ev_why_b2_desc',
+    'ev_why_b3_icon', 'ev_why_b3_title', 'ev_why_b3_desc',
+    'ev_why_b4_icon', 'ev_why_b4_title', 'ev_why_b4_desc',
+    // Eventos — Propuesta de menús (intro + 3 categorías)
+    'ev_menus_label', 'ev_menus_h2', 'ev_menus_intro',
+    'ev_cb_label', 'ev_cb_h2', 'ev_cb_desc',
+    'ev_br_label', 'ev_br_h2', 'ev_br_desc',
+    'ev_td_label', 'ev_td_h2', 'ev_td_desc',
+    // Eventos — CTA y marquee
+    'ev_cta_h2', 'ev_cta_text', 'ev_cta_btn',
+    'ev_marquee_text',
     // Contacto
     'contact_phone', 'contact_email', 'contact_address',
     // Quiénes somos page
@@ -71,6 +87,28 @@ if ($res) {
 function cv($content, $key, $default = '') {
     return htmlspecialchars($content[$key] ?? $default, ENT_QUOTES);
 }
+
+// Helper to build URLs preserving edit_lang
+function section_url($section, $edit_lang) {
+    $params = ['section' => $section];
+    if ($edit_lang === 'en') $params['edit_lang'] = 'en';
+    return '?' . http_build_query($params);
+}
+
+// Form action preserves both section and edit_lang
+$form_qs = [];
+if ($section !== null) $form_qs['section'] = $section;
+if ($edit_lang === 'en') $form_qs['edit_lang'] = 'en';
+$form_action = '?' . http_build_query($form_qs);
+
+// Topbar title
+$section_titles = [
+    'home'     => ['title' => 'Editar — Página de inicio',     'sub' => 'Hero, Quiénes somos y Filosofía'],
+    'eventos'  => ['title' => 'Editar — Página de eventos',    'sub' => 'Hero, secciones y contacto'],
+    'quienes'  => ['title' => 'Editar — Página Quiénes somos', 'sub' => 'Bloques completos de la página'],
+];
+$tb_title = $section ? $section_titles[$section]['title'] : 'Editar contenido';
+$tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página que quieres editar';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -89,10 +127,13 @@ function cv($content, $key, $default = '') {
     <div class="main-content">
         <div class="topbar">
             <div>
-                <div class="topbar-title">Editar contenido</div>
-                <div class="topbar-sub">Textos visibles en el sitio web</div>
+                <div class="topbar-title"><?= htmlspecialchars($tb_title) ?></div>
+                <div class="topbar-sub"><?= htmlspecialchars($tb_sub) ?></div>
             </div>
             <div class="topbar-actions">
+                <?php if ($section !== null): ?>
+                    <a href="<?= htmlspecialchars($edit_lang === 'en' ? '?edit_lang=en' : '?') ?>" class="btn btn-secondary btn-sm">← Volver</a>
+                <?php endif; ?>
                 <a href="../index.php" target="_blank" class="btn btn-secondary btn-sm">🌐 Ver sitio</a>
             </div>
         </div>
@@ -101,20 +142,62 @@ function cv($content, $key, $default = '') {
 
             <?php include 'partials/toast.php'; ?>
 
-            <!-- Language tabs -->
-            <div class="lang-tabs">
-                <a href="?edit_lang=es" class="lang-tab <?= $edit_lang === 'es' ? 'active' : '' ?>">
-                    <span class="flag">🇪🇸</span> Español
-                </a>
-                <a href="?edit_lang=en" class="lang-tab <?= $edit_lang === 'en' ? 'active' : '' ?>">
-                    <span class="flag">🇬🇧</span> English
-                    <?php if ($edit_lang === 'en'): ?>
-                        <span style="font-size:11px;color:var(--muted);margin-left:6px;">
-                            (vacío = usa el texto en español)
-                        </span>
-                    <?php endif; ?>
-                </a>
-            </div>
+            <?php if ($section === null): ?>
+                <!-- ── HUB: cards por página ────────────────── -->
+                <div class="form-grid-2">
+                    <a href="<?= section_url('home', $edit_lang) ?>" class="card" style="text-decoration:none;color:inherit;display:block;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>🏠</span> Página de inicio
+                            </div>
+                        </div>
+                        <p style="color:var(--muted);font-size:14px;margin:0;">
+                            Hero principal, sección "Quiénes somos" (resumen) y "Nuestra filosofía" con tarjetas y valores.
+                        </p>
+                    </a>
+
+                    <a href="<?= section_url('eventos', $edit_lang) ?>" class="card" style="text-decoration:none;color:inherit;display:block;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>🎉</span> Página de eventos
+                            </div>
+                        </div>
+                        <p style="color:var(--muted);font-size:14px;margin:0;">
+                            Hero de la página, las 4 secciones (Eventos, Networking, Team Building, Catering) y la información de contacto.
+                        </p>
+                    </a>
+
+                    <a href="<?= section_url('quienes', $edit_lang) ?>" class="card" style="text-decoration:none;color:inherit;display:block;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>👥</span> Página Quiénes somos
+                            </div>
+                        </div>
+                        <p style="color:var(--muted);font-size:14px;margin:0;">
+                            Hero de página, bloques 1, 2 y 3, lista de propuesta y cierre con CTA.
+                        </p>
+                    </a>
+                </div>
+            <?php else: ?>
+
+                <!-- Language tabs -->
+                <div class="lang-tabs">
+                    <a href="<?= section_url($section, 'es') ?>" class="lang-tab <?= $edit_lang === 'es' ? 'active' : '' ?>">
+                        <span class="flag">🇪🇸</span> Español
+                    </a>
+                    <a href="<?= section_url($section, 'en') ?>" class="lang-tab <?= $edit_lang === 'en' ? 'active' : '' ?>">
+                        <span class="flag">🇬🇧</span> English
+                        <?php if ($edit_lang === 'en'): ?>
+                            <span style="font-size:11px;color:var(--muted);margin-left:6px;">
+                                (vacío = usa el texto en español)
+                            </span>
+                        <?php endif; ?>
+                    </a>
+                </div>
+
+            <?php endif; ?>
+
+            <?php if ($section === 'home'): ?>
 
             <!-- ── HERO ──────────────────────────────── -->
             <div class="card">
@@ -124,7 +207,7 @@ function cv($content, $key, $default = '') {
                         <span class="section-badge">Portada</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
                     <div class="form-group">
                         <label class="form-label">
                             Etiqueta superior <span class="hint">ej: "Cafetería · Valencia"</span>
@@ -154,7 +237,7 @@ function cv($content, $key, $default = '') {
                         <span class="section-badge">Portada</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
@@ -189,7 +272,7 @@ function cv($content, $key, $default = '') {
                         <span class="section-badge">Portada</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
                     <div class="form-group">
                         <label class="form-label">Etiqueta</label>
                         <input name="fil_label<?= $key_suffix ?>" type="text" class="form-control"
@@ -265,6 +348,10 @@ function cv($content, $key, $default = '') {
                 </form>
             </div>
 
+            <?php endif; /* section === home */ ?>
+
+            <?php if ($section === 'eventos'): ?>
+
             <!-- ── EVENTOS ──────────────────────────────── -->
             <div class="card">
                 <div class="card-header">
@@ -273,7 +360,7 @@ function cv($content, $key, $default = '') {
                         <span class="section-badge">Eventos</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta superior</label>
@@ -295,24 +382,124 @@ function cv($content, $key, $default = '') {
                 </form>
             </div>
 
-            <!-- ── EVENTOS — 4 SECCIONES ─────────────────── -->
+            <!-- ── MARQUEE DE IMÁGENES (info card → enlace a imagenes.php) ─── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🖼️</span> Carrusel de imágenes
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <p style="font-size:14px;color:var(--muted);margin:0 0 14px;">
+                    Las imágenes del marquee se gestionan desde la sección de imágenes (subir, ordenar, eliminar).
+                </p>
+                <a href="imagenes.php?s=eventos/carrusel" class="btn btn-secondary">📁 Gestionar imágenes del carrusel →</a>
+            </div>
+
+            <!-- ── POR QUÉ TUOI ────────────────────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>💡</span> Por qué TUOI
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Etiqueta</label>
+                            <input name="ev_why_label<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_why_label' . $key_suffix) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Título H2</label>
+                            <input name="ev_why_h2<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_why_h2' . $key_suffix) ?>">
+                        </div>
+                    </div>
+
+                    <hr class="section-divider">
+                    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Las 4 viñetas (icono + título + descripción)</p>
+
+                    <?php for ($i = 1; $i <= 4; $i++): ?>
+                    <div class="form-group" style="border-left:3px solid var(--border);padding-left:14px;margin-bottom:18px;">
+                        <p style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;">Viñeta <?= $i ?></p>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Icono <span class="hint">emoji</span></label>
+                                <input name="ev_why_b<?= $i ?>_icon<?= $key_suffix ?>" type="text" class="form-control"
+                                       value="<?= cv($content, "ev_why_b{$i}_icon" . $key_suffix) ?>" maxlength="4">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Título</label>
+                                <input name="ev_why_b<?= $i ?>_title<?= $key_suffix ?>" type="text" class="form-control"
+                                       value="<?= cv($content, "ev_why_b{$i}_title" . $key_suffix) ?>">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="ev_why_b<?= $i ?>_desc<?= $key_suffix ?>" class="form-control" rows="2"><?= cv($content, "ev_why_b{$i}_desc" . $key_suffix) ?></textarea>
+                        </div>
+                    </div>
+                    <?php endfor; ?>
+
+                    <hr class="section-divider">
+                    <p style="font-size:13px;color:var(--muted);margin-bottom:8px;">
+                        La imagen lateral se gestiona en
+                        <a href="imagenes.php?s=eventos/por-que-tuoi" style="color:var(--primary);">📁 Imágenes — Por qué TUOI</a>
+                        (se usa la primera imagen de la carpeta).
+                    </p>
+
+                    <button type="submit" class="btn btn-primary">💾 Guardar Por qué TUOI</button>
+                </form>
+            </div>
+
+            <!-- ── PROPUESTA DE MENÚS — INTRO ──────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🍽️</span> Propuesta de menús — Encabezado
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Etiqueta</label>
+                            <input name="ev_menus_label<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_menus_label' . $key_suffix) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Título H2</label>
+                            <input name="ev_menus_h2<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_menus_h2' . $key_suffix) ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Texto introductorio</label>
+                        <textarea name="ev_menus_intro<?= $key_suffix ?>" class="form-control" rows="2"><?= cv($content, 'ev_menus_intro' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar encabezado</button>
+                </form>
+            </div>
+
+            <!-- ── PROPUESTA DE MENÚS — 3 CATEGORÍAS ───── -->
             <?php
-            $ev_sections_admin = [
-                ['prefix' => 'ev_ev',  'icon' => '🎉', 'name' => 'Sección Eventos'],
-                ['prefix' => 'ev_nw',  'icon' => '🤝', 'name' => 'Sección Networking'],
-                ['prefix' => 'ev_tb',  'icon' => '👥', 'name' => 'Sección Team Building'],
-                ['prefix' => 'ev_cat', 'icon' => '🍽️', 'name' => 'Sección Catering'],
+            $ev_menu_admin = [
+                ['prefix' => 'ev_cb', 'icon' => '☕', 'name' => 'Coffee Break', 'cat' => 'coffee-break'],
+                ['prefix' => 'ev_br', 'icon' => '🥐', 'name' => 'Brunch',       'cat' => 'brunch'],
+                ['prefix' => 'ev_td', 'icon' => '🍷', 'name' => 'Tardeo',       'cat' => 'tardeo'],
             ];
-            foreach ($ev_sections_admin as $sec):
+            foreach ($ev_menu_admin as $sec):
             ?>
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        <span><?= $sec['icon'] ?></span> <?= $sec['name'] ?>
+                        <span><?= $sec['icon'] ?></span> Menú — <?= $sec['name'] ?>
                         <span class="section-badge">Eventos</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
@@ -329,10 +516,61 @@ function cv($content, $key, $default = '') {
                         <label class="form-label">Descripción</label>
                         <textarea name="<?= $sec['prefix'] ?>_desc<?= $key_suffix ?>" class="form-control" rows="3"><?= cv($content, $sec['prefix'] . '_desc' . $key_suffix) ?></textarea>
                     </div>
+                    <p style="font-size:13px;color:var(--muted);margin:6px 0 14px;">
+                        Los sub-menús (entradas con título, texto e imágenes) se gestionan en
+                        <a href="eventos.php?cat=<?= $sec['cat'] ?>" style="color:var(--primary);">📝 Eventos — <?= $sec['name'] ?></a>.
+                    </p>
                     <button type="submit" class="btn btn-primary">💾 Guardar <?= $sec['name'] ?></button>
                 </form>
             </div>
             <?php endforeach; ?>
+
+            <!-- ── CTA ─────────────────────────────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📣</span> Llamada a la acción (CTA)
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-group">
+                        <label class="form-label">Título H2</label>
+                        <input name="ev_cta_h2<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_cta_h2' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Texto</label>
+                        <textarea name="ev_cta_text<?= $key_suffix ?>" class="form-control" rows="2"><?= cv($content, 'ev_cta_text' . $key_suffix) ?></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Texto del botón <span class="hint">enlaza al formulario de contacto en la misma página</span></label>
+                        <input name="ev_cta_btn<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_cta_btn' . $key_suffix) ?>">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar CTA</button>
+                </form>
+            </div>
+
+            <!-- ── MARQUEE DE CATEGORÍAS ───────────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🎞️</span> Banner de categorías (marquee)
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Texto del banner
+                            <span class="hint">separa las categorías con " – " (espacio · guión largo · espacio)</span>
+                        </label>
+                        <textarea name="ev_marquee_text<?= $key_suffix ?>" class="form-control" rows="2"><?= cv($content, 'ev_marquee_text' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar banner</button>
+                </form>
+            </div>
 
             <!-- ── CONTACTO ──────────────────────────────── -->
             <div class="card">
@@ -342,7 +580,7 @@ function cv($content, $key, $default = '') {
                         <span class="section-badge">Eventos</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
                     <div class="form-group">
                         <label class="form-label">Teléfono</label>
                         <input name="contact_phone<?= $key_suffix ?>" type="text" class="form-control"
@@ -362,6 +600,10 @@ function cv($content, $key, $default = '') {
                 </form>
             </div>
 
+            <?php endif; /* section === eventos */ ?>
+
+            <?php if ($section === 'quienes'): ?>
+
             <!-- ── QUIÉNES SOMOS (PÁGINA) ────────────────── -->
             <div class="card">
                 <div class="card-header">
@@ -370,7 +612,7 @@ function cv($content, $key, $default = '') {
                         <span class="section-badge">Quiénes somos</span>
                     </div>
                 </div>
-                <form method="post" action="?edit_lang=<?= $edit_lang ?>">
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
 
                     <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Hero de página</p>
                     <div class="form-grid-2">
@@ -494,6 +736,8 @@ function cv($content, $key, $default = '') {
                     <button type="submit" class="btn btn-primary">💾 Guardar página quiénes somos</button>
                 </form>
             </div>
+
+            <?php endif; /* section === quienes */ ?>
 
         </div>
     </div>

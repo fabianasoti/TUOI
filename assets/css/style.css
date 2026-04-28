@@ -1555,3 +1555,194 @@ a { color: inherit; }
     max-width: 100%;
   }
 }
+
+/* ============================================================
+   EVENTOS — secciones nuevas (marquee imágenes, por qué TUOI,
+   intro de menús, CTA, slogan marquee)
+   ============================================================ */
+
+/* ── Marquee de imágenes (right → left, infinito) ─────────── */
+.ev-img-marquee {
+    overflow: hidden;
+    width: 100%;
+    padding: 2.5rem 0;
+    background: var(--fondo-beige, #F8F5E6);
+}
+.ev-img-marquee__track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    animation: ev-img-scroll 40s linear infinite;
+}
+.ev-img-marquee:hover .ev-img-marquee__track { animation-play-state: paused; }
+.ev-img-marquee__item {
+    flex: 0 0 auto;
+    width: 320px;
+    height: 220px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+.ev-img-marquee__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+@keyframes ev-img-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+@media (max-width: 768px) {
+    .ev-img-marquee__item { width: 220px; height: 150px; }
+    .ev-img-marquee__track { animation-duration: 30s; }
+}
+
+/* ── Por qué TUOI ─────────────────────────────────────────── */
+.ev-why { padding: 5rem 5%; background: var(--blanco); }
+.ev-why__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3.5rem;
+    align-items: center;
+}
+.ev-why__text h2 {
+    font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+    margin: .35rem 0 1.75rem;
+    color: var(--texto-oscuro);
+    line-height: 1.15;
+}
+.ev-why__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+}
+.ev-why__bullet {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+.ev-why__icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--fondo-beige, #F8F5E6);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.ev-why__bullet h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 .35rem;
+    color: var(--texto-oscuro);
+}
+.ev-why__bullet p {
+    margin: 0;
+    color: rgba(42,44,41,.78);
+    font-size: .95rem;
+    line-height: 1.55;
+}
+.ev-why__image {
+    border-radius: 18px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    box-shadow: 0 12px 32px rgba(0,0,0,.1);
+}
+.ev-why__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+@media (max-width: 900px) {
+    .ev-why__inner { grid-template-columns: 1fr; gap: 2rem; }
+    .ev-why__image { aspect-ratio: 16 / 10; order: -1; }
+    .ev-why { padding: 3.5rem 5%; }
+}
+
+/* ── Intro Propuesta de menús ─────────────────────────────── */
+.ev-menus-intro {
+    padding: 4rem 5% 1rem;
+    text-align: center;
+    background: var(--blanco);
+}
+.ev-menus-intro__inner {
+    max-width: 760px;
+    margin: 0 auto;
+}
+.ev-menus-intro h2 {
+    font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+    margin: .35rem 0 1rem;
+    color: var(--texto-oscuro);
+}
+.ev-menus-intro p {
+    color: rgba(42,44,41,.7);
+    font-size: 1.05rem;
+}
+
+/* ── CTA ──────────────────────────────────────────────────── */
+.ev-cta {
+    padding: 4.5rem 5%;
+    background: var(--fondo-beige, #F8F5E6);
+    text-align: center;
+}
+.ev-cta__inner { max-width: 720px; margin: 0 auto; }
+.ev-cta h2 {
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    margin: 0 0 .75rem;
+    color: var(--texto-oscuro);
+}
+.ev-cta p {
+    color: rgba(42,44,41,.75);
+    font-size: 1.05rem;
+    margin-bottom: 1.75rem;
+}
+.ev-cta__btn { display: inline-block; }
+
+/* ── Slogan marquee (texto en bucle) ──────────────────────── */
+.ev-slogan {
+    overflow: hidden;
+    width: 100%;
+    padding: 1.5rem 0;
+    background: var(--texto-oscuro);
+    color: var(--blanco);
+}
+.ev-slogan__track {
+    display: flex;
+    width: max-content;
+    animation: ev-slogan-scroll 35s linear infinite;
+}
+.ev-slogan:hover .ev-slogan__track { animation-play-state: paused; }
+.ev-slogan__group {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.ev-slogan__item {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(1.4rem, 3vw, 2.25rem);
+    letter-spacing: .01em;
+    padding: 0 1.25rem;
+    white-space: nowrap;
+}
+.ev-slogan__sep {
+    font-size: clamp(1.4rem, 3vw, 2.25rem);
+    opacity: .6;
+}
+@keyframes ev-slogan-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+@media (max-width: 768px) {
+    .ev-slogan__track { animation-duration: 25s; }
+}
