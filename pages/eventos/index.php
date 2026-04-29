@@ -28,13 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
             );
         }
 
-        $admin_email = $c['contact_email'] ?? 'hola@tuoi.es';
+        $admin_email  = $c['contact_email'] ?? 'hola@tuoi.es';
         $mail_subject = '=?UTF-8?B?' . base64_encode('Nuevo contacto desde Eventos · TUOI') . '?=';
-        $mail_body  = "Has recibido un nuevo mensaje desde el formulario de Eventos.\n\n";
-        $mail_body .= "Nombre:    $name\n";
-        $mail_body .= "Email:     $email\n";
-        $mail_body .= "Teléfono:  " . ($phone ?: '—') . "\n\n";
-        $mail_body .= "Mensaje:\n$message\n";
+        $mail_body    = "Has recibido un nuevo mensaje desde el formulario de Eventos.\n\n";
+        $mail_body   .= "Nombre:    $name\n";
+        $mail_body   .= "Email:     $email\n";
+        $mail_body   .= "Teléfono:  " . ($phone ?: '—') . "\n\n";
+        $mail_body   .= "Mensaje:\n$message\n";
         $mail_headers  = "From: TUOI Eventos <noreply@tuoi.es>\r\n";
         $mail_headers .= "Reply-To: $email\r\n";
         $mail_headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
@@ -50,18 +50,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
 require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);
 
-// ── Load carousel images ────────────────────────────────────────────────────
-$carrusel_dir   = dirname(__DIR__, 2) . '/assets/img/eventos/carrusel/';
-$carrusel_files = load_ordered_images($conexion, 'eventos/carrusel', $carrusel_dir);
-$carrusel_imgs  = array_map(fn($p) => basename($p), $carrusel_files);
+// ── Carrusel marquee images ─────────────────────────────────────────────────
+$carrusel_dir  = dirname(__DIR__, 2) . '/assets/img/eventos/carrusel/';
+$carrusel_imgs = load_ordered_images($conexion, 'eventos/carrusel', $carrusel_dir, '*.{webp,jpg,jpeg,png}');
 
-// ── Load "Por qué TUOI" lateral image (first image in folder) ──────────────
-$why_dir   = dirname(__DIR__, 2) . '/assets/img/eventos/por-que-tuoi/';
-$why_files = load_ordered_images($conexion, 'eventos/por-que-tuoi', $why_dir);
-$why_img   = !empty($why_files) ? basename($why_files[0]) : null;
+// ── Por qué TUOI — lateral image ────────────────────────────────────────────
+$why_dir  = dirname(__DIR__, 2) . '/assets/img/eventos/por-que-tuoi/';
+$why_imgs = load_ordered_images($conexion, 'eventos/por-que-tuoi', $why_dir, '*.{webp,jpg,jpeg,png}');
+$why_img  = !empty($why_imgs) ? basename($why_imgs[0]) : null;
 
-// ── Menu sections (zigzag posts) ───────────────────────────────────────────
-$menu_sections = [
+// ── Posts por categoría ─────────────────────────────────────────────────────
+$cats_order = ['coffee-break', 'brunch', 'tardeo'];
+$posts_by   = [];
+if ($conexion) {
+    foreach ($cats_order as $cat) {
+        $s = mysqli_real_escape_string($conexion, $cat);
+        $r = @mysqli_query($conexion,
+            "SELECT * FROM eventos_posts WHERE category='$s' ORDER BY sort_order ASC, id DESC"
+        );
+        $posts_by[$cat] = [];
+        if ($r) while ($row = mysqli_fetch_assoc($r)) $posts_by[$cat][] = $row;
+    }
+}
+
+// ── Definición de secciones ─────────────────────────────────────────────────
+$sections = [
     [
         'id'     => 'coffee-break',
         'accent' => 'amarillo',
@@ -88,21 +101,9 @@ $menu_sections = [
     ],
 ];
 
-$posts_by = [];
-if ($conexion) {
-    foreach ($menu_sections as $sec) {
-        $cat = mysqli_real_escape_string($conexion, $sec['id']);
-        $r   = @mysqli_query($conexion,
-            "SELECT * FROM eventos_posts WHERE category='$cat' ORDER BY sort_order ASC, id DESC"
-        );
-        $posts_by[$sec['id']] = [];
-        if ($r) while ($row = mysqli_fetch_assoc($r)) $posts_by[$sec['id']][] = $row;
-    }
-}
-
-// ── Marquee categorías: split by " – " or " - " ────────────────────────────
+// ── Marquee items ───────────────────────────────────────────────────────────
 $marquee_raw   = $c['ev_marquee_text'] ?? 'Team Building – Networking – Corporativos – Afterwork – Experiencias';
-$marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–-]\s/u', $marquee_raw))));
+$marquee_items = array_values(array_filter(array_map('trim', explode('–', $marquee_raw))));
 ?>
 
 <main>
@@ -111,32 +112,29 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
 <section class="page-hero ev-hero">
     <span class="section-label"><?= htmlspecialchars($c['ev_hero_label'] ?? 'Eventos · TUOI') ?></span>
     <h1><?= htmlspecialchars($c['ev_hero_h1'] ?? 'Celebra con nosotros') ?></h1>
-    <p><?= htmlspecialchars($c['ev_hero_sub'] ?? 'Organizamos eventos únicos con comida funcional y saludable.') ?></p>
+    <p><?= htmlspecialchars($c['ev_hero_sub'] ?? '') ?></p>
 </section>
 
-<!-- ── MARQUEE DE IMÁGENES ───────────────────────────────────────────────── -->
+<!-- ── MARQUEE IMÁGENES ──────────────────────────────────────────────────── -->
 <?php if (!empty($carrusel_imgs)): ?>
-<section class="ev-img-marquee" aria-label="Galería de eventos">
+<div class="ev-img-marquee" aria-hidden="true">
     <div class="ev-img-marquee__track">
-        <?php for ($pass = 0; $pass < 2; $pass++): ?>
-            <?php foreach ($carrusel_imgs as $img): ?>
-            <div class="ev-img-marquee__item" <?= $pass === 1 ? 'aria-hidden="true"' : '' ?>>
-                <img src="<?= $base ?>assets/img/eventos/carrusel/<?= htmlspecialchars($img) ?>"
-                     alt="" loading="lazy">
-            </div>
-            <?php endforeach; ?>
-        <?php endfor; ?>
+        <?php foreach (array_merge($carrusel_imgs, $carrusel_imgs) as $img_path): ?>
+        <div class="ev-img-marquee__item">
+            <img src="<?= $base ?>assets/img/eventos/carrusel/<?= htmlspecialchars(basename($img_path)) ?>"
+                 alt="Evento TUOI" loading="lazy">
+        </div>
+        <?php endforeach; ?>
     </div>
-</section>
+</div>
 <?php endif; ?>
 
-<!-- ── POR QUÉ TUOI ──────────────────────────────────────────────────────── -->
+<!-- ── POR QUÉ TUOI ───────────────────────────────────────────────────────── -->
 <section class="ev-why">
     <div class="ev-why__inner">
         <div class="ev-why__text">
             <span class="section-label"><?= htmlspecialchars($c['ev_why_label'] ?? 'Por qué TUOI') ?></span>
             <h2><?= htmlspecialchars($c['ev_why_h2'] ?? '¿Por qué TUOI?') ?></h2>
-
             <ul class="ev-why__list">
                 <?php for ($i = 1; $i <= 4; $i++):
                     $icon  = $c["ev_why_b{$i}_icon"]  ?? '';
@@ -145,35 +143,44 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
                     if ($title === '' && $desc === '') continue;
                 ?>
                 <li class="ev-why__bullet">
-                    <span class="ev-why__icon" aria-hidden="true"><?= htmlspecialchars($icon) ?></span>
+                    <?php if ($icon !== ''): ?>
+                    <span class="ev-why__icon"><?= htmlspecialchars($icon) ?></span>
+                    <?php endif; ?>
                     <div>
-                        <h3><?= htmlspecialchars($title) ?></h3>
-                        <p><?= nl2br(htmlspecialchars($desc)) ?></p>
+                        <?php if ($title !== ''): ?><h3><?= htmlspecialchars($title) ?></h3><?php endif; ?>
+                        <?php if ($desc  !== ''): ?><p><?= nl2br(htmlspecialchars($desc)) ?></p><?php endif; ?>
                     </div>
                 </li>
                 <?php endfor; ?>
             </ul>
         </div>
 
-        <?php if ($why_img): ?>
         <div class="ev-why__image">
+            <?php if ($why_img): ?>
             <img src="<?= $base ?>assets/img/eventos/por-que-tuoi/<?= htmlspecialchars($why_img) ?>"
-                 alt="" loading="lazy">
+                 alt="Por qué TUOI" loading="lazy">
+            <?php else: ?>
+            <div style="width:100%;height:100%;background:var(--fondo-beige);display:flex;align-items:center;justify-content:center;min-height:300px;border-radius:18px;">
+                <span style="font-size:5rem;opacity:.2;">🌿</span>
+            </div>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
     </div>
 </section>
 
-<!-- ── PROPUESTA DE MENÚS (intro + zigzag) ───────────────────────────────── -->
-<section class="ev-menus-intro">
+<!-- ── INTRO PROPUESTA DE MENÚS ───────────────────────────────────────────── -->
+<div class="ev-menus-intro">
     <div class="ev-menus-intro__inner">
         <span class="section-label"><?= htmlspecialchars($c['ev_menus_label'] ?? 'Propuesta de menús') ?></span>
         <h2><?= htmlspecialchars($c['ev_menus_h2'] ?? 'Menús de grupo y catering') ?></h2>
-        <p><?= htmlspecialchars($c['ev_menus_intro'] ?? '') ?></p>
+        <?php if (!empty($c['ev_menus_intro'])): ?>
+        <p><?= htmlspecialchars($c['ev_menus_intro']) ?></p>
+        <?php endif; ?>
     </div>
-</section>
+</div>
 
-<?php foreach ($menu_sections as $idx => $sec):
+<!-- ── SECCIONES (zigzag) ─────────────────────────────────────────────────── -->
+<?php foreach ($sections as $idx => $sec):
     $posts  = $posts_by[$sec['id']] ?? [];
     $alt_bg = $idx % 2 === 0 ? '' : ' ev-section--alt';
 ?>
@@ -185,7 +192,7 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
             <div class="ev-section__head-text">
                 <span class="section-label"><?= htmlspecialchars($sec['label']) ?></span>
                 <h2><?= htmlspecialchars($sec['h2']) ?></h2>
-                <p><?= htmlspecialchars($sec['desc']) ?></p>
+                <?php if ($sec['desc'] !== ''): ?><p><?= htmlspecialchars($sec['desc']) ?></p><?php endif; ?>
             </div>
         </div>
 
@@ -193,42 +200,40 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
         <div class="ev-posts">
             <?php foreach ($posts as $i => $post):
                 $isReverse = ($i % 2 !== 0) ? 'row-reverse' : '';
-                $images = [];
-                $raw_images = $post['images'] ?? ($post['image_filename'] ?? '');
-                if (!empty($raw_images)) {
-                    $decoded = json_decode($raw_images, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        $images = $decoded;
-                    } else {
-                        $images = array_map('trim', explode(',', $raw_images));
-                    }
+                $raw_imgs  = $post['images'] ?? ($post['image_filename'] ?? '');
+                $images    = [];
+                if (!empty($raw_imgs)) {
+                    $decoded = json_decode($raw_imgs, true);
+                    $images  = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+                        ? $decoded
+                        : array_map('trim', explode(',', $raw_imgs));
                 }
-                $trackId = "track-evento-" . ($post['id'] ?? $i);
+                $trackId = 'track-' . ($post['id'] ?? $i);
             ?>
-            <div class="project-row fade-up visible <?= $isReverse ?>">
+            <div class="project-row <?= $isReverse ?>">
                 <div class="project-image">
                     <?php if (count($images) > 1): ?>
                         <div class="carousel-container">
                             <div class="carousel-track" id="<?= $trackId ?>">
-                                <?php foreach($images as $img): ?>
+                                <?php foreach ($images as $img): ?>
                                     <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($img) ?>"
                                          alt="<?= htmlspecialchars($post['title']) ?>" loading="lazy">
                                 <?php endforeach; ?>
                             </div>
                             <button class="carousel-btn btn-prev" onclick="moveSlide('<?= $trackId ?>', -1)">❮</button>
-                            <button class="carousel-btn btn-next" onclick="moveSlide('<?= $trackId ?>', 1)">❯</button>
+                            <button class="carousel-btn btn-next" onclick="moveSlide('<?= $trackId ?>',  1)">❯</button>
                             <div class="carousel-dots" id="dots-<?= $trackId ?>">
-                                <?php foreach($images as $idx2 => $img): ?>
-                                    <div class="dot <?= $idx2 === 0 ? 'active' : '' ?>"></div>
+                                <?php foreach ($images as $di => $img): ?>
+                                    <div class="dot <?= $di === 0 ? 'active' : '' ?>"></div>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     <?php elseif (count($images) === 1): ?>
                         <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($images[0]) ?>"
                              alt="<?= htmlspecialchars($post['title']) ?>"
-                             style="width: 100%; border-radius: 12px; object-fit: cover; aspect-ratio: 16/9;" loading="lazy">
+                             style="width:100%;border-radius:12px;object-fit:cover;aspect-ratio:16/9;" loading="lazy">
                     <?php else: ?>
-                        <div class="img-placeholder" style="aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; background: #e0e0e0; border-radius: 12px;">📸 Sin imagen</div>
+                        <div style="aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:#e8e6df;border-radius:12px;color:#aaa;font-size:2rem;">📸</div>
                     <?php endif; ?>
                 </div>
 
@@ -244,9 +249,10 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
             </div>
             <?php endforeach; ?>
         </div>
+
         <?php else: ?>
         <div class="ev-empty">
-            <p>Próximamente publicaremos las propuestas de esta modalidad.<br>¡Escríbenos para conocer todas las opciones!</p>
+            <p>Próximamente publicaremos más sobre esta modalidad.<br>¡Escríbenos para conocer todas las opciones!</p>
             <a href="#contacto" class="btn-primary" style="margin-top:1.25rem;display:inline-block;">Contactar →</a>
         </div>
         <?php endif; ?>
@@ -255,31 +261,31 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
 </section>
 <?php endforeach; ?>
 
-<!-- ── CTA ───────────────────────────────────────────────────────────────── -->
+<!-- ── CTA ────────────────────────────────────────────────────────────────── -->
 <section class="ev-cta">
     <div class="ev-cta__inner">
         <h2><?= htmlspecialchars($c['ev_cta_h2'] ?? '¿Tienes un evento en mente?') ?></h2>
-        <p><?= htmlspecialchars($c['ev_cta_text'] ?? '') ?></p>
+        <p><?= htmlspecialchars($c['ev_cta_text'] ?? 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.') ?></p>
         <a href="#contacto" class="btn-primary ev-cta__btn">
             <?= htmlspecialchars($c['ev_cta_btn'] ?? 'Hablamos →') ?>
         </a>
     </div>
 </section>
 
-<!-- ── BANNER MARQUEE DE CATEGORÍAS ──────────────────────────────────────── -->
+<!-- ── BANNER MARQUEE CATEGORÍAS ─────────────────────────────────────────── -->
 <?php if (!empty($marquee_items)): ?>
-<section class="ev-slogan" aria-label="Tipos de evento">
+<div class="ev-slogan" aria-hidden="true">
     <div class="ev-slogan__track">
-        <?php for ($pass = 0; $pass < 2; $pass++): ?>
-            <span class="ev-slogan__group" <?= $pass === 1 ? 'aria-hidden="true"' : '' ?>>
-                <?php foreach ($marquee_items as $item): ?>
-                    <span class="ev-slogan__item"><?= htmlspecialchars($item) ?></span>
-                    <span class="ev-slogan__sep" aria-hidden="true">–</span>
-                <?php endforeach; ?>
-            </span>
-        <?php endfor; ?>
+        <?php foreach ([1, 2] as $_): ?>
+        <span class="ev-slogan__group">
+            <?php foreach ($marquee_items as $item): ?>
+            <span class="ev-slogan__item"><?= htmlspecialchars($item) ?></span>
+            <span class="ev-slogan__sep">–</span>
+            <?php endforeach; ?>
+        </span>
+        <?php endforeach; ?>
     </div>
-</section>
+</div>
 <?php endif; ?>
 
 <!-- ── CONTACTO ──────────────────────────────────────────────────────────── -->
@@ -297,22 +303,22 @@ $marquee_items = array_values(array_filter(array_map('trim', preg_split('/\s[–
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.16h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.75a16 16 0 0 0 8.34 8.34l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                     </span>
                     <a href="tel:<?= htmlspecialchars(preg_replace('/[\s\-()]/', '', $c['contact_phone'] ?? '')) ?>">
-                        <?= htmlspecialchars($c['contact_phone'] ?? '+34 604 39 43 47') ?>
+                        <?= htmlspecialchars($c['contact_phone'] ?? '') ?>
                     </a>
                 </li>
                 <li>
                     <span class="ev-contact__icon">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     </span>
-                    <a href="mailto:<?= htmlspecialchars($c['contact_email'] ?? 'hola@miobiosport.com') ?>">
-                        <?= htmlspecialchars($c['contact_email'] ?? 'hola@miobiosport.com') ?>
+                    <a href="mailto:<?= htmlspecialchars($c['contact_email'] ?? '') ?>">
+                        <?= htmlspecialchars($c['contact_email'] ?? '') ?>
                     </a>
                 </li>
                 <li>
                     <span class="ev-contact__icon">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     </span>
-                    <span><?= htmlspecialchars($c['contact_address'] ?? 'C. de la Travesía, 15B, Valencia') ?></span>
+                    <span><?= htmlspecialchars($c['contact_address'] ?? '') ?></span>
                 </li>
             </ul>
         </div>

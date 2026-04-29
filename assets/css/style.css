@@ -1572,7 +1572,7 @@ a { color: inherit; }
     display: flex;
     gap: 1rem;
     width: max-content;
-    animation: ev-img-scroll 40s linear infinite;
+    animation: ev-img-scroll 60s linear infinite;
 }
 .ev-img-marquee:hover .ev-img-marquee__track { animation-play-state: paused; }
 .ev-img-marquee__item {
@@ -1595,11 +1595,11 @@ a { color: inherit; }
 }
 @media (max-width: 768px) {
     .ev-img-marquee__item { width: 220px; height: 150px; }
-    .ev-img-marquee__track { animation-duration: 30s; }
+    .ev-img-marquee__track { animation-duration: 45s; }
 }
 
 /* ── Por qué TUOI ─────────────────────────────────────────── */
-.ev-why { padding: 5rem 5%; background: var(--blanco); }
+.ev-why { padding: 5rem 5%; background: var(--fondo-beige); }
 .ev-why__inner {
     max-width: 1200px;
     margin: 0 auto;
@@ -1672,7 +1672,7 @@ a { color: inherit; }
 .ev-menus-intro {
     padding: 4rem 5% 1rem;
     text-align: center;
-    background: var(--blanco);
+    background: var(--fondo-beige);
 }
 .ev-menus-intro__inner {
     max-width: 760px;
@@ -1711,9 +1711,11 @@ a { color: inherit; }
 .ev-slogan {
     overflow: hidden;
     width: 100%;
-    padding: 1.5rem 0;
-    background: var(--texto-oscuro);
-    color: var(--blanco);
+    padding: 2rem 0;
+    background: var(--fondo-beige);
+    color: var(--texto-oscuro);
+    border-top: 1px solid rgba(42,44,41,.08);
+    border-bottom: 1px solid rgba(42,44,41,.08);
 }
 .ev-slogan__track {
     display: flex;
@@ -1728,21 +1730,60 @@ a { color: inherit; }
 }
 .ev-slogan__item {
     font-family: 'Inter', sans-serif;
-    font-weight: 700;
+    font-weight: 300;
     font-style: italic;
-    font-size: clamp(1.4rem, 3vw, 2.25rem);
-    letter-spacing: .01em;
-    padding: 0 1.25rem;
+    font-size: clamp(1.3rem, 2.6vw, 2rem);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 0 1.5rem;
     white-space: nowrap;
 }
 .ev-slogan__sep {
-    font-size: clamp(1.4rem, 3vw, 2.25rem);
-    opacity: .6;
+    font-size: clamp(1.3rem, 2.6vw, 2rem);
+    color: var(--naranja);
+    font-weight: 400;
 }
 @keyframes ev-slogan-scroll {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
 }
 @media (max-width: 768px) {
-    .ev-slogan__track { animation-duration: 25s; }
+    .ev-slogan__track { animation-duration: 15s; }
 }
+
+/* ============================================================
+   FADE-IN ON SCROLL (global)
+   ============================================================ */
+.fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .7s ease-out, transform .7s ease-out;
+    will-change: opacity, transform;
+}
+.fade-up.visible {
+    opacity: 1;
+    transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    .fade-up,
+    .fade-up.visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+/* Stagger en grupos: cada elemento siguiente entra ~80ms más tarde */
+.feature-card.fade-up:nth-child(2),
+.value-item.fade-up:nth-child(2),
+.ev-why__bullet.fade-up:nth-child(2),
+.page-hero.fade-up > *:nth-child(2),
+.page-hero > *.fade-up:nth-child(2) { transition-delay: .08s; }
+
+.feature-card.fade-up:nth-child(3),
+.value-item.fade-up:nth-child(3),
+.ev-why__bullet.fade-up:nth-child(3),
+.page-hero > *.fade-up:nth-child(3) { transition-delay: .16s; }
+
+.feature-card.fade-up:nth-child(4),
+.value-item.fade-up:nth-child(4),
+.ev-why__bullet.fade-up:nth-child(4) { transition-delay: .24s; }
