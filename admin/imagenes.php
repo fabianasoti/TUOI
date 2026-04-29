@@ -17,10 +17,13 @@ $sections = [
     'carta/momento-dulce'    => ['label' => 'Carta — Momento Dulce',        'path' => $base_img . 'carta/momento-dulce/'],
     'carta/bebidas'          => ['label' => 'Carta — Bebidas',              'path' => $base_img . 'carta/bebidas/'],
     'carta/superalimentos'   => ['label' => 'Carta — Superalimentos',       'path' => $base_img . 'carta/superalimentos/'],
-    // Eventos
-    'eventos/catering'       => ['label' => 'Eventos — Catering',           'path' => $base_img . 'eventos/catering/'],
-    'eventos/team-building'  => ['label' => 'Eventos — Team Building',      'path' => $base_img . 'eventos/team-building/'],
-    'eventos/networking'     => ['label' => 'Eventos — Networking',         'path' => $base_img . 'eventos/networking/'],
+    // Eventos — carrusel y por qué TUOI
+    'eventos/carrusel'       => ['label' => 'Eventos — Carrusel',           'path' => $base_img . 'eventos/carrusel/'],
+    'eventos/por-que-tuoi'   => ['label' => 'Eventos — Por qué TUOI',       'path' => $base_img . 'eventos/por-que-tuoi/'],
+    // Eventos — imágenes de sub-menús (se suben desde "Gestión de Eventos")
+    'eventos/coffee-break'   => ['label' => 'Eventos — Coffee Break',       'path' => $base_img . 'eventos/coffee-break/'],
+    'eventos/brunch'         => ['label' => 'Eventos — Brunch',             'path' => $base_img . 'eventos/brunch/'],
+    'eventos/tardeo'         => ['label' => 'Eventos — Tardeo',             'path' => $base_img . 'eventos/tardeo/'],
     // Carta — English
     'carta/desayunos-en'     => ['label' => 'Carta — Desayunos (EN)',       'path' => $base_img . 'carta/desayunos-en/'],
     'carta/toque-salado-en'  => ['label' => 'Carta — Toque Salado (EN)',    'path' => $base_img . 'carta/toque-salado-en/'],

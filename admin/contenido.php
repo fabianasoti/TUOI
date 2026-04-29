@@ -163,7 +163,7 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                             </div>
                         </div>
                         <p style="color:var(--muted);font-size:14px;margin:0;">
-                            Hero de la página, las 4 secciones (Eventos, Networking, Team Building, Catering) y la información de contacto.
+                            Hero, carrusel, Por qué TUOI, menús (Coffee Break / Brunch / Tardeo), CTA, banner y contacto.
                         </p>
                     </a>
 

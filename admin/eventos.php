@@ -6,13 +6,13 @@ $max_size    = 20 * 1024 * 1024;
 $allowed_ext = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
 
 $categories = [
-    'catering'      => 'Catering',
-    'team-building' => 'Team Building',
-    'networking'    => 'Networking',
+    'coffee-break' => 'Coffee Break',
+    'brunch'       => 'Brunch',
+    'tardeo'       => 'Tardeo',
 ];
 
-$active_cat = $_GET['cat'] ?? 'catering';
-if (!array_key_exists($active_cat, $categories)) $active_cat = 'catering';
+$active_cat = $_GET['cat'] ?? 'coffee-break';
+if (!array_key_exists($active_cat, $categories)) $active_cat = 'coffee-break';
 
 $success = '';
 $error   = '';
@@ -317,7 +317,7 @@ if (isset($_GET['edit'])) {
         <div class="topbar">
             <div>
                 <div class="topbar-title">Gestión de Eventos</div>
-                <div class="topbar-sub">Entradas de blog para Catering, Team Building y Networking</div>
+                <div class="topbar-sub">Sub-menús para Coffee Break, Brunch y Tardeo</div>
             </div>
             <div class="topbar-actions">
                 <a href="../pages/eventos/" target="_blank" class="btn btn-secondary btn-sm">🌐 Ver Eventos</a>

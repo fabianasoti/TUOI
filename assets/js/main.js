@@ -140,6 +140,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // --------------------------------------------------------
+    // 5. FADE-IN ON SCROLL (global)
+    //    Auto-etiqueta bloques de contenido y los revela al entrar en viewport.
+    // --------------------------------------------------------
+    if ('IntersectionObserver' in window &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+        const fadeSelectors = [
+            // Secciones genéricas (hero + bloques top-level)
+            'main > section',
+            'main .page-hero > *',
+
+            // Eventos
+            'main .ev-img-marquee',
+            'main .ev-why__bullet',
+            'main .ev-why__image',
+            'main .ev-section__head',
+            'main .ev-menus-intro__inner',
+            'main .ev-cta__inner',
+            'main .ev-contact__info',
+            'main .ev-contact__form-wrap',
+            'main .project-row',
+
+            // Home
+            'main .section-quienes-inner',
+            'main .section-filosofia-inner > .section-header',
+            'main .feature-card',
+            'main .value-item',
+
+            // Quiénes somos
+            'main .qs-section',
+            'main .qs-cierre',
+
+            // Carta
+            'main .carta-filtros-wrap',
+            'main .carta-item'
+        ].join(',');
+
+        const targets = document.querySelectorAll(fadeSelectors);
+        targets.forEach(el => {
+            // No animar elementos que ya pertenecen a un padre fade-up para evitar dobles delays
+            el.classList.add('fade-up');
+        });
+
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -60px 0px' });
+
+        targets.forEach(el => io.observe(el));
+    }
+
+
 });
 // --------------------------------------------------------
 // LÓGICA DE CARRUSELES DINÁMICOS

@@ -11,6 +11,6 @@ if (!$conexion) {
     // Si falla la conexión, mostramos el error pero no matamos la página entera
     $error_db = "Error de conexión: " . mysqli_connect_error();
 } else {
-    mysqli_set_charset($conexion, "utf8");
+    mysqli_set_charset($conexion, "utf8mb4");
 }
 ?>
