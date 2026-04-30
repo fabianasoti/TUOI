@@ -53,8 +53,12 @@ function load_site_content($conexion, string $lang = 'es') {
         'qs_page_close_btn'  => 'Explorar la carta',
         // Eventos — Hero de página
         'ev_hero_label'      => 'Eventos · TUOI',
-        'ev_hero_h1'         => 'Celebra con nosotros',
-        'ev_hero_sub'        => 'Organizamos eventos únicos con comida funcional y saludable.',
+        'ev_hero_h1'         => 'Eventos con sentido, energía y propósito',
+        'ev_hero_sub'        => 'Experiencias gastronómicas que potencian cada encuentro.',
+        // Eventos — Manifiesto (intro narrativa entre carrusel y "Por qué TUOI")
+        'ev_intro_label'     => 'Nuestra filosofía',
+        'ev_intro_p1'        => 'En TUOI llevamos nuestra filosofía de functional coffee & smart food también al mundo de los eventos. Diseñamos experiencias gastronómicas que no solo acompañan, sino que potencian lo que ocurre en cada encuentro: más claridad, mejor energía y una sensación real de bienestar.',
+        'ev_intro_p2'        => 'Trabajamos con ingredientes de proximidad y propuestas equilibradas que se adaptan al ritmo y objetivo de cada encuentro. El resultado: comida ligera, sabrosa y funcional, que evita bajones y acompaña el ritmo natural de cada momento.',
         // Eventos — Sección "Eventos"
         'ev_ev_label'        => 'Eventos',
         'ev_ev_h2'           => 'Tu evento, nuestro escenario',
@@ -86,25 +90,30 @@ function load_site_content($conexion, string $lang = 'es') {
         'ev_why_b4_icon'     => '🎯',
         'ev_why_b4_title'    => 'Hecho para tu evento',
         'ev_why_b4_desc'     => 'Cada propuesta se adapta a lo que necesitas: el formato, las personas y lo que quieres transmitir.',
+        // Eventos — Prueba social (testimonio + logos)
+        'ev_social_label'    => 'Confían en nosotros',
+        'ev_social_quote'    => 'Organizamos un afterwork para 40 personas y la diferencia se notó: la gente conectó, comió bien y nadie sufrió el bajón de media tarde. Volveremos.',
+        'ev_social_author'   => 'Marta Soler',
+        'ev_social_role'     => 'People & Culture · Innovae',
         // Eventos — Propuesta de menús (3 categorías)
         'ev_menus_label'     => 'Nuestros menús',
-        'ev_menus_h2'        => 'Menús que se viven, no solo se prueban',
-        'ev_menus_intro'     => 'Diseñamos cada menú para que el evento fluya: comida real, ligera y con sentido, pensada para que la gente disfrute, conecte y se acuerde.',
+        'ev_menus_h2'        => 'Menús que se adaptan a tu evento',
+        'ev_menus_intro'     => 'Ofrecemos diferentes formatos que se ajustan al tipo de encuentro y a la experiencia que quieres crear.',
         'ev_cb_label'        => 'Coffee Break',
-        'ev_cb_h2'           => 'Coffee Break',
-        'ev_cb_desc'         => 'Pausa rápida con café de especialidad y bocados ligeros para mantener la energía durante reuniones, formaciones y jornadas largas.',
+        'ev_cb_h2'           => 'Coffee break',
+        'ev_cb_desc'         => 'Opciones ágiles y equilibradas para pausas que reactivan, favorecen la concentración y mantienen la energía estable.',
         'ev_br_label'        => 'Brunch',
         'ev_br_h2'           => 'Brunch',
-        'ev_br_desc'         => 'Del brunch a la comida, sin prisa. Una propuesta completa para mañanas con tiempo —o comidas tranquilas—: dulce, salado y bebidas para presentaciones, talleres o eventos corporativos.',
+        'ev_br_desc'         => 'Una propuesta más completa y versátil, ideal para encuentros distendidos que combinan trabajo y socialización.',
         'ev_td_label'        => 'Tardeo',
         'ev_td_h2'           => 'Tardeo',
-        'ev_td_desc'         => 'Bocados de tarde, networking distendido y bebidas pensadas para alargar el momento.',
+        'ev_td_desc'         => 'El formato perfecto para cerrar el día con un ambiente más relajado, sin renunciar a una alimentación cuidada.',
         // Eventos — CTA
         'ev_cta_h2'          => '¿Tienes un evento en mente?',
         'ev_cta_text'        => 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.',
         'ev_cta_btn'         => 'Hablamos →',
         // Eventos — Marquee de categorías (separador " – ")
-        'ev_marquee_text'    => 'Team Building – Networking – Corporativos – Afterwork – Experiencias',
+        'ev_marquee_text'    => 'Eventos de networking – Afterworks – Team buildings – Presentaciones – Encuentros corporativos o creativos',
         // Información de contacto
         'contact_phone'      => '+34 604 39 43 47',
         'contact_email'      => 'hola@miobiosport.com',

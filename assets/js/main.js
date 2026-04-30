@@ -158,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'main .ev-why__image',
             'main .ev-section__head',
             'main .ev-menus-intro__inner',
+            'main .ev-social__inner',
             'main .ev-cta__inner',
             'main .ev-contact__info',
             'main .ev-contact__form-wrap',
@@ -196,6 +197,64 @@ document.addEventListener('DOMContentLoaded', () => {
         targets.forEach(el => io.observe(el));
     }
 
+    // --------------------------------------------------------
+    // CARRUSEL DE TESTIMONIOS — auto-rotación con fade
+    // --------------------------------------------------------
+    document.querySelectorAll('.ev-social__carousel').forEach(car => {
+        const slides = car.querySelectorAll('.ev-social__slide');
+        const dots   = car.querySelectorAll('.ev-social__dot');
+        const navs   = car.querySelectorAll('.ev-social__nav');
+        if (slides.length <= 1) return;
+
+        let idx = 0;
+        let timer = null;
+        const INTERVAL = 3500;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        const goTo = i => {
+            idx = (i + slides.length) % slides.length;
+            slides.forEach((s, n) => s.classList.toggle('is-active', n === idx));
+            dots.forEach((d, n)   => d.classList.toggle('is-active', n === idx));
+        };
+        const next   = () => goTo(idx + 1);
+        const start  = () => { if (!reduced && !timer) timer = setInterval(next, INTERVAL); };
+        const reset  = () => { if (timer) { clearInterval(timer); timer = null; } start(); };
+
+        dots.forEach(d => d.addEventListener('click', () => {
+            goTo(parseInt(d.dataset.idx, 10));
+            reset();
+        }));
+        navs.forEach(b => b.addEventListener('click', () => {
+            goTo(idx + parseInt(b.dataset.dir, 10));
+            reset();
+        }));
+
+        // Swipe táctil
+        let touchX = null, touchY = null;
+        car.addEventListener('touchstart', e => {
+            touchX = e.touches[0].clientX;
+            touchY = e.touches[0].clientY;
+        }, { passive: true });
+        car.addEventListener('touchend', e => {
+            if (touchX === null) return;
+            const dx = e.changedTouches[0].clientX - touchX;
+            const dy = e.changedTouches[0].clientY - touchY;
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+                goTo(idx + (dx < 0 ? 1 : -1));
+                reset();
+            }
+            touchX = touchY = null;
+        }, { passive: true });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (timer) { clearInterval(timer); timer = null; }
+            } else {
+                start();
+            }
+        });
+
+        start();
+    });
 
 });
 // --------------------------------------------------------
