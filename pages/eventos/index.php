@@ -59,6 +59,27 @@ $why_dir  = dirname(__DIR__, 2) . '/assets/img/eventos/por-que-tuoi/';
 $why_imgs = load_ordered_images($conexion, 'eventos/por-que-tuoi', $why_dir, '*.{webp,jpg,jpeg,png}');
 $why_img  = !empty($why_imgs) ? basename($why_imgs[0]) : null;
 
+// ── Logos prueba social ─────────────────────────────────────────────────────
+$logos_dir  = dirname(__DIR__, 2) . '/assets/img/eventos/logos/';
+$logos_imgs = load_ordered_images($conexion, 'eventos/logos', $logos_dir, '*.{webp,jpg,jpeg,png,svg}');
+
+// ── Testimonios (carrusel) ─────────────────────────────────────────────────
+$testimonios = [];
+if ($conexion) {
+    $res = @mysqli_query($conexion,
+        "SELECT quote, author, role FROM testimonios WHERE active = 1 ORDER BY sort_order ASC, id DESC"
+    );
+    if ($res) while ($row = mysqli_fetch_assoc($res)) $testimonios[] = $row;
+}
+// Fallback al testimonio en site_content si la tabla está vacía
+if (empty($testimonios) && !empty($c['ev_social_quote'])) {
+    $testimonios[] = [
+        'quote'  => $c['ev_social_quote'],
+        'author' => $c['ev_social_author'] ?? '',
+        'role'   => $c['ev_social_role']   ?? '',
+    ];
+}
+
 // ── Posts por categoría ─────────────────────────────────────────────────────
 $cats_order = ['coffee-break', 'brunch', 'tardeo'];
 $posts_by   = [];
@@ -129,6 +150,28 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
 </div>
 <?php endif; ?>
 
+<!-- ── MANIFIESTO / INTRO NARRATIVA ──────────────────────────────────────── -->
+<?php if (!empty($c['ev_intro_p1']) || !empty($c['ev_intro_p2'])): ?>
+<section class="ev-intro">
+    <div class="ev-intro__inner">
+        <?php if (!empty($c['ev_intro_label'])): ?>
+        <div class="ev-intro__head">
+            <span class="section-label"><?= htmlspecialchars($c['ev_intro_label']) ?></span>
+            <span class="ev-intro__rule" aria-hidden="true"></span>
+        </div>
+        <?php endif; ?>
+        <div class="ev-intro__cols">
+            <?php if (!empty($c['ev_intro_p1'])): ?>
+            <p class="ev-intro__col"><?= htmlspecialchars($c['ev_intro_p1']) ?></p>
+            <?php endif; ?>
+            <?php if (!empty($c['ev_intro_p2'])): ?>
+            <p class="ev-intro__col"><?= htmlspecialchars($c['ev_intro_p2']) ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- ── POR QUÉ TUOI ───────────────────────────────────────────────────────── -->
 <section class="ev-why">
     <div class="ev-why__inner">
@@ -167,6 +210,66 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
         </div>
     </div>
 </section>
+
+<!-- ── PRUEBA SOCIAL (testimonios carrusel + logos) ──────────────────────── -->
+<?php if (!empty($testimonios) || !empty($logos_imgs)): ?>
+<section class="ev-social" id="confian">
+    <div class="ev-social__inner">
+        <?php if (!empty($c['ev_social_label'])): ?>
+        <span class="section-label ev-social__label"><?= htmlspecialchars($c['ev_social_label']) ?></span>
+        <?php endif; ?>
+
+        <?php if (!empty($testimonios)): ?>
+        <div class="ev-social__carousel" data-count="<?= count($testimonios) ?>">
+            <?php if (count($testimonios) > 1): ?>
+            <button type="button" class="ev-social__nav ev-social__nav--prev" data-dir="-1" aria-label="Anterior">‹</button>
+            <button type="button" class="ev-social__nav ev-social__nav--next" data-dir="1"  aria-label="Siguiente">›</button>
+            <?php endif; ?>
+
+            <div class="ev-social__card">
+                <span class="ev-social__mark" aria-hidden="true">“</span>
+                <div class="ev-social__slides">
+                    <?php foreach ($testimonios as $i => $t): ?>
+                    <blockquote class="ev-social__slide <?= $i === 0 ? 'is-active' : '' ?>">
+                        <p><?= htmlspecialchars($t['quote']) ?></p>
+                        <?php if (!empty($t['author']) || !empty($t['role'])): ?>
+                        <footer class="ev-social__cite">
+                            <?php if (!empty($t['author'])): ?>
+                            <strong><?= htmlspecialchars($t['author']) ?></strong>
+                            <?php endif; ?>
+                            <?php if (!empty($t['role'])): ?>
+                            <span><?= htmlspecialchars($t['role']) ?></span>
+                            <?php endif; ?>
+                        </footer>
+                        <?php endif; ?>
+                    </blockquote>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <?php if (count($testimonios) > 1): ?>
+            <div class="ev-social__dots" role="tablist" aria-label="Testimonios">
+                <?php foreach ($testimonios as $i => $_): ?>
+                <button type="button" class="ev-social__dot <?= $i === 0 ? 'is-active' : '' ?>"
+                        role="tab" aria-label="Testimonio <?= $i + 1 ?>"
+                        data-idx="<?= $i ?>"></button>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (!empty($logos_imgs)): ?>
+        <div class="ev-social__logos">
+            <?php foreach ($logos_imgs as $logo_path): ?>
+            <img src="<?= $base ?>assets/img/eventos/logos/<?= htmlspecialchars(basename($logo_path)) ?>"
+                 alt="" loading="lazy">
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+</section>
+<?php endif; ?>
 
 <!-- ── INTRO PROPUESTA DE MENÚS ───────────────────────────────────────────── -->
 <div class="ev-menus-intro">

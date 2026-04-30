@@ -37,6 +37,7 @@
         </div>
     </footer>
 
-    <script src="<?= $base ?>assets/js/main.js"></script>
+    <?php $js_v = @filemtime(dirname(__DIR__) . '/assets/js/main.js') ?: time(); ?>
+    <script src="<?= $base ?>assets/js/main.js?v=<?= $js_v ?>"></script>
 </body>
 </html>

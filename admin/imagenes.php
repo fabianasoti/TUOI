@@ -20,6 +20,7 @@ $sections = [
     // Eventos — carrusel y por qué TUOI
     'eventos/carrusel'       => ['label' => 'Eventos — Carrusel',           'path' => $base_img . 'eventos/carrusel/'],
     'eventos/por-que-tuoi'   => ['label' => 'Eventos — Por qué TUOI',       'path' => $base_img . 'eventos/por-que-tuoi/'],
+    'eventos/logos'          => ['label' => 'Eventos — Logos clientes',     'path' => $base_img . 'eventos/logos/'],
     // Eventos — imágenes de sub-menús (se suben desde "Gestión de Eventos")
     'eventos/coffee-break'   => ['label' => 'Eventos — Coffee Break',       'path' => $base_img . 'eventos/coffee-break/'],
     'eventos/brunch'         => ['label' => 'Eventos — Brunch',             'path' => $base_img . 'eventos/brunch/'],
