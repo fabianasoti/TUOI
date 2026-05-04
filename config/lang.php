@@ -38,6 +38,10 @@ $_ui = [
     'footer_follow'     => ['es' => 'Síguenos',          'en' => 'Follow us'],
     'footer_rights'     => ['es' => 'Todos los derechos reservados.', 'en' => 'All rights reserved.'],
     'footer_tagline'    => ['es' => 'Del alto rendimiento a tu mesa.', 'en' => 'From high performance to your table.'],
+    'footer_legal'          => ['es' => 'Legal',                'en' => 'Legal'],
+    'footer_legal_privacy'  => ['es' => 'Política de Privacidad','en' => 'Privacy Policy'],
+    'footer_legal_terms'    => ['es' => 'Aviso Legal',           'en' => 'Legal Notice'],
+    'footer_legal_cookies'  => ['es' => 'Política de Cookies',   'en' => 'Cookies Policy'],
     // Quienes somos (link)
     'qs_link'           => ['es' => 'Conoce nuestra historia', 'en' => 'Our story'],
     // Eventos
@@ -54,6 +58,11 @@ $_ui = [
     'ev_contact_send'   => ['es' => 'Enviar mensaje',          'en' => 'Send message'],
     'ev_contact_ok'     => ['es' => '¡Mensaje enviado! Te contactaremos pronto.', 'en' => 'Message sent! We will contact you soon.'],
     'ev_contact_err'    => ['es' => 'Por favor completa nombre, email y mensaje.', 'en' => 'Please fill in name, email and message.'],
+    'ev_contact_consent_err' => ['es' => 'Debes aceptar la política de privacidad para enviar el formulario.', 'en' => 'You must accept the privacy policy to submit the form.'],
+    'ev_contact_consent'     => [
+        'es' => 'He leído y acepto la <a href="../legal/privacidad.php" target="_blank" rel="noopener">Política de Privacidad</a>. Mis datos serán tratados por Alimentación y Vida SL (MIOBIO) para responder a esta consulta.',
+        'en' => 'I have read and accept the <a href="../legal/privacidad.php" target="_blank" rel="noopener">Privacy Policy</a>. My data will be processed by Alimentación y Vida SL (MIOBIO) to reply to this enquiry.'
+    ],
     'ev_read_more'      => ['es' => 'Leer más',                'en' => 'Read more'],
     'ev_back'           => ['es' => '← Volver a Eventos',      'en' => '← Back to Events'],
 ];

@@ -33,7 +33,14 @@
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> TUOI. <?= t('footer_rights') ?></p>
+            <p class="footer-copy">&copy; <?= date('Y') ?> TUOI. <?= t('footer_rights') ?></p>
+            <nav class="footer-legal-links" aria-label="<?= t('footer_legal') ?>">
+                <a href="<?= $base ?>pages/legal/privacidad.php"><?= t('footer_legal_privacy') ?></a>
+                <span class="footer-legal-sep" aria-hidden="true">·</span>
+                <a href="<?= $base ?>pages/legal/aviso-legal.php"><?= t('footer_legal_terms') ?></a>
+                <span class="footer-legal-sep" aria-hidden="true">·</span>
+                <a href="<?= $base ?>pages/legal/cookies.php"><?= t('footer_legal_cookies') ?></a>
+            </nav>
         </div>
     </footer>
 

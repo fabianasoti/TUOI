@@ -9,26 +9,43 @@ $page_title = $lang === 'en' ? 'Events | TUOI' : 'Eventos | TUOI';
 // ── Contact form handler ────────────────────────────────────────────────────
 $contact_success = false;
 $contact_error   = false;
+$contact_consent_error = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
     $name    = trim($_POST['c_name']    ?? '');
     $email   = trim($_POST['c_email']   ?? '');
     $phone   = trim($_POST['c_phone']   ?? '');
     $message = trim($_POST['c_message'] ?? '');
+    $consent = isset($_POST['c_consent']);
 
-    if ($name !== '' && $email !== '' && $message !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!$consent) {
+        $contact_consent_error = true;
+    } elseif ($name !== '' && $email !== '' && $message !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         if ($conexion) {
-            $n = mysqli_real_escape_string($conexion, $name);
-            $e = mysqli_real_escape_string($conexion, $email);
-            $p = mysqli_real_escape_string($conexion, $phone);
-            $m = mysqli_real_escape_string($conexion, $message);
-            @mysqli_query($conexion,
-                "INSERT INTO contact_submissions (name, email, phone, message, source_page)
-                 VALUES ('$n','$e','$p','$m','eventos')"
-            );
+            // Asegura las columnas RGPD en instalaciones existentes (idempotente).
+            try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_at DATETIME NULL DEFAULT NULL AFTER source_page"); } catch (\Throwable $e) {}
+            try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_ip VARCHAR(45) NULL DEFAULT NULL AFTER consent_at"); } catch (\Throwable $e) {}
+
+            $n  = mysqli_real_escape_string($conexion, $name);
+            $e  = mysqli_real_escape_string($conexion, $email);
+            $p  = mysqli_real_escape_string($conexion, $phone);
+            $m  = mysqli_real_escape_string($conexion, $message);
+            $ip = mysqli_real_escape_string($conexion, $_SERVER['REMOTE_ADDR'] ?? '');
+            try {
+                mysqli_query($conexion,
+                    "INSERT INTO contact_submissions (name, email, phone, message, source_page, consent_at, consent_ip)
+                     VALUES ('$n','$e','$p','$m','eventos', NOW(), '$ip')"
+                );
+            } catch (\Throwable $e) {
+                // Fallback: instalación antigua sin columnas de consentimiento.
+                @mysqli_query($conexion,
+                    "INSERT INTO contact_submissions (name, email, phone, message, source_page)
+                     VALUES ('$n','$e','$p','$m','eventos')"
+                );
+            }
         }
 
-        $admin_email  = $c['contact_email'] ?? 'hola@tuoi.es';
+        $admin_email  = !empty($c['contact_email']) ? $c['contact_email'] : 'hola@miobiosport.com';
         $mail_subject = '=?UTF-8?B?' . base64_encode('Nuevo contacto desde Eventos · TUOI') . '?=';
         $mail_body    = "Has recibido un nuevo mensaje desde el formulario de Eventos.\n\n";
         $mail_body   .= "Nombre:    $name\n";
@@ -38,11 +55,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
         $mail_headers  = "From: TUOI Eventos <noreply@tuoi.es>\r\n";
         $mail_headers .= "Reply-To: $email\r\n";
         $mail_headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        @mail($admin_email, $mail_subject, $mail_body, $mail_headers);
+
+        // En local guardamos el correo en un fichero (no hay MTA). En producción usamos mail().
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        $is_local = str_contains($host, 'localhost') || str_starts_with($host, '127.') || str_contains($host, '.local');
+        if ($is_local) {
+            $log_path = dirname(__DIR__, 2) . '/logs/mail.log';
+            @mkdir(dirname($log_path), 0775, true);
+            $entry  = "==== " . date('Y-m-d H:i:s') . " ====\n";
+            $entry .= "To:      $admin_email\n";
+            $entry .= "Subject: Nuevo contacto desde Eventos · TUOI\n";
+            $entry .= "Headers:\n$mail_headers\n";
+            $entry .= "Body:\n$mail_body\n\n";
+            // Intenta escribir en /logs/mail.log; si no hay permisos, manda al error_log de PHP/Apache.
+            if (@file_put_contents($log_path, $entry, FILE_APPEND) === false) {
+                error_log("[TUOI mail simulado]\n" . $entry);
+            }
+        } else {
+            @mail($admin_email, $mail_subject, $mail_body, $mail_headers);
+        }
 
         $contact_success = true;
         $_POST = [];
-    } else {
+    } elseif (!$contact_consent_error) {
         $contact_error = true;
     }
 }
@@ -429,6 +464,8 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
         <div class="ev-contact__form-wrap">
             <?php if ($contact_success): ?>
             <div class="ev-form-notice ev-form-notice--ok"><?= t('ev_contact_ok') ?></div>
+            <?php elseif ($contact_consent_error): ?>
+            <div class="ev-form-notice ev-form-notice--err"><?= t('ev_contact_consent_err') ?></div>
             <?php elseif ($contact_error): ?>
             <div class="ev-form-notice ev-form-notice--err"><?= t('ev_contact_err') ?></div>
             <?php endif; ?>
@@ -460,6 +497,11 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
                     <textarea id="c_message" name="c_message" rows="5" required
                               placeholder="Cuéntanos en qué podemos ayudarte..."><?= htmlspecialchars($_POST['c_message'] ?? '') ?></textarea>
                 </div>
+                <label class="ev-form__consent">
+                    <input type="checkbox" name="c_consent" value="1" required
+                           <?= !empty($_POST['c_consent']) ? 'checked' : '' ?>>
+                    <span><?= t_raw('ev_contact_consent') ?></span>
+                </label>
                 <button type="submit" class="btn-primary ev-form__btn">
                     <?= t('ev_contact_send') ?> <span aria-hidden="true">→</span>
                 </button>

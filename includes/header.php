@@ -16,7 +16,7 @@ require_once $base . 'config/lang.php';
     <title><?= htmlspecialchars($page_title ?? 'TUOI | Functional Coffee & Smart Food') ?></title>
     <?php $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time(); ?>
     <link rel="stylesheet" href="<?= $base ?>assets/css/style.css?v=<?= $css_v ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= $base ?>assets/fonts/inter.css">
 </head>
 <body>
 
