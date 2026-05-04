@@ -1,0 +1,2 @@
+# Deny all web access — this directory is for server-side logs only.
+Require all denied

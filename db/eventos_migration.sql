@@ -17,5 +17,7 @@ CREATE TABLE IF NOT EXISTS contact_submissions (
     phone        VARCHAR(100) DEFAULT '',
     message      TEXT,
     source_page  VARCHAR(100) DEFAULT '',
+    consent_at   DATETIME     NULL DEFAULT NULL,
+    consent_ip   VARCHAR(45)  NULL DEFAULT NULL,
     submitted_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
 );

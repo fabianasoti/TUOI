@@ -99,9 +99,13 @@ function upload_files(array $files_arr, string $dir, array $allowed, int $max, s
         phone        VARCHAR(100) DEFAULT '',
         message      TEXT,
         source_page  VARCHAR(100) DEFAULT '',
+        consent_at   DATETIME     NULL DEFAULT NULL,
+        consent_ip   VARCHAR(45)  NULL DEFAULT NULL,
         submitted_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP
     )"
 );
+try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_at DATETIME NULL DEFAULT NULL AFTER source_page"); } catch (\Throwable $e) {}
+try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_ip VARCHAR(45) NULL DEFAULT NULL AFTER consent_at"); } catch (\Throwable $e) {}
 
 // ── Handle: add new post ─────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
@@ -232,8 +236,7 @@ if (isset($_GET['edit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>TUOI Admin — Eventos</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/fonts/inter.css">
     <link rel="stylesheet" href="assets/css/admin.css">
     <style>
         .post-list { display:flex; flex-direction:column; gap:12px; }
