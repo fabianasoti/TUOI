@@ -26,6 +26,8 @@ $base_keys = [
     'value1', 'value2', 'value3', 'value4',
     // Eventos page — hero
     'ev_hero_label', 'ev_hero_h1', 'ev_hero_sub',
+    // Eventos — Manifiesto / Nuestra filosofía (intro narrativa)
+    'ev_intro_label', 'ev_intro_p1', 'ev_intro_p2',
     // Eventos — Por qué TUOI
     'ev_why_label', 'ev_why_h2',
     'ev_why_b1_icon', 'ev_why_b1_title', 'ev_why_b1_desc',
@@ -393,6 +395,35 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                     Las imágenes del marquee se gestionan desde la sección de imágenes (subir, ordenar, eliminar).
                 </p>
                 <a href="imagenes.php?s=eventos/carrusel" class="btn btn-secondary">📁 Gestionar imágenes del carrusel →</a>
+            </div>
+
+            <!-- ── NUESTRA FILOSOFÍA (manifiesto / intro) ── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🌿</span> Nuestra filosofía
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <p style="font-size:14px;color:var(--muted);margin:0 0 14px;">
+                    Bloque manifiesto entre el carrusel y "Por qué TUOI". Si los dos párrafos quedan vacíos, la sección no se muestra.
+                </p>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-group">
+                        <label class="form-label">Etiqueta superior</label>
+                        <input name="ev_intro_label<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_intro_label' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Párrafo 1</label>
+                        <textarea name="ev_intro_p1<?= $key_suffix ?>" class="form-control" rows="4"><?= cv($content, 'ev_intro_p1' . $key_suffix) ?></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Párrafo 2</label>
+                        <textarea name="ev_intro_p2<?= $key_suffix ?>" class="form-control" rows="4"><?= cv($content, 'ev_intro_p2' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar filosofía</button>
+                </form>
             </div>
 
             <!-- ── POR QUÉ TUOI ────────────────────────── -->

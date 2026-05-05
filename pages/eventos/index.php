@@ -8,19 +8,41 @@ $page_title = $lang === 'en' ? 'Events | TUOI' : 'Eventos | TUOI';
 
 // ── Contact form handler ────────────────────────────────────────────────────
 $contact_success = false;
-$contact_error   = false;
-$contact_consent_error = false;
+$contact_errors  = []; // field => translation key
+
+$is_ajax = (
+    !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
+    // Need lang loaded early for AJAX response
+    require_once $base . 'config/lang.php';
+
+    // ── Honeypot anti-spam ──
+    // Campo oculto que los humanos no ven. Si llega con valor, es un bot:
+    // simulamos éxito silenciosamente (no guardamos, no enviamos email).
+    $is_bot = !empty(trim($_POST['c_website'] ?? ''));
+
     $name    = trim($_POST['c_name']    ?? '');
     $email   = trim($_POST['c_email']   ?? '');
     $phone   = trim($_POST['c_phone']   ?? '');
     $message = trim($_POST['c_message'] ?? '');
     $consent = isset($_POST['c_consent']);
 
-    if (!$consent) {
-        $contact_consent_error = true;
-    } elseif ($name !== '' && $email !== '' && $message !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!$is_bot) {
+        if ($name === '')                                  $contact_errors['c_name']    = 'ev_form_required';
+        if ($email === '')                                 $contact_errors['c_email']   = 'ev_form_required';
+        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $contact_errors['c_email']   = 'ev_form_email_bad';
+        if ($message === '')                               $contact_errors['c_message'] = 'ev_form_required';
+        if (!$consent)                                     $contact_errors['c_consent'] = 'ev_contact_consent_err';
+    }
+
+    if ($is_bot) {
+        // Fingimos éxito al bot pero no procesamos nada.
+        $contact_success = true;
+        $_POST = [];
+    } elseif (empty($contact_errors)) {
         if ($conexion) {
             // Asegura las columnas RGPD en instalaciones existentes (idempotente).
             try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_at DATETIME NULL DEFAULT NULL AFTER source_page"); } catch (\Throwable $e) {}
@@ -77,8 +99,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
 
         $contact_success = true;
         $_POST = [];
-    } elseif (!$contact_consent_error) {
-        $contact_error = true;
+    }
+
+    // AJAX: respond with JSON and exit. Non-AJAX: continue to render page.
+    if ($is_ajax) {
+        header('Content-Type: application/json; charset=utf-8');
+        if ($contact_success) {
+            echo json_encode(['ok' => true, 'message' => t('ev_contact_ok')]);
+        } else {
+            $errors_translated = [];
+            foreach ($contact_errors as $field => $key) {
+                $errors_translated[$field] = t($key);
+            }
+            echo json_encode(['ok' => false, 'errors' => $errors_translated]);
+        }
+        exit;
     }
 }
 
@@ -390,8 +425,8 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
 
         <?php else: ?>
         <div class="ev-empty">
-            <p>Próximamente publicaremos más sobre esta modalidad.<br>¡Escríbenos para conocer todas las opciones!</p>
-            <a href="#contacto" class="btn-primary" style="margin-top:1.25rem;display:inline-block;">Contactar →</a>
+            <p><?= t_raw('ev_empty_text') ?></p>
+            <a href="#contacto" class="btn-primary" style="margin-top:1.25rem;display:inline-block;"><?= t('ev_empty_btn') ?></a>
         </div>
         <?php endif; ?>
 
@@ -432,8 +467,8 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
 
         <div class="ev-contact__info">
             <span class="section-label ev-contact__label"><?= t('ev_contact_title') ?></span>
-            <h2>¿Hablamos?</h2>
-            <p>Cuéntanos tu proyecto y diseñamos juntos el evento perfecto.</p>
+            <h2><?= t('ev_contact_h2') ?></h2>
+            <p><?= t('ev_contact_lead') ?></p>
 
             <ul class="ev-contact__list">
                 <li>
@@ -462,43 +497,62 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
         </div>
 
         <div class="ev-contact__form-wrap">
-            <?php if ($contact_success): ?>
-            <div class="ev-form-notice ev-form-notice--ok"><?= t('ev_contact_ok') ?></div>
-            <?php elseif ($contact_consent_error): ?>
-            <div class="ev-form-notice ev-form-notice--err"><?= t('ev_contact_consent_err') ?></div>
-            <?php elseif ($contact_error): ?>
-            <div class="ev-form-notice ev-form-notice--err"><?= t('ev_contact_err') ?></div>
-            <?php endif; ?>
+            <?php
+                $err = function($field) use ($contact_errors) {
+                    return isset($contact_errors[$field]) ? t($contact_errors[$field]) : '';
+                };
+            ?>
 
-            <form class="ev-form" method="post" action="#contacto">
+            <div class="ev-form-success" role="status" aria-live="polite" <?= $contact_success ? '' : 'hidden' ?>>
+                <p class="ev-form-success__msg"><?= t('ev_contact_ok') ?></p>
+                <button type="button" class="ev-form-success__again">
+                    <?= t('ev_contact_send_another') ?>
+                </button>
+            </div>
+
+            <form class="ev-form<?= $contact_success ? ' is-hidden' : '' ?>"
+                  method="post" action="#contacto" novalidate
+                  data-msg-required="<?= t('ev_form_required') ?>"
+                  data-msg-email="<?= t('ev_form_email_bad') ?>"
+                  data-msg-consent="<?= t('ev_contact_consent_err') ?>">
                 <input type="hidden" name="contact_submit" value="1">
+                <!-- Honeypot anti-spam: oculto para humanos, los bots lo rellenan -->
+                <div class="ev-form__hp" aria-hidden="true">
+                    <label for="c_website">Website</label>
+                    <input id="c_website" name="c_website" type="text" tabindex="-1" autocomplete="off">
+                </div>
                 <div class="ev-form__row ev-form__row--half">
                     <div class="ev-form__group">
                         <label for="c_name"><?= t('ev_contact_name') ?> *</label>
-                        <input id="c_name" name="c_name" type="text" required
-                               placeholder="Tu nombre"
-                               value="<?= htmlspecialchars($_POST['c_name'] ?? '') ?>">
+                        <p class="ev-form__error" data-error-for="c_name" <?= $err('c_name') ? '' : 'hidden' ?>><?= $err('c_name') ?></p>
+                        <input id="c_name" name="c_name" type="text"
+                               placeholder="<?= t('ev_form_ph_name') ?>"
+                               value="<?= htmlspecialchars($_POST['c_name'] ?? '') ?>"
+                               aria-describedby="err-c_name">
                     </div>
                     <div class="ev-form__group">
                         <label for="c_email"><?= t('ev_contact_email') ?> *</label>
-                        <input id="c_email" name="c_email" type="email" required
-                               placeholder="tu@email.com"
+                        <p class="ev-form__error" data-error-for="c_email" <?= $err('c_email') ? '' : 'hidden' ?>><?= $err('c_email') ?></p>
+                        <input id="c_email" name="c_email" type="email"
+                               placeholder="<?= t('ev_form_ph_email') ?>"
                                value="<?= htmlspecialchars($_POST['c_email'] ?? '') ?>">
                     </div>
                 </div>
                 <div class="ev-form__group">
                     <label for="c_phone"><?= t('ev_contact_phone') ?></label>
                     <input id="c_phone" name="c_phone" type="tel"
-                           placeholder="+34 600 000 000"
+                           placeholder="<?= t('ev_form_ph_phone') ?>"
                            value="<?= htmlspecialchars($_POST['c_phone'] ?? '') ?>">
                 </div>
                 <div class="ev-form__group">
                     <label for="c_message"><?= t('ev_contact_msg') ?> *</label>
-                    <textarea id="c_message" name="c_message" rows="5" required
-                              placeholder="Cuéntanos en qué podemos ayudarte..."><?= htmlspecialchars($_POST['c_message'] ?? '') ?></textarea>
+                    <p class="ev-form__error" data-error-for="c_message" <?= $err('c_message') ? '' : 'hidden' ?>><?= $err('c_message') ?></p>
+                    <textarea id="c_message" name="c_message" rows="5"
+                              placeholder="<?= t('ev_form_ph_msg') ?>"><?= htmlspecialchars($_POST['c_message'] ?? '') ?></textarea>
                 </div>
-                <label class="ev-form__consent">
-                    <input type="checkbox" name="c_consent" value="1" required
+                <p class="ev-form__error" data-error-for="c_consent" <?= $err('c_consent') ? '' : 'hidden' ?>><?= $err('c_consent') ?></p>
+                <label class="ev-form__consent<?= $err('c_consent') ? ' has-error' : '' ?>">
+                    <input type="checkbox" name="c_consent" value="1"
                            <?= !empty($_POST['c_consent']) ? 'checked' : '' ?>>
                     <span><?= t_raw('ev_contact_consent') ?></span>
                 </label>
@@ -506,6 +560,114 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
                     <?= t('ev_contact_send') ?> <span aria-hidden="true">→</span>
                 </button>
             </form>
+            <script>
+            (function () {
+                var form    = document.querySelector('.ev-form');
+                var success = document.querySelector('.ev-form-success');
+                if (!form || !success) return;
+
+                var msgRequired = form.dataset.msgRequired || '';
+                var msgEmail    = form.dataset.msgEmail    || '';
+                var msgConsent  = form.dataset.msgConsent  || '';
+
+                function showError(field, msg) {
+                    var p = form.querySelector('[data-error-for="' + field + '"]');
+                    if (!p) return;
+                    p.textContent = msg;
+                    p.hidden = !msg;
+                    var input = form.querySelector('[name="' + field + '"]');
+                    if (input) input.classList.toggle('is-invalid', !!msg);
+                }
+                function clearErrors() {
+                    form.querySelectorAll('[data-error-for]').forEach(function (p) {
+                        p.textContent = '';
+                        p.hidden = true;
+                    });
+                    form.querySelectorAll('.is-invalid').forEach(function (el) {
+                        el.classList.remove('is-invalid');
+                    });
+                }
+
+                function clientValidate() {
+                    clearErrors();
+                    var ok = true;
+                    var name    = form.elements['c_name'];
+                    var email   = form.elements['c_email'];
+                    var msg     = form.elements['c_message'];
+                    var consent = form.elements['c_consent'];
+
+                    if (!name.value.trim())    { showError('c_name', msgRequired); ok = false; }
+                    if (!email.value.trim())   { showError('c_email', msgRequired); ok = false; }
+                    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { showError('c_email', msgEmail); ok = false; }
+                    if (!msg.value.trim())     { showError('c_message', msgRequired); ok = false; }
+                    if (!consent.checked)      { showError('c_consent', msgConsent); ok = false; }
+                    return ok;
+                }
+
+                form.addEventListener('submit', function (ev) {
+                    ev.preventDefault();
+                    if (!clientValidate()) {
+                        var firstErr = form.querySelector('.ev-form__error:not([hidden])');
+                        if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
+                        return;
+                    }
+                    var btn = form.querySelector('button[type="submit"]');
+                    if (btn) btn.disabled = true;
+
+                    fetch(form.action.split('#')[0], {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                        body: new FormData(form)
+                    })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (data && data.ok) {
+                            form.reset();
+                            form.classList.add('is-hidden');
+                            success.hidden = false;
+                            // small delay so the fade is visible
+                            setTimeout(function () { success.classList.add('is-visible'); }, 20);
+                        } else if (data && data.errors) {
+                            Object.keys(data.errors).forEach(function (k) {
+                                showError(k, data.errors[k]);
+                            });
+                            var firstErr = form.querySelector('.ev-form__error:not([hidden])');
+                            if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
+                        }
+                    })
+                    .catch(function () {
+                        // Network error: fall back to native submit so user sees something
+                        form.submit();
+                    })
+                    .finally(function () {
+                        if (btn) btn.disabled = false;
+                    });
+                });
+
+                // Clear field error as user types/changes
+                form.querySelectorAll('input, textarea').forEach(function (el) {
+                    var clear = function () { showError(el.name, ''); };
+                    el.addEventListener('input',  clear);
+                    el.addEventListener('change', clear);
+                });
+
+                // "Send another" button
+                success.querySelector('.ev-form-success__again').addEventListener('click', function () {
+                    success.classList.remove('is-visible');
+                    setTimeout(function () {
+                        success.hidden = true;
+                        form.classList.remove('is-hidden');
+                        var first = form.querySelector('input[name="c_name"]');
+                        if (first) first.focus();
+                    }, 250);
+                });
+
+                // If page rendered with success state (no-JS fallback), animate it in.
+                if (!success.hidden) {
+                    setTimeout(function () { success.classList.add('is-visible'); }, 20);
+                }
+            })();
+            </script>
         </div>
 
     </div>
