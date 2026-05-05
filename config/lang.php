@@ -65,6 +65,19 @@ $_ui = [
     ],
     'ev_read_more'      => ['es' => 'Leer más',                'en' => 'Read more'],
     'ev_back'           => ['es' => '← Volver a Eventos',      'en' => '← Back to Events'],
+    // Eventos — secciones extra (estado vacío, contacto, formulario)
+    'ev_empty_text'     => ['es' => 'Próximamente publicaremos más sobre esta modalidad.<br>¡Escríbenos para conocer todas las opciones!', 'en' => 'We will publish more about this option soon.<br>Get in touch to learn about all the options!'],
+    'ev_empty_btn'      => ['es' => 'Contactar →',             'en' => 'Contact us →'],
+    'ev_contact_h2'     => ['es' => '¿Hablamos?',              'en' => "Let's talk?"],
+    'ev_contact_lead'   => ['es' => 'Cuéntanos tu proyecto y diseñamos juntos el evento perfecto.', 'en' => 'Tell us about your project and together we will design the perfect event.'],
+    'ev_form_ph_name'   => ['es' => 'Tu nombre',               'en' => 'Your name'],
+    'ev_form_ph_email'  => ['es' => 'tu@email.com',            'en' => 'you@email.com'],
+    'ev_form_ph_phone'  => ['es' => '+34 600 000 000',         'en' => '+34 600 000 000'],
+    'ev_form_ph_msg'    => ['es' => 'Cuéntanos en qué podemos ayudarte...', 'en' => 'Tell us how we can help you...'],
+    // Validación inline (mostrada en rojo encima del campo)
+    'ev_form_required'  => ['es' => 'Este campo es obligatorio.',                'en' => 'This field is required.'],
+    'ev_form_email_bad' => ['es' => 'Introduce una dirección de email válida.',  'en' => 'Please enter a valid email address.'],
+    'ev_contact_send_another' => ['es' => 'Enviar otro mensaje →',               'en' => 'Send another message →'],
 ];
 
 /** Translated string, HTML-escaped */

@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+require_once __DIR__ . '/partials/image_utils.php';
 
 $base_img    = dirname(__DIR__) . '/assets/img/';
 $base_url    = '../assets/img/';
@@ -39,27 +40,6 @@ if (!array_key_exists($active_section, $sections)) $active_section = 'carteles';
 $dir_path = $sections[$active_section]['path'];
 $success  = '';
 $error    = '';
-
-// ── Helper: convert to WebP ──────────────────────────────
-function img_to_webp(string $src, string $dest, int $quality = 82): bool {
-    $mime = mime_content_type($src);
-    $img  = match ($mime) {
-        'image/jpeg' => imagecreatefromjpeg($src),
-        'image/png'  => imagecreatefrompng($src),
-        'image/webp' => imagecreatefromwebp($src),
-        'image/gif'  => imagecreatefromgif($src),
-        default      => false,
-    };
-    if (!$img) return false;
-    if (in_array($mime, ['image/png', 'image/gif'], true)) {
-        imagepalettetotruecolor($img);
-        imagealphablending($img, true);
-        imagesavealpha($img, true);
-    }
-    $ok = imagewebp($img, $dest, $quality);
-    imagedestroy($img);
-    return $ok;
-}
 
 // ── Handle upload ────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
@@ -103,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
                 continue;
             }
 
-            if (img_to_webp($tmp_dest, $dir_path . $webp_name)) {
+            if (convert_to_webp($tmp_dest, $dir_path . $webp_name)) {
                 @unlink($tmp_dest);
                 $uploaded++;
             } else {
@@ -115,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {
             }
         }
 
-        if ($uploaded > 0) $success = "$uploaded imagen(es) subida(s) y convertida(s) a WebP.";
+        if ($uploaded > 0) $success = "$uploaded imagen(es) subida(s), optimizada(s) (máx. 2000 px) y convertida(s) a WebP.";
         if (!empty($skipped)) $error = 'No se pudo subir: ' . implode(', ', $skipped);
     }
 }
