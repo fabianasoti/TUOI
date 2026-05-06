@@ -26,6 +26,7 @@ $base_keys = [
     'value1', 'value2', 'value3', 'value4',
     // Eventos page — hero
     'ev_hero_label', 'ev_hero_h1', 'ev_hero_sub',
+    'ev_hero_cta_primary', 'ev_hero_cta_secondary',
     // Eventos — Manifiesto / Nuestra filosofía (intro narrativa)
     'ev_intro_label', 'ev_intro_p1', 'ev_intro_p2',
     // Eventos — Por qué TUOI
@@ -34,6 +35,8 @@ $base_keys = [
     'ev_why_b2_icon', 'ev_why_b2_title', 'ev_why_b2_desc',
     'ev_why_b3_icon', 'ev_why_b3_title', 'ev_why_b3_desc',
     'ev_why_b4_icon', 'ev_why_b4_title', 'ev_why_b4_desc',
+    // Eventos — Prueba social (etiqueta de la sección)
+    'ev_social_label',
     // Eventos — Propuesta de menús (intro + 3 categorías)
     'ev_menus_label', 'ev_menus_h2', 'ev_menus_intro',
     'ev_cb_label', 'ev_cb_h2', 'ev_cb_desc',
@@ -379,6 +382,20 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                         <input name="ev_hero_h1<?= $key_suffix ?>" type="text" class="form-control"
                                value="<?= cv($content, 'ev_hero_h1' . $key_suffix) ?>">
                     </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">CTA principal (botón)</label>
+                            <input name="ev_hero_cta_primary<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_hero_cta_primary' . $key_suffix) ?>"
+                                   placeholder="Hablemos de tu evento">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CTA secundario (texto-link → menús)</label>
+                            <input name="ev_hero_cta_secondary<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_hero_cta_secondary' . $key_suffix) ?>"
+                                   placeholder="Ver menús">
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-primary">💾 Guardar hero</button>
                 </form>
             </div>
@@ -482,6 +499,34 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
 
                     <button type="submit" class="btn btn-primary">💾 Guardar Por qué TUOI</button>
                 </form>
+            </div>
+
+            <!-- ── PRUEBA SOCIAL — etiqueta + accesos ────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>💬</span> Prueba social — Encabezado
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-group">
+                        <label class="form-label">Etiqueta de la sección</label>
+                        <input name="ev_social_label<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_social_label' . $key_suffix) ?>"
+                               placeholder="Confían en nosotros">
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar etiqueta</button>
+                </form>
+                <hr class="section-divider">
+                <p style="font-size:13px;color:var(--muted);margin:0 0 8px;">
+                    Los testimonios (cita, autor, rol) se gestionan en
+                    <a href="testimonios.php" style="color:var(--primary);">💬 Testimonios</a>.
+                </p>
+                <p style="font-size:13px;color:var(--muted);margin:0;">
+                    Los logos de la sección se suben en
+                    <a href="imagenes.php?s=eventos/logos" style="color:var(--primary);">📁 Imágenes — Logos</a>.
+                </p>
             </div>
 
             <!-- ── PROPUESTA DE MENÚS — INTRO ──────────── -->

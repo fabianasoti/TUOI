@@ -1114,6 +1114,44 @@ a { color: inherit; }
 /* ── Hero ─────────────────────────────────────────────────────── */
 .ev-hero { text-align: center; }
 
+.ev-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    margin-top: 2rem;
+}
+
+.ev-hero__cta-primary { /* hereda .btn-primary */ }
+
+.ev-hero__cta-secondary {
+    color: var(--verde-menta);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    letter-spacing: .01em;
+    padding: .25rem .1rem;
+    border-bottom: 1px solid transparent;
+    transition: color .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.ev-hero__cta-secondary span {
+    display: inline-block;
+    transition: transform .2s ease;
+    margin-left: .15rem;
+}
+
+.ev-hero__cta-secondary:hover,
+.ev-hero__cta-secondary:focus-visible {
+    color: var(--blanco);
+    border-bottom-color: currentColor;
+}
+
+.ev-hero__cta-secondary:hover span {
+    transform: translateX(3px);
+}
+
 /* ── Subnav sticky ────────────────────────────────────────────── */
 .ev-subnav {
     position: sticky;

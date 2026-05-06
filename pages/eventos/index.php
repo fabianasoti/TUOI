@@ -136,10 +136,32 @@ $logos_imgs = load_ordered_images($conexion, 'eventos/logos', $logos_dir, '*.{we
 // ── Testimonios (carrusel) ─────────────────────────────────────────────────
 $testimonios = [];
 if ($conexion) {
-    $res = @mysqli_query($conexion,
-        "SELECT quote, author, role FROM testimonios WHERE active = 1 ORDER BY sort_order ASC, id DESC"
-    );
-    if ($res) while ($row = mysqli_fetch_assoc($res)) $testimonios[] = $row;
+    // Migración idempotente: añade columnas EN si no existen.
+    try { mysqli_query($conexion, "ALTER TABLE testimonios ADD COLUMN quote_en TEXT NULL AFTER quote"); } catch (\Throwable $e) {}
+    try { mysqli_query($conexion, "ALTER TABLE testimonios ADD COLUMN role_en VARCHAR(255) NULL AFTER role"); } catch (\Throwable $e) {}
+    // Intentamos leer columnas EN; si la tabla aún no tiene la migración, caemos al SELECT antiguo.
+    $res = false;
+    try {
+        $res = mysqli_query($conexion,
+            "SELECT quote, quote_en, author, role, role_en FROM testimonios WHERE active = 1 ORDER BY sort_order ASC, id DESC"
+        );
+    } catch (\Throwable $e) {
+        try {
+            $res = mysqli_query($conexion,
+                "SELECT quote, author, role FROM testimonios WHERE active = 1 ORDER BY sort_order ASC, id DESC"
+            );
+        } catch (\Throwable $e2) { $res = false; }
+    }
+    if ($res) {
+        while ($row = mysqli_fetch_assoc($res)) {
+            if ($lang === 'en') {
+                if (!empty($row['quote_en'])) $row['quote'] = $row['quote_en'];
+                if (!empty($row['role_en']))  $row['role']  = $row['role_en'];
+            }
+            unset($row['quote_en'], $row['role_en']);
+            $testimonios[] = $row;
+        }
+    }
 }
 // Fallback al testimonio en site_content si la tabla está vacía
 if (empty($testimonios) && !empty($c['ev_social_quote'])) {
@@ -204,6 +226,14 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
     <span class="section-label"><?= htmlspecialchars($c['ev_hero_label'] ?? 'Eventos · TUOI') ?></span>
     <h1><?= htmlspecialchars($c['ev_hero_h1'] ?? 'Celebra con nosotros') ?></h1>
     <p><?= htmlspecialchars($c['ev_hero_sub'] ?? '') ?></p>
+    <div class="ev-hero__ctas">
+        <a href="#contacto" class="btn-primary ev-hero__cta-primary">
+            <?= htmlspecialchars($c['ev_hero_cta_primary'] ?? 'Hablemos de tu evento') ?>
+        </a>
+        <a href="#menus" class="ev-hero__cta-secondary">
+            <?= htmlspecialchars($c['ev_hero_cta_secondary'] ?? 'Ver menús') ?> <span aria-hidden="true">→</span>
+        </a>
+    </div>
 </section>
 
 <!-- ── MARQUEE IMÁGENES ──────────────────────────────────────────────────── -->
@@ -342,7 +372,7 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
 <?php endif; ?>
 
 <!-- ── INTRO PROPUESTA DE MENÚS ───────────────────────────────────────────── -->
-<div class="ev-menus-intro">
+<div class="ev-menus-intro" id="menus">
     <div class="ev-menus-intro__inner">
         <span class="section-label"><?= htmlspecialchars($c['ev_menus_label'] ?? 'Propuesta de menús') ?></span>
         <h2><?= htmlspecialchars($c['ev_menus_h2'] ?? 'Menús de grupo y catering') ?></h2>

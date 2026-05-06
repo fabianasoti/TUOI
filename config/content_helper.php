@@ -55,26 +55,12 @@ function load_site_content($conexion, string $lang = 'es') {
         'ev_hero_label'      => 'Eventos · TUOI',
         'ev_hero_h1'         => 'Eventos con sentido, energía y propósito',
         'ev_hero_sub'        => 'Experiencias gastronómicas que potencian cada encuentro.',
+        'ev_hero_cta_primary'   => 'Hablemos de tu evento',
+        'ev_hero_cta_secondary' => 'Ver menús',
         // Eventos — Manifiesto (intro narrativa entre carrusel y "Por qué TUOI")
         'ev_intro_label'     => 'Nuestra filosofía',
         'ev_intro_p1'        => 'En TUOI llevamos nuestra filosofía de functional coffee & smart food también al mundo de los eventos. Diseñamos experiencias gastronómicas que no solo acompañan, sino que potencian lo que ocurre en cada encuentro: más claridad, mejor energía y una sensación real de bienestar.',
         'ev_intro_p2'        => 'Trabajamos con ingredientes de proximidad y propuestas equilibradas que se adaptan al ritmo y objetivo de cada encuentro. El resultado: comida ligera, sabrosa y funcional, que evita bajones y acompaña el ritmo natural de cada momento.',
-        // Eventos — Sección "Eventos"
-        'ev_ev_label'        => 'Eventos',
-        'ev_ev_h2'           => 'Tu evento, nuestro escenario',
-        'ev_ev_desc'         => 'Organizamos todo tipo de celebraciones y eventos especiales con una propuesta culinaria funcional y memorable.',
-        // Eventos — Sección "Networking"
-        'ev_nw_label'        => 'Networking',
-        'ev_nw_h2'           => 'Conecta mientras cuidas de ti',
-        'ev_nw_desc'         => 'Espacios y propuestas pensadas para que tus eventos de networking sean tan energizantes como productivos. Comida funcional que activa la conversación.',
-        // Eventos — Sección "Team Building"
-        'ev_tb_label'        => 'Team Building',
-        'ev_tb_h2'           => 'Team building con propósito',
-        'ev_tb_desc'         => 'Diseñamos experiencias de team building centradas en el bienestar y la cohesión de equipo. Talleres de cocina saludable, catas y actividades que unen a las personas.',
-        // Eventos — Sección "Catering"
-        'ev_cat_label'       => 'Catering',
-        'ev_cat_h2'          => 'Catering funcional y saludable',
-        'ev_cat_desc'        => 'Menús a medida para todo tipo de eventos: reuniones de empresa, inauguraciones, bodas y celebraciones. Basados en alimentación funcional, equilibrada y deliciosa.',
         // Eventos — Por qué TUOI (4 viñetas)
         'ev_why_label'       => 'Por qué TUOI',
         'ev_why_h2'          => '¿Por qué TUOI?',
