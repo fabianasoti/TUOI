@@ -1,8 +1,29 @@
 <?php
-// Language detection — cookie persists user preference
+/**
+ * Sistema de internacionalización (i18n) del sitio TUOI.
+ *
+ * Define:
+ *   - $lang:        idioma activo de la sesión ('es' o 'en'), persistido en cookie.
+ *   - $_ui:         diccionario de strings cortos de interfaz (menús, botones, formularios…).
+ *   - t() / t_raw(): helpers para obtener un string traducido por su clave.
+ *   - $carta_info:  metadatos (título + subtítulo) de cada categoría de la carta.
+ *
+ * Convención: el español es el idioma por defecto y siempre debe estar
+ * definido. El inglés es opcional; si una clave no tiene traducción 'en',
+ * se cae al valor 'es' para evitar mostrar la clave cruda.
+ *
+ * Para textos largos editables desde el panel admin se usa otro mecanismo
+ * (ver config/content_helper.php → load_site_content). Este archivo es solo
+ * para strings de UI fijos en código.
+ */
+
+// Detección de idioma: la cookie 'tuoi_lang' la fija set-lang.php cuando el
+// usuario pulsa el selector ES/EN del header. Por defecto, español.
 $lang = (isset($_COOKIE['tuoi_lang']) && $_COOKIE['tuoi_lang'] === 'en') ? 'en' : 'es';
 
 // ── UI string translations ──────────────────────────────
+// Mapa clave → [es, en]. Mantén las claves agrupadas por sección para
+// que sea fácil localizar y traducir nuevos textos.
 $_ui = [
     // Navigation
     'nav_home'          => ['es' => 'Inicio',            'en' => 'Home'],
@@ -80,20 +101,39 @@ $_ui = [
     'ev_contact_send_another' => ['es' => 'Enviar otro mensaje →',               'en' => 'Send another message →'],
 ];
 
-/** Translated string, HTML-escaped */
+/**
+ * Devuelve la traducción de $key escapada para HTML.
+ *
+ * Es la opción segura por defecto: úsala siempre que el string vaya a
+ * imprimirse directamente en una plantilla (echo t('...')).
+ *
+ * Estrategia de fallback:
+ *   1. Traducción en el idioma activo ($lang).
+ *   2. Traducción en español ('es') si no existe la del idioma activo.
+ *   3. La propia clave, para que un texto que falte sea visible y fácil de detectar.
+ */
 function t(string $key): string {
     global $_ui, $lang;
     $str = $_ui[$key][$lang] ?? $_ui[$key]['es'] ?? $key;
     return htmlspecialchars($str, ENT_QUOTES);
 }
 
-/** Translated string, raw (use only for trusted values) */
+/**
+ * Igual que t() pero SIN escapado HTML.
+ *
+ * Solo para strings que contienen marcado HTML controlado por nosotros
+ * (p. ej. enlaces dentro del consentimiento de privacidad). Nunca uses
+ * t_raw() con datos provenientes de usuarios.
+ */
 function t_raw(string $key): string {
     global $_ui, $lang;
     return $_ui[$key][$lang] ?? $_ui[$key]['es'] ?? $key;
 }
 
 // ── Carta category info (title + description) ──────────
+// Cada categoría tiene un par [título, subtítulo] por idioma. Lo consume
+// includes/carta-page.php para renderizar la cabecera de cada subpágina
+// de la carta (desayunos, bebidas, etc.).
 $carta_info = [
     'desayunos' => [
         'es' => ['Desayunos',      'Activa tu mañana con energía real.'],

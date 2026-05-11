@@ -1,5 +1,38 @@
 <?php
+/**
+ * Helpers para cargar contenido editable del sitio.
+ *
+ * A diferencia de config/lang.php (strings cortos de UI fijos en código),
+ * aquí vive el contenido largo y editable desde el panel admin:
+ *   - Textos de las secciones del home, "Quiénes somos", "Eventos", contacto…
+ *   - Orden personalizado de imágenes en las secciones que lo permiten.
+ *
+ * Patrón general: definimos defaults en código (tras importar el sitio
+ * funciona aunque la BD esté vacía o caída) y los sobrescribimos con los
+ * valores guardados en la tabla site_content cuando hay conexión.
+ */
+
+/**
+ * Carga todos los textos editables del sitio en un array clave → valor.
+ *
+ * Funcionamiento:
+ *   1. Parte de un array de defaults en español, definido en este archivo.
+ *      Esto garantiza que el sitio se renderiza aunque no haya BD.
+ *   2. Si hay conexión, consulta la tabla `site_content` (clave/valor) y
+ *      sobrescribe los defaults con los textos guardados desde el admin.
+ *   3. Si el idioma activo es 'en', vuelve a sobrescribir buscando claves
+ *      con sufijo '_en' (p. ej. 'hero_h1' → 'hero_h1_en'). Si no existe la
+ *      versión inglesa, se mantiene el español como fallback.
+ *
+ * @param  mixed   $conexion  Recurso mysqli o false/null si la BD no está disponible.
+ * @param  string  $lang      'es' o 'en'.
+ * @return array              Array clave → texto, listo para usar en plantillas.
+ */
 function load_site_content($conexion, string $lang = 'es') {
+    // Valores por defecto en español. Sirven como:
+    //   - Lista canónica de claves disponibles (lo que NO esté aquí no se renderiza).
+    //   - Plantilla inicial al desplegar el sitio sin contenido en BD.
+    //   - Fallback si la conexión a BD falla.
     $defaults = [
         // Homepage — Hero
         'hero_label'         => 'Cafetería · Valencia',
@@ -106,8 +139,12 @@ function load_site_content($conexion, string $lang = 'es') {
         'contact_address'    => 'C. de la Travesía, 15B, 46024 València',
     ];
 
+    // Sin conexión: devolvemos los defaults en español tal cual.
     if (!$conexion) return $defaults;
 
+    // Cargamos TODA la tabla en memoria de una sola consulta (es pequeña, decenas
+    // de filas) en vez de hacer un SELECT por clave. El @ silencia el warning si
+    // la tabla aún no existe en una instalación nueva.
     $all = [];
     $result = @mysqli_query($conexion, "SELECT content_key, content_value FROM site_content");
     if ($result) {
@@ -116,12 +153,15 @@ function load_site_content($conexion, string $lang = 'es') {
         }
     }
 
-    // Merge ES values first
+    // Paso 1: sobrescribir los defaults con los valores en español guardados en BD.
+    // Solo sobrescribimos claves conocidas; valores extra en BD se ignoran a propósito.
     foreach (array_keys($defaults) as $key) {
         if (isset($all[$key])) $defaults[$key] = $all[$key];
     }
 
-    // Override with EN values when lang=en
+    // Paso 2: si el idioma activo es inglés, buscar la versión '<clave>_en'.
+    // Usamos !empty (no isset) para que un campo EN vacío en el admin caiga
+    // automáticamente al texto en español, en vez de mostrar un hueco.
     if ($lang === 'en') {
         foreach (array_keys($defaults) as $key) {
             $en_key = $key . '_en';
@@ -145,12 +185,15 @@ function load_site_content($conexion, string $lang = 'es') {
  * @return array  absolute file paths in display order
  */
 function load_ordered_images($conexion, $section, $dir, $glob = '*.{webp,jpg,jpeg,png,pdf}') {
+    // Si el directorio no existe, devolvemos array vacío en lugar de error
+    // (las plantillas ya muestran un placeholder "próximamente" en ese caso).
     if (!is_dir($dir)) return [];
 
+    // Listamos los ficheros en disco. GLOB_BRACE permite la sintaxis {webp,jpg,...}.
     $found = glob(rtrim($dir, '/') . '/' . $glob, GLOB_BRACE) ?: [];
     if (empty($found)) return [];
 
-    // Try to load saved order from DB
+    // Intentamos respetar el orden guardado por el admin en la tabla image_order.
     if ($conexion) {
         try {
             $s   = mysqli_real_escape_string($conexion, $section);
@@ -158,10 +201,15 @@ function load_ordered_images($conexion, $section, $dir, $glob = '*.{webp,jpg,jpe
                 "SELECT filename, sort_order FROM image_order WHERE section = '$s' ORDER BY sort_order ASC"
             );
             if ($res && mysqli_num_rows($res) > 0) {
+                // Construimos un mapa filename → sort_order para ordenación rápida.
                 $order = [];
                 while ($row = mysqli_fetch_assoc($res)) {
                     $order[$row['filename']] = (int) $row['sort_order'];
                 }
+                // Reordenamos los archivos encontrados:
+                //  - Los que tienen orden guardado se sitúan según sort_order.
+                //  - Los que no estén en BD (subidos pero aún no ordenados) caen
+                //    al final (PHP_INT_MAX) y se desempatan alfabéticamente.
                 usort($found, function ($a, $b) use ($order) {
                     $oa = $order[basename($a)] ?? PHP_INT_MAX;
                     $ob = $order[basename($b)] ?? PHP_INT_MAX;
@@ -170,11 +218,13 @@ function load_ordered_images($conexion, $section, $dir, $glob = '*.{webp,jpg,jpe
                 return $found;
             }
         } catch (\Exception $e) {
-            // Table doesn't exist yet — fall through to default sort
+            // La tabla image_order aún no existe (instalación previa a la migración).
+            // Caemos al ordenamiento por defecto sin romper la página.
         }
     }
 
-    // Fallback: newest first
+    // Fallback sin BD o sin orden guardado: más recientes primero, para que las
+    // imágenes nuevas aparezcan arriba sin necesidad de tocar el admin.
     usort($found, fn($a, $b) => filemtime($b) - filemtime($a));
     return $found;
 }

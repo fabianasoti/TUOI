@@ -7,26 +7,34 @@
 require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require $base . 'includes/header.php';
-// $lang and $carta_info are set by header.php → lang.php
+// header.php carga lang.php, que define $lang y $carta_info como globales.
 
-// Override title/desc with translation if in English
+// Si estamos en EN y la categoría tiene traducción, sustituimos título y descripción.
+// La página padre nos pasa los textos en ES; aquí los reemplazamos in-place.
 if ($lang === 'en' && isset($carta_info[$current_carta])) {
     $carta_titulo = $carta_info[$current_carta]['en'][0];
     $carta_desc   = $carta_info[$current_carta]['en'][1];
 }
 
-// Load images respecting saved order, with EN fallback
+// ── Resolución del directorio de imágenes ───────────────────────────────
+// Las imágenes pueden tener una variante en inglés en una carpeta paralela
+// con sufijo "-en" (p. ej. assets/img/carta/desayunos-en/). El admin las
+// sube por separado para cada idioma cuando hay texto rotulado dentro de la imagen.
 $img_dir_slug = ($lang === 'en') ? $current_carta . '-en' : $current_carta;
 $img_dir      = __DIR__ . '/../assets/img/carta/' . $img_dir_slug . '/';
 $img_section  = 'carta/' . $img_dir_slug;
 
-// If EN dir is empty/missing, fall back to ES
+// Fallback: si estamos en EN pero la carpeta "-en" no existe o está vacía,
+// caemos a las imágenes en español. Evita huecos cuando aún no se ha
+// preparado la versión inglesa de una categoría concreta.
 if ($lang === 'en' && (!is_dir($img_dir) || empty(glob($img_dir . '*.{webp,jpg,jpeg,png}', GLOB_BRACE)))) {
     $img_dir_slug = $current_carta;
     $img_dir      = __DIR__ . '/../assets/img/carta/' . $current_carta . '/';
     $img_section  = 'carta/' . $current_carta;
 }
 
+// $img_base es la ruta relativa que usaremos en el atributo src del <img>.
+// $images viene ya ordenado según la preferencia guardada en BD (ver content_helper.php).
 $img_base = $base . 'assets/img/carta/' . $img_dir_slug . '/';
 $images   = load_ordered_images($conexion, $img_section, $img_dir);
 ?>

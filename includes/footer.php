@@ -1,3 +1,13 @@
+    <?php
+    /**
+     * Footer compartido — se incluye al final de todas las páginas públicas.
+     * Cierra <body> y <html> abiertos en includes/header.php.
+     *
+     * Variables requeridas (heredadas de la página padre):
+     *   $base → ruta relativa hasta la raíz del proyecto.
+     *   $lang → idioma activo (lo fija config/lang.php vía header.php).
+     */
+    ?>
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
@@ -44,7 +54,11 @@
         </div>
     </footer>
 
-    <?php $js_v = @filemtime(dirname(__DIR__) . '/assets/js/main.js') ?: time(); ?>
+    <?php
+        // Cache-busting de JS (mismo patrón que el CSS en header.php):
+        // ?v=<mtime> fuerza al navegador a recargar el archivo cuando cambia.
+        $js_v = @filemtime(dirname(__DIR__) . '/assets/js/main.js') ?: time();
+    ?>
     <script src="<?= $base ?>assets/js/main.js?v=<?= $js_v ?>"></script>
 </body>
 </html>

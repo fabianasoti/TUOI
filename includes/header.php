@@ -14,7 +14,13 @@ require_once $base . 'config/lang.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'TUOI | Functional Coffee & Smart Food') ?></title>
-    <?php $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time(); ?>
+    <?php
+        // Cache-busting del CSS: añadimos ?v=<mtime> al src para que cuando
+        // se modifique el archivo, el navegador descargue la versión nueva
+        // sin que el usuario tenga que limpiar caché. time() es un fallback
+        // por si filemtime() falla (devolvería false y romperíamos la URL).
+        $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time();
+    ?>
     <link rel="stylesheet" href="<?= $base ?>assets/css/style.css?v=<?= $css_v ?>">
     <link rel="stylesheet" href="<?= $base ?>assets/fonts/inter.css">
 </head>
@@ -34,6 +40,12 @@ require_once $base . 'config/lang.php';
 
     <nav class="nav-links" id="nav-links">
 
+        <?php
+            // Patrón de "enlace activo": cada página define $current_page
+            // antes de incluir el header (p. ej. 'inicio', 'carta', 'eventos',
+            // 'quienes-somos'). Si coincide con este enlace, le añadimos la
+            // clase .active para que el CSS lo destaque.
+        ?>
         <a href="<?= $base ?>index.php"
            class="nav-link <?= ($current_page ?? '') === 'inicio' ? 'active' : '' ?>">
             <?= t('nav_home') ?>

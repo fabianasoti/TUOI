@@ -1,17 +1,33 @@
 <?php
+/**
+ * Sidebar de navegación del panel admin.
+ *
+ * Se incluye desde cada página del admin después de abrir el wrapper del
+ * layout. Resalta el ítem activo según el archivo PHP actual y muestra
+ * un badge rojo con el número de mensajes de contacto sin leer.
+ *
+ * Variable opcional disponible en la página padre:
+ *   $conexion → recurso mysqli (si está, calculamos el badge de mensajes).
+ */
+
+// Nombre del archivo PHP que estamos sirviendo. Se usa para marcar el
+// enlace activo en la nav (comparando con 'index.php', 'eventos.php', etc.).
 $current_admin_page = basename($_SERVER['PHP_SELF']);
 
-// Cuenta de mensajes sin leer (para mostrar badge en la sidebar).
-// Aseguramos columna is_read antes de consultar (idempotente).
+// Cuenta de mensajes de contacto sin leer (badge rojo en el ítem "Mensajes").
 $unread_msgs = 0;
 if (isset($conexion) && $conexion) {
+    // Auto-migración defensiva: si la columna is_read aún no existe en
+    // contact_submissions (instalaciones antiguas), la creamos al vuelo.
+    // El @ silencia el warning de "Duplicate column" cuando ya existe,
+    // que es el caso normal en una BD ya migrada.
     try {
         @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0 AFTER message");
-    } catch (\Throwable $e) { /* tabla no existe o columna ya está */ }
+    } catch (\Throwable $e) { /* tabla aún no creada o columna ya existe — ignoramos */ }
     try {
         $r = mysqli_query($conexion, "SELECT COUNT(*) AS c FROM contact_submissions WHERE is_read = 0");
         if ($r) $unread_msgs = (int) (mysqli_fetch_assoc($r)['c'] ?? 0);
-    } catch (\Throwable $e) { /* tabla no existe — sin badge */ }
+    } catch (\Throwable $e) { /* tabla no existe — sidebar sin badge */ }
 }
 ?>
 <aside class="sidebar">

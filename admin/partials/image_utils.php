@@ -1,7 +1,14 @@
 <?php
 /**
- * Shared image utilities for the admin panel.
- * Require this file once; do not call directly.
+ * Utilidades de imagen compartidas por el panel admin.
+ *
+ * El admin sube fotos en cualquier formato común (JPEG, PNG, WebP, GIF)
+ * y aquí las normalizamos a WebP — más ligero y soportado por todos los
+ * navegadores modernos — antes de guardarlas en disco. Esto reduce el
+ * peso de la web pública sin pedirle al usuario que prepare las imágenes.
+ *
+ * Archivo de utilidades: incluir con require_once desde las páginas
+ * que procesen subidas (admin/imagenes.php, admin/eventos.php, etc.).
  */
 
 /**
@@ -15,23 +22,30 @@
  * @return bool true si éxito; false si no se pudo decodificar
  */
 function convert_to_webp(string $src_path, string $dest_path, int $quality = 82, int $max_dim = 2000): bool {
+    // Detectamos el tipo real por contenido (no por extensión) para evitar
+    // que un usuario suba un .png que en realidad es otro formato.
     $mime = mime_content_type($src_path);
     $img  = match ($mime) {
         'image/jpeg' => imagecreatefromjpeg($src_path),
         'image/png'  => imagecreatefrompng($src_path),
         'image/webp' => imagecreatefromwebp($src_path),
         'image/gif'  => imagecreatefromgif($src_path),
-        default      => false,
+        default      => false, // Tipo no soportado: que el caller lo maneje.
     };
     if (!$img) return false;
 
+    // PNG/GIF pueden tener canal alfa (transparencia). Los convertimos a
+    // truecolor y activamos el guardado del alfa para que la transparencia
+    // sobreviva al volcado WebP. Sin esto, los fondos transparentes salen negros.
     if (in_array($mime, ['image/png', 'image/gif'], true)) {
         imagepalettetotruecolor($img);
         imagealphablending($img, true);
         imagesavealpha($img, true);
     }
 
-    // Redimensionar si excede el máximo
+    // Redimensionado opcional: si la imagen es más grande que $max_dim en
+    // su lado más largo, la escalamos manteniendo proporción. Evita guardar
+    // imágenes de 5000px que la web nunca va a mostrar a ese tamaño.
     if ($max_dim > 0) {
         $w = imagesx($img);
         $h = imagesy($img);
@@ -41,18 +55,21 @@ function convert_to_webp(string $src_path, string $dest_path, int $quality = 82,
             $new_w = (int) round($w * $ratio);
             $new_h = (int) round($h * $ratio);
             $resized = imagecreatetruecolor($new_w, $new_h);
-            // Preservar transparencia para PNG/GIF
+            // Repetimos el setup de transparencia en el lienzo destino:
+            // truecolor() crea un canvas opaco negro por defecto, así que
+            // hay que prepararlo y rellenarlo con un color totalmente
+            // transparente antes de copiar para que el alfa se preserve.
             imagealphablending($resized, false);
             imagesavealpha($resized, true);
             $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
             imagefilledrectangle($resized, 0, 0, $new_w, $new_h, $transparent);
             imagecopyresampled($resized, $img, 0, 0, 0, 0, $new_w, $new_h, $w, $h);
-            imagedestroy($img);
+            imagedestroy($img); // Liberamos el recurso original.
             $img = $resized;
         }
     }
 
     $ok = imagewebp($img, $dest_path, $quality);
-    imagedestroy($img);
+    imagedestroy($img); // Importante: GD no libera memoria automáticamente.
     return $ok;
 }
