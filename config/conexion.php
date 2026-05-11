@@ -10,7 +10,7 @@
  * publica el error en $error_db para que la página que incluye este
  * archivo pueda mostrar un fallback amistoso en vez de una pantalla en blanco.
  *
- * TODO seguridad: mover credenciales a variables de entorno / archivo
+ * TO-DO seguridad: mover credenciales a variables de entorno / archivo
  * fuera del repositorio antes de pasar a producción.
  */
 

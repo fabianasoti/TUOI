@@ -71,9 +71,9 @@ require_once $base . 'config/lang.php';
                 <?= t('nav_eventos') ?> <span class="arrow" aria-hidden="true">▾</span>
             </a>
             <div class="dropdown-menu" role="menu">
-                <a href="<?= $base ?>pages/eventos/#catering"      role="menuitem"><?= t('nav_catering') ?></a>
-                <a href="<?= $base ?>pages/eventos/#team-building" role="menuitem"><?= t('nav_team_building') ?></a>
-                <a href="<?= $base ?>pages/eventos/#networking"    role="menuitem"><?= t('nav_networking') ?></a>
+                <a href="<?= $base ?>pages/eventos/eventos-listos/" role="menuitem"><?= t('nav_ev_listos') ?></a>
+                <a href="<?= $base ?>pages/eventos/a-tu-medida/"    role="menuitem"><?= t('nav_ev_medida') ?></a>
+                <a href="<?= $base ?>pages/eventos/#contacto"       role="menuitem"><?= t('nav_ev_contacto') ?></a>
             </div>
         </div>
 

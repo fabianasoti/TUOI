@@ -172,48 +172,6 @@ if (empty($testimonios) && !empty($c['ev_social_quote'])) {
     ];
 }
 
-// ── Posts por categoría ─────────────────────────────────────────────────────
-$cats_order = ['coffee-break', 'brunch', 'tardeo'];
-$posts_by   = [];
-if ($conexion) {
-    foreach ($cats_order as $cat) {
-        $s = mysqli_real_escape_string($conexion, $cat);
-        $r = @mysqli_query($conexion,
-            "SELECT * FROM eventos_posts WHERE category='$s' ORDER BY sort_order ASC, id DESC"
-        );
-        $posts_by[$cat] = [];
-        if ($r) while ($row = mysqli_fetch_assoc($r)) $posts_by[$cat][] = $row;
-    }
-}
-
-// ── Definición de secciones ─────────────────────────────────────────────────
-$sections = [
-    [
-        'id'     => 'coffee-break',
-        'accent' => 'amarillo',
-        'num'    => '01',
-        'label'  => $c['ev_cb_label'] ?? 'Coffee Break',
-        'h2'     => $c['ev_cb_h2']    ?? 'Coffee Break',
-        'desc'   => $c['ev_cb_desc']  ?? '',
-    ],
-    [
-        'id'     => 'brunch',
-        'accent' => 'verde',
-        'num'    => '02',
-        'label'  => $c['ev_br_label'] ?? 'Brunch',
-        'h2'     => $c['ev_br_h2']    ?? 'Brunch',
-        'desc'   => $c['ev_br_desc']  ?? '',
-    ],
-    [
-        'id'     => 'tardeo',
-        'accent' => 'morado',
-        'num'    => '03',
-        'label'  => $c['ev_td_label'] ?? 'Tardeo',
-        'h2'     => $c['ev_td_h2']    ?? 'Tardeo',
-        'desc'   => $c['ev_td_desc']  ?? '',
-    ],
-];
-
 // ── Marquee items ───────────────────────────────────────────────────────────
 $marquee_raw   = $c['ev_marquee_text'] ?? 'Team Building – Networking – Corporativos – Afterwork – Experiencias';
 $marquee_items = array_values(array_filter(array_map('trim', explode('–', $marquee_raw))));
@@ -280,19 +238,13 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
             <h2><?= htmlspecialchars($c['ev_why_h2'] ?? '¿Por qué TUOI?') ?></h2>
             <ul class="ev-why__list">
                 <?php for ($i = 1; $i <= 4; $i++):
-                    $icon  = $c["ev_why_b{$i}_icon"]  ?? '';
                     $title = $c["ev_why_b{$i}_title"] ?? '';
                     $desc  = $c["ev_why_b{$i}_desc"]  ?? '';
                     if ($title === '' && $desc === '') continue;
                 ?>
                 <li class="ev-why__bullet">
-                    <?php if ($icon !== ''): ?>
-                    <span class="ev-why__icon"><?= htmlspecialchars($icon) ?></span>
-                    <?php endif; ?>
-                    <div>
-                        <?php if ($title !== ''): ?><h3><?= htmlspecialchars($title) ?></h3><?php endif; ?>
-                        <?php if ($desc  !== ''): ?><p><?= nl2br(htmlspecialchars($desc)) ?></p><?php endif; ?>
-                    </div>
+                    <?php if ($title !== ''): ?><h3><?= htmlspecialchars($title) ?></h3><?php endif; ?>
+                    <?php if ($desc  !== ''): ?><p><?= nl2br(htmlspecialchars($desc)) ?></p><?php endif; ?>
                 </li>
                 <?php endfor; ?>
             </ul>
@@ -308,6 +260,53 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
             </div>
             <?php endif; ?>
         </div>
+    </div>
+</section>
+
+<!-- ── INTRO PROPUESTA DE MENÚS ───────────────────────────────────────────── -->
+<div class="ev-menus-intro" id="menus">
+    <div class="ev-menus-intro__inner">
+        <span class="section-label"><?= htmlspecialchars($c['ev_menus_label'] ?? 'Propuesta de menús') ?></span>
+        <h2><?= htmlspecialchars($c['ev_menus_h2'] ?? 'Menús de grupo y catering') ?></h2>
+        <?php if (!empty($c['ev_menus_intro'])): ?>
+        <p><?= htmlspecialchars($c['ev_menus_intro']) ?></p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- ── OPCIONES (2 tarjetas) ─────────────────────────────────────────────── -->
+<section class="ev-options">
+    <div class="ev-options__inner">
+
+        <article class="ev-option ev-option--listas">
+            <span class="section-label"><?= htmlspecialchars($c['ev_opt1_label'] ?? 'Experiencias TUOI') ?></span>
+            <h3 class="ev-option__title"><?= htmlspecialchars($c['ev_opt1_title'] ?? 'Experiencias TUOI') ?></h3>
+            <?php if (!empty($c['ev_opt1_desc'])): ?>
+            <p class="ev-option__desc"><?= htmlspecialchars($c['ev_opt1_desc']) ?></p>
+            <?php endif; ?>
+            <div class="ev-option__ctas">
+                <a href="<?= $base ?>pages/eventos/eventos-listos/" class="btn-primary ev-option__cta">
+                    <?= htmlspecialchars($c['ev_opt1_cta'] ?? 'Ver experiencias') ?> <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </article>
+
+        <article class="ev-option ev-option--medida">
+            <span class="section-label"><?= htmlspecialchars($c['ev_opt2_label'] ?? 'A tu medida') ?></span>
+            <h3 class="ev-option__title"><?= htmlspecialchars($c['ev_opt2_title'] ?? 'Diseñado a tu medida') ?></h3>
+            <?php if (!empty($c['ev_opt2_desc'])): ?>
+            <p class="ev-option__desc"><?= htmlspecialchars($c['ev_opt2_desc']) ?></p>
+            <?php endif; ?>
+            <div class="ev-option__ctas">
+                <a href="<?= $base ?>pages/eventos/a-tu-medida/" class="btn-primary ev-option__cta">
+                    <?= htmlspecialchars($c['ev_opt2_cta_primary'] ?? 'Descubre tus posibilidades') ?> <span aria-hidden="true">→</span>
+                </a>
+                <a href="#contacto" class="ev-option__cta ev-option__cta--ghost">
+                    <?= htmlspecialchars($c['ev_opt2_cta_secondary'] ?? 'Contáctanos') ?>
+                </a>
+            </div>
+        </article>
+
     </div>
 </section>
 
@@ -370,99 +369,6 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
     </div>
 </section>
 <?php endif; ?>
-
-<!-- ── INTRO PROPUESTA DE MENÚS ───────────────────────────────────────────── -->
-<div class="ev-menus-intro" id="menus">
-    <div class="ev-menus-intro__inner">
-        <span class="section-label"><?= htmlspecialchars($c['ev_menus_label'] ?? 'Propuesta de menús') ?></span>
-        <h2><?= htmlspecialchars($c['ev_menus_h2'] ?? 'Menús de grupo y catering') ?></h2>
-        <?php if (!empty($c['ev_menus_intro'])): ?>
-        <p><?= htmlspecialchars($c['ev_menus_intro']) ?></p>
-        <?php endif; ?>
-    </div>
-</div>
-
-<!-- ── SECCIONES (zigzag) ─────────────────────────────────────────────────── -->
-<?php foreach ($sections as $idx => $sec):
-    $posts  = $posts_by[$sec['id']] ?? [];
-    $alt_bg = $idx % 2 === 0 ? '' : ' ev-section--alt';
-?>
-<section id="<?= $sec['id'] ?>" class="ev-section<?= $alt_bg ?>">
-    <div class="ev-section__wrap">
-
-        <div class="ev-section__head ev-section__head--<?= $sec['accent'] ?>">
-            <span class="ev-section__num" aria-hidden="true"><?= $sec['num'] ?></span>
-            <div class="ev-section__head-text">
-                <span class="section-label"><?= htmlspecialchars($sec['label']) ?></span>
-                <h2><?= htmlspecialchars($sec['h2']) ?></h2>
-                <?php if ($sec['desc'] !== ''): ?><p><?= htmlspecialchars($sec['desc']) ?></p><?php endif; ?>
-            </div>
-        </div>
-
-        <?php if (!empty($posts)): ?>
-        <div class="ev-posts">
-            <?php foreach ($posts as $i => $post):
-                $isReverse = ($i % 2 !== 0) ? 'row-reverse' : '';
-                $raw_imgs  = $post['images'] ?? ($post['image_filename'] ?? '');
-                $images    = [];
-                if (!empty($raw_imgs)) {
-                    $decoded = json_decode($raw_imgs, true);
-                    $images  = (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
-                        ? $decoded
-                        : array_map('trim', explode(',', $raw_imgs));
-                }
-                $trackId = 'track-' . ($post['id'] ?? $i);
-            ?>
-            <div class="project-row <?= $isReverse ?>">
-                <div class="project-image">
-                    <?php if (count($images) > 1): ?>
-                        <div class="carousel-container">
-                            <div class="carousel-track" id="<?= $trackId ?>">
-                                <?php foreach ($images as $img): ?>
-                                    <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($img) ?>"
-                                         alt="<?= htmlspecialchars($post['title']) ?>" loading="lazy">
-                                <?php endforeach; ?>
-                            </div>
-                            <button class="carousel-btn btn-prev" onclick="moveSlide('<?= $trackId ?>', -1)">❮</button>
-                            <button class="carousel-btn btn-next" onclick="moveSlide('<?= $trackId ?>',  1)">❯</button>
-                            <div class="carousel-dots" id="dots-<?= $trackId ?>">
-                                <?php foreach ($images as $di => $img): ?>
-                                    <div class="dot <?= $di === 0 ? 'active' : '' ?>"></div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php elseif (count($images) === 1): ?>
-                        <img src="<?= $base ?>assets/img/eventos/<?= htmlspecialchars($sec['id']) ?>/<?= htmlspecialchars($images[0]) ?>"
-                             alt="<?= htmlspecialchars($post['title']) ?>"
-                             style="width:100%;border-radius:12px;object-fit:cover;aspect-ratio:16/9;" loading="lazy">
-                    <?php else: ?>
-                        <div style="aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:#e8e6df;border-radius:12px;color:#aaa;font-size:2rem;">📸</div>
-                    <?php endif; ?>
-                </div>
-
-                <div class="project-text">
-                    <h3><?= htmlspecialchars($post['title']) ?></h3>
-                    <?php if (!empty($post['body'])): ?>
-                        <p><?= nl2br(htmlspecialchars($post['body'])) ?></p>
-                    <?php endif; ?>
-                    <?php if (!empty($post['tags'] ?? $post['tech'] ?? '')): ?>
-                        <div class="tech"><?= htmlspecialchars($post['tags'] ?? $post['tech']) ?></div>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
-
-        <?php else: ?>
-        <div class="ev-empty">
-            <p><?= t_raw('ev_empty_text') ?></p>
-            <a href="#contacto" class="btn-primary" style="margin-top:1.25rem;display:inline-block;"><?= t('ev_empty_btn') ?></a>
-        </div>
-        <?php endif; ?>
-
-    </div>
-</section>
-<?php endforeach; ?>
 
 <!-- ── CTA ────────────────────────────────────────────────────────────────── -->
 <section class="ev-cta">

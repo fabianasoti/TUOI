@@ -67,6 +67,9 @@ $_ui = [
     'qs_link'           => ['es' => 'Conoce nuestra historia', 'en' => 'Our story'],
     // Eventos
     'nav_eventos'       => ['es' => 'Eventos',                 'en' => 'Events'],
+    'nav_ev_listos'     => ['es' => 'Listos para disfrutar',   'en' => 'Ready to enjoy'],
+    'nav_ev_medida'     => ['es' => 'Diseñado a tu medida',    'en' => 'Designed for you'],
+    'nav_ev_contacto'   => ['es' => 'Contacto',                'en' => 'Contact'],
     'nav_networking'    => ['es' => 'Networking',              'en' => 'Networking'],
     'nav_catering'      => ['es' => 'Catering',                'en' => 'Catering'],
     'nav_team_building' => ['es' => 'Team Building',           'en' => 'Team Building'],

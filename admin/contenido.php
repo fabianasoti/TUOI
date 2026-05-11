@@ -7,7 +7,7 @@ $edit_lang  = ($_GET['edit_lang'] ?? 'es') === 'en' ? 'en' : 'es';
 $key_suffix = $edit_lang === 'en' ? '_en' : '';
 
 // Active section (hub when null)
-$valid_sections = ['home', 'eventos', 'quienes'];
+$valid_sections = ['home', 'eventos', 'eventos-hijas', 'quienes'];
 $section = $_GET['section'] ?? null;
 if ($section !== null && !in_array($section, $valid_sections, true)) {
     $section = null;
@@ -31,17 +31,27 @@ $base_keys = [
     'ev_intro_label', 'ev_intro_p1', 'ev_intro_p2',
     // Eventos — Por qué TUOI
     'ev_why_label', 'ev_why_h2',
-    'ev_why_b1_icon', 'ev_why_b1_title', 'ev_why_b1_desc',
-    'ev_why_b2_icon', 'ev_why_b2_title', 'ev_why_b2_desc',
-    'ev_why_b3_icon', 'ev_why_b3_title', 'ev_why_b3_desc',
-    'ev_why_b4_icon', 'ev_why_b4_title', 'ev_why_b4_desc',
+    'ev_why_b1_title', 'ev_why_b1_desc',
+    'ev_why_b2_title', 'ev_why_b2_desc',
+    'ev_why_b3_title', 'ev_why_b3_desc',
+    'ev_why_b4_title', 'ev_why_b4_desc',
     // Eventos — Prueba social (etiqueta de la sección)
     'ev_social_label',
     // Eventos — Propuesta de menús (intro + 3 categorías)
     'ev_menus_label', 'ev_menus_h2', 'ev_menus_intro',
-    'ev_cb_label', 'ev_cb_h2', 'ev_cb_desc',
-    'ev_br_label', 'ev_br_h2', 'ev_br_desc',
-    'ev_td_label', 'ev_td_h2', 'ev_td_desc',
+    'ev_opt1_label', 'ev_opt1_title', 'ev_opt1_desc', 'ev_opt1_cta',
+    'ev_opt2_label', 'ev_opt2_title', 'ev_opt2_desc',
+    'ev_opt2_cta_primary', 'ev_opt2_cta_secondary',
+    // Eventos — página "Experiencias listas"
+    'ev_el_h1', 'ev_el_intro',
+    'ev_el_e1_tagline', 'ev_el_e1_body',
+    'ev_el_e2_tagline', 'ev_el_e2_body',
+    'ev_el_e3_tagline', 'ev_el_e3_body',
+    'ev_el_e4_tagline', 'ev_el_e4_body',
+    'ev_el_e5_tagline', 'ev_el_e5_body',
+    'ev_el_e6_tagline', 'ev_el_e6_body',
+    'ev_el_service_body',
+    'ev_el_conditions_body',
     // Eventos — CTA y marquee
     'ev_cta_h2', 'ev_cta_text', 'ev_cta_btn',
     'ev_marquee_text',
@@ -108,9 +118,10 @@ $form_action = '?' . http_build_query($form_qs);
 
 // Topbar title
 $section_titles = [
-    'home'     => ['title' => 'Editar — Página de inicio',     'sub' => 'Hero, Quiénes somos y Filosofía'],
-    'eventos'  => ['title' => 'Editar — Página de eventos',    'sub' => 'Hero, secciones y contacto'],
-    'quienes'  => ['title' => 'Editar — Página Quiénes somos', 'sub' => 'Bloques completos de la página'],
+    'home'           => ['title' => 'Editar — Página de inicio',         'sub' => 'Hero, Quiénes somos y Filosofía'],
+    'eventos'        => ['title' => 'Editar — Página de eventos',        'sub' => 'Home: hero, intro, por qué TUOI, opciones, CTA y contacto'],
+    'eventos-hijas'  => ['title' => 'Editar — Eventos · páginas hijas',  'sub' => 'Contenido de Experiencias TUOI y Evento a tu medida'],
+    'quienes'        => ['title' => 'Editar — Página Quiénes somos',     'sub' => 'Bloques completos de la página'],
 ];
 $tb_title = $section ? $section_titles[$section]['title'] : 'Editar contenido';
 $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página que quieres editar';
@@ -167,7 +178,18 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                             </div>
                         </div>
                         <p style="color:var(--muted);font-size:14px;margin:0;">
-                            Hero, carrusel, Por qué TUOI, menús (Coffee Break / Brunch / Tardeo), CTA, banner y contacto.
+                            Hero, intro, Por qué TUOI, las 2 opciones (Experiencias TUOI / A tu medida), CTA y contacto.
+                        </p>
+                    </a>
+
+                    <a href="<?= section_url('eventos-hijas', $edit_lang) ?>" class="card" style="text-decoration:none;color:inherit;display:block;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span>✦</span> Eventos · páginas hijas
+                            </div>
+                        </div>
+                        <p style="color:var(--muted);font-size:14px;margin:0;">
+                            Contenido detallado de <strong>Experiencias TUOI</strong> (6 propuestas + servicio + condiciones) y <strong>Evento a tu medida</strong>.
                         </p>
                     </a>
 
@@ -466,22 +488,15 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                     </div>
 
                     <hr class="section-divider">
-                    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Las 4 viñetas (icono + título + descripción)</p>
+                    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Las 4 viñetas (título + descripción). Los iconos son fijos en el diseño.</p>
 
                     <?php for ($i = 1; $i <= 4; $i++): ?>
                     <div class="form-group" style="border-left:3px solid var(--border);padding-left:14px;margin-bottom:18px;">
                         <p style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;">Viñeta <?= $i ?></p>
-                        <div class="form-grid-2">
-                            <div class="form-group">
-                                <label class="form-label">Icono <span class="hint">emoji</span></label>
-                                <input name="ev_why_b<?= $i ?>_icon<?= $key_suffix ?>" type="text" class="form-control"
-                                       value="<?= cv($content, "ev_why_b{$i}_icon" . $key_suffix) ?>" maxlength="4">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Título</label>
-                                <input name="ev_why_b<?= $i ?>_title<?= $key_suffix ?>" type="text" class="form-control"
-                                       value="<?= cv($content, "ev_why_b{$i}_title" . $key_suffix) ?>">
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label">Título</label>
+                            <input name="ev_why_b<?= $i ?>_title<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, "ev_why_b{$i}_title" . $key_suffix) ?>">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Descripción</label>
@@ -558,19 +573,11 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                 </form>
             </div>
 
-            <!-- ── PROPUESTA DE MENÚS — 3 CATEGORÍAS ───── -->
-            <?php
-            $ev_menu_admin = [
-                ['prefix' => 'ev_cb', 'icon' => '☕', 'name' => 'Coffee Break', 'cat' => 'coffee-break'],
-                ['prefix' => 'ev_br', 'icon' => '🥐', 'name' => 'Brunch',       'cat' => 'brunch'],
-                ['prefix' => 'ev_td', 'icon' => '🍷', 'name' => 'Tardeo',       'cat' => 'tardeo'],
-            ];
-            foreach ($ev_menu_admin as $sec):
-            ?>
+            <!-- ── OPCIÓN 1 — Experiencias listas para disfrutar ─ -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        <span><?= $sec['icon'] ?></span> Menú — <?= $sec['name'] ?>
+                        <span>✦</span> Opción 1 — Experiencias listas
                         <span class="section-badge">Eventos</span>
                     </div>
                 </div>
@@ -578,27 +585,70 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
-                            <input name="<?= $sec['prefix'] ?>_label<?= $key_suffix ?>" type="text" class="form-control"
-                                   value="<?= cv($content, $sec['prefix'] . '_label' . $key_suffix) ?>">
+                            <input name="ev_opt1_label<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_opt1_label' . $key_suffix) ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Título H2</label>
-                            <input name="<?= $sec['prefix'] ?>_h2<?= $key_suffix ?>" type="text" class="form-control"
-                                   value="<?= cv($content, $sec['prefix'] . '_h2' . $key_suffix) ?>">
+                            <label class="form-label">Texto del botón</label>
+                            <input name="ev_opt1_cta<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_opt1_cta' . $key_suffix) ?>">
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Título</label>
+                        <input name="ev_opt1_title<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_opt1_title' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Descripción</label>
-                        <textarea name="<?= $sec['prefix'] ?>_desc<?= $key_suffix ?>" class="form-control" rows="3"><?= cv($content, $sec['prefix'] . '_desc' . $key_suffix) ?></textarea>
+                        <textarea name="ev_opt1_desc<?= $key_suffix ?>" class="form-control" rows="3"><?= cv($content, 'ev_opt1_desc' . $key_suffix) ?></textarea>
                     </div>
                     <p style="font-size:13px;color:var(--muted);margin:6px 0 14px;">
-                        Los sub-menús (entradas con título, texto e imágenes) se gestionan en
-                        <a href="eventos.php?cat=<?= $sec['cat'] ?>" style="color:var(--primary);">📝 Eventos — <?= $sec['name'] ?></a>.
+                        El botón enlaza a la página
+                        <a href="../pages/eventos/eventos-listos/" target="_blank" style="color:var(--primary);">/eventos/eventos-listos/</a>.
                     </p>
-                    <button type="submit" class="btn btn-primary">💾 Guardar <?= $sec['name'] ?></button>
+                    <button type="submit" class="btn btn-primary">💾 Guardar opción 1</button>
                 </form>
             </div>
-            <?php endforeach; ?>
+
+            <!-- ── OPCIÓN 2 — Evento a tu medida ─────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>✦</span> Opción 2 — Evento a tu medida
+                        <span class="section-badge">Eventos</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <div class="form-group">
+                        <label class="form-label">Etiqueta</label>
+                        <input name="ev_opt2_label<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_opt2_label' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Título</label>
+                        <input name="ev_opt2_title<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_opt2_title' . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="ev_opt2_desc<?= $key_suffix ?>" class="form-control" rows="3"><?= cv($content, 'ev_opt2_desc' . $key_suffix) ?></textarea>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label class="form-label">CTA principal <span class="hint">→ /eventos/a-tu-medida/</span></label>
+                            <input name="ev_opt2_cta_primary<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_opt2_cta_primary' . $key_suffix) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CTA secundario <span class="hint">→ #contacto</span></label>
+                            <input name="ev_opt2_cta_secondary<?= $key_suffix ?>" type="text" class="form-control"
+                                   value="<?= cv($content, 'ev_opt2_cta_secondary' . $key_suffix) ?>">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar opción 2</button>
+                </form>
+            </div>
 
             <!-- ── CTA ─────────────────────────────────── -->
             <div class="card">
@@ -676,6 +726,118 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
             </div>
 
             <?php endif; /* section === eventos */ ?>
+
+            <?php if ($section === 'eventos-hijas'): ?>
+
+            <!-- ── INTRO PÁGINA EXPERIENCIAS TUOI ───────── -->
+            <div class="card" id="card-el-intro">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>✦</span> Experiencias TUOI — Cabecera
+                        <span class="section-badge">Página hija</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-intro">
+                    <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
+                        Hero de <a href="../pages/eventos/eventos-listos/" target="_blank" style="color:var(--primary);">/eventos/eventos-listos/</a>. El título grande y la introducción que aparece debajo.
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">Título grande (H1)</label>
+                        <input name="ev_el_h1<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, 'ev_el_h1' . $key_suffix) ?>"
+                               placeholder="Eventos listos para ti">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Introducción</label>
+                        <textarea name="ev_el_intro<?= $key_suffix ?>" class="form-control" rows="3"><?= cv($content, 'ev_el_intro' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar cabecera</button>
+                </form>
+            </div>
+
+            <!-- ── EXPERIENCIAS (1 card por experiencia) ── -->
+            <?php
+            $el_experiences = [
+                ['e1', 'Flow Coffee Essential',          '☕', 'Coffee Break — Essential'],
+                ['e2', 'Flow Coffee Signature',          '☕', 'Coffee Break — Signature'],
+                ['e3', 'Social Cocktail Essential',      '🥂', 'Cóctel — Essential'],
+                ['e4', 'Social Cocktail Signature',      '🥂', 'Cóctel — Signature'],
+                ['e5', 'Table Experience Essential',     '🍽️', 'Table — Essential'],
+                ['e6', 'Table Experience Signature',     '🍽️', 'Table — Signature'],
+            ];
+            foreach ($el_experiences as [$exKey, $exName, $exIcon, $exShort]):
+                $cardId = 'card-el-' . $exKey;
+            ?>
+            <div class="card" id="<?= $cardId ?>">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span><?= $exIcon ?></span> <?= htmlspecialchars($exName) ?>
+                        <span class="section-badge"><?= htmlspecialchars($exShort) ?></span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>#<?= $cardId ?>">
+                    <div class="form-group">
+                        <label class="form-label">Tagline <span class="hint">frase corta de promesa</span></label>
+                        <input name="ev_el_<?= $exKey ?>_tagline<?= $key_suffix ?>" type="text" class="form-control"
+                               value="<?= cv($content, "ev_el_{$exKey}_tagline" . $key_suffix) ?>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contenido <span class="hint">HTML simple: &lt;p&gt;, &lt;ul&gt;&lt;li&gt;, &lt;strong&gt;</span></label>
+                        <textarea name="ev_el_<?= $exKey ?>_body<?= $key_suffix ?>" class="form-control" rows="10"><?= cv($content, "ev_el_{$exKey}_body" . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar <?= htmlspecialchars($exName) ?></button>
+                </form>
+            </div>
+            <?php endforeach; ?>
+
+            <!-- ── LO QUE INCLUYE EL SERVICIO ──────────── -->
+            <div class="card" id="card-el-service">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🛎️</span> Lo que incluye el servicio
+                        <span class="section-badge">Página hija</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-service">
+                    <div class="form-group">
+                        <label class="form-label">Lista de servicios <span class="hint">usa &lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;</span></label>
+                        <textarea name="ev_el_service_body<?= $key_suffix ?>" class="form-control" rows="8"><?= cv($content, 'ev_el_service_body' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar servicio</button>
+                </form>
+            </div>
+
+            <!-- ── CONDICIONES DE CONTRATACIÓN ──────────── -->
+            <div class="card" id="card-el-conditions">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📄</span> Condiciones de contratación y pago
+                        <span class="section-badge">Página hija</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-conditions">
+                    <div class="form-group">
+                        <label class="form-label">Texto completo <span class="hint">usa &lt;h4&gt; para subtítulos y &lt;p&gt; para párrafos</span></label>
+                        <textarea name="ev_el_conditions_body<?= $key_suffix ?>" class="form-control" rows="14"><?= cv($content, 'ev_el_conditions_body' . $key_suffix) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Guardar condiciones</button>
+                </form>
+            </div>
+
+            <!-- ── EVENTO A TU MEDIDA — placeholder ─────── -->
+            <div class="card" id="card-el-medida">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>✦</span> Evento a tu medida
+                        <span class="section-badge">Página hija</span>
+                    </div>
+                </div>
+                <p style="font-size:14px;color:var(--muted);margin:0;">
+                    El contenido de <a href="../pages/eventos/a-tu-medida/" target="_blank" style="color:var(--primary);">/eventos/a-tu-medida/</a> está pendiente. Cuando lo tengamos definido, los campos editables aparecerán aquí.
+                </p>
+            </div>
+
+            <?php endif; /* section === eventos-hijas */ ?>
 
             <?php if ($section === 'quienes'): ?>
 
@@ -817,5 +979,46 @@ $tb_sub   = $section ? $section_titles[$section]['sub']   : 'Elige la página qu
         </div>
     </div>
 </div>
+<script>
+(function () {
+    // Mantener la posición de scroll al guardar un formulario. Soporta dos casos:
+    // 1. Si el form action incluye un #card-id, el navegador ya hace scroll a esa ancla.
+    // 2. Si no, guardamos window.scrollY en sessionStorage y lo restauramos al recargar.
+    var KEY = 'admin_scroll_' + location.pathname + location.search;
+
+    document.querySelectorAll('form').forEach(function (form) {
+        form.addEventListener('submit', function () {
+            // Si el action ya lleva ancla, dejamos que el navegador haga su trabajo.
+            if ((form.getAttribute('action') || '').indexOf('#') === -1) {
+                try { sessionStorage.setItem(KEY, String(window.scrollY)); } catch (e) {}
+            }
+        });
+    });
+
+    window.addEventListener('load', function () {
+        // Si hay ancla en la URL, el navegador ya hace scroll a la card → no tocamos.
+        if (location.hash) return;
+        var y;
+        try { y = sessionStorage.getItem(KEY); } catch (e) {}
+        if (y !== null && y !== undefined) {
+            sessionStorage.removeItem(KEY);
+            // Tras el render para que la altura del DOM esté estable.
+            requestAnimationFrame(function () {
+                window.scrollTo({ top: parseInt(y, 10), behavior: 'instant' });
+            });
+        }
+    });
+
+    // Auto-ocultar el toast tras unos segundos para que no tape el contenido.
+    var toast = document.querySelector('.toast, .alert-success, [data-toast]');
+    if (toast) {
+        setTimeout(function () {
+            toast.style.transition = 'opacity .4s ease';
+            toast.style.opacity = '0';
+            setTimeout(function () { toast.style.display = 'none'; }, 450);
+        }, 3500);
+    }
+})();
+</script>
 </body>
 </html>

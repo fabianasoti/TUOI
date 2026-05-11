@@ -97,16 +97,12 @@ function load_site_content($conexion, string $lang = 'es') {
         // Eventos — Por qué TUOI (4 viñetas)
         'ev_why_label'       => 'Por qué TUOI',
         'ev_why_h2'          => '¿Por qué TUOI?',
-        'ev_why_b1_icon'     => '🌱',
         'ev_why_b1_title'    => 'Cerca y con sentido',
         'ev_why_b1_desc'     => 'Trabajamos con ingredientes de proximidad, materiales responsables y procesos cuidados. Porque un buen evento no debería pasarle factura al planeta.',
-        'ev_why_b2_icon'     => '💚',
         'ev_why_b2_title'    => 'Ligero y de verdad',
         'ev_why_b2_desc'     => 'Comida real, sin ultraprocesados ni excesos. Sabrosa, equilibrada y fácil de disfrutar — sin pesadez.',
-        'ev_why_b3_icon'     => '⚡',
         'ev_why_b3_title'    => 'Energía que acompaña',
         'ev_why_b3_desc'     => 'Pensamos los menús para que el evento fluya: energía constante, mente despierta y cero bajones.',
-        'ev_why_b4_icon'     => '🎯',
         'ev_why_b4_title'    => 'Hecho para tu evento',
         'ev_why_b4_desc'     => 'Cada propuesta se adapta a lo que necesitas: el formato, las personas y lo que quieres transmitir.',
         // Eventos — Prueba social (testimonio + logos)
@@ -114,19 +110,46 @@ function load_site_content($conexion, string $lang = 'es') {
         'ev_social_quote'    => 'Organizamos un afterwork para 40 personas y la diferencia se notó: la gente conectó, comió bien y nadie sufrió el bajón de media tarde. Volveremos.',
         'ev_social_author'   => 'Marta Soler',
         'ev_social_role'     => 'People & Culture · Innovae',
-        // Eventos — Propuesta de menús (3 categorías)
+        // Eventos — Propuesta de menús (intro de las 2 opciones)
         'ev_menus_label'     => 'Nuestros menús',
         'ev_menus_h2'        => 'Menús que se adaptan a tu evento',
         'ev_menus_intro'     => 'Ofrecemos diferentes formatos que se ajustan al tipo de encuentro y a la experiencia que quieres crear.',
-        'ev_cb_label'        => 'Coffee Break',
-        'ev_cb_h2'           => 'Coffee break',
-        'ev_cb_desc'         => 'Opciones ágiles y equilibradas para pausas que reactivan, favorecen la concentración y mantienen la energía estable.',
-        'ev_br_label'        => 'Brunch',
-        'ev_br_h2'           => 'Brunch',
-        'ev_br_desc'         => 'Una propuesta más completa y versátil, ideal para encuentros distendidos que combinan trabajo y socialización.',
-        'ev_td_label'        => 'Tardeo',
-        'ev_td_h2'           => 'Tardeo',
-        'ev_td_desc'         => 'El formato perfecto para cerrar el día con un ambiente más relajado, sin renunciar a una alimentación cuidada.',
+        // Eventos — Opción 1: Experiencias TUOI (catálogo de menús cerrados)
+        'ev_opt1_label'      => 'Experiencias TUOI',
+        'ev_opt1_title'      => 'Experiencias TUOI',
+        'ev_opt1_desc'       => 'Tres formatos diseñados para acompañar cada tipo de encuentro. Elige y nosotros nos encargamos del resto.',
+        'ev_opt1_cta'        => 'Ver experiencias',
+        // Eventos — Opción 2: Evento a tu medida
+        'ev_opt2_label'      => 'A tu medida',
+        'ev_opt2_title'      => 'Diseñado a tu medida',
+        'ev_opt2_desc'       => 'Diseñamos el menú contigo según el formato, las personas y lo que quieres transmitir.',
+        'ev_opt2_cta_primary'   => 'Descubre tus posibilidades',
+        'ev_opt2_cta_secondary' => 'Contáctanos',
+        // Eventos · Página hija "Experiencias listas para disfrutar"
+        'ev_el_h1'           => 'Listos para disfrutar',
+        'ev_el_intro'        => 'Tres formatos pensados para acompañar cada tipo de encuentro: desde una pausa que activa, hasta una experiencia gastronómica completa.',
+        // Flow Coffee Essential
+        'ev_el_e1_tagline'   => 'La pausa perfecta para mantener la energía y el ritmo del evento.',
+        'ev_el_e1_body'      => "<p><strong>Concepto:</strong> coffee break saludable, elegante y funcional.</p>\n<p><strong>Ideal para:</strong></p>\n<ul>\n<li>Reuniones</li>\n<li>Workshops</li>\n<li>Eventos corporativos</li>\n<li>Presentaciones</li>\n<li>Jornadas deportivas</li>\n</ul>\n<p><strong>Incluye:</strong></p>\n<ul>\n<li>Café de especialidad, infusiones, zumo de naranja natural, leche semi, sin lactosa y de avena, botellas de agua.</li>\n<li>Mini bakery (croissant y pops de chocolate).</li>\n<li>Mini salados: pulguitas de brie, jamón y mermelada de tomate; pavo con cremoso de aguacate; mini croissant de tomate, 4 quesos y espinacas.</li>\n<li>Fruta.</li>\n<li>Opciones veganas y sin gluten, bajo petición.</li>\n</ul>",
+        // Flow Coffee Signature
+        'ev_el_e2_tagline'   => 'Mucho más que un coffee break: una experiencia diseñada para activar cuerpo y mente.',
+        'ev_el_e2_body'      => "<p><strong>Concepto:</strong> experiencia coffee break premium con enfoque wellness y funcional.</p>\n<p><strong>Incluye:</strong></p>\n<ul>\n<li>Café de especialidad, infusiones, zumo de naranja natural, leche semi, sin lactosa y de avena, botellas de agua.</li>\n<li>Mini croissant.</li>\n<li>Mini cookies.</li>\n<li>Mini muffins.</li>\n<li>Mini salados: pulguitas de brie, jamón y mermelada de tomate; pavo con cremoso de aguacate; mini croissant de tomate, 4 quesos y espinacas.</li>\n<li>Mini empanadillas de pisto.</li>\n<li>Vasito de yogurt con granola casera.</li>\n<li>Fruta.</li>\n<li>Opciones veganas y sin gluten, bajo petición.</li>\n</ul>",
+        // Social Cocktail Essential
+        'ev_el_e3_tagline'   => 'Una propuesta fresca y cuidada para eventos donde conectar también forma parte de la experiencia.',
+        'ev_el_e3_body'      => "<p><strong>Concepto:</strong> cóctel dinámico, elegante y social.</p>\n<p><strong>Incluye:</strong></p>\n<ul>\n<li>Bebida: cerveza, refresco o agua.</li>\n<li>Hojaldres de cremoso de aguacate con jamón ibérico.</li>\n<li>Tortilla de patata.</li>\n</ul>",
+        // Social Cocktail Signature
+        'ev_el_e4_tagline'   => 'Una experiencia gastronómica diseñada para sorprender, emocionar y crear recuerdo.',
+        'ev_el_e4_body'      => "<p><strong>Añadir:</strong></p>\n<ul>\n<li>Showcooking.</li>\n<li>Estaciones en vivo.</li>\n<li>Maridajes funcionales.</li>\n<li>Mixología saludable.</li>\n<li>Coctelería de autor.</li>\n<li>Experiencias temáticas.</li>\n<li>Menú diseñado según el tipo de evento.</li>\n<li>Puesta en escena premium.</li>\n</ul>",
+        // Table Experience Essential
+        'ev_el_e5_tagline'   => 'Comida real y equilibrada para encuentros donde compartir es parte del momento.',
+        'ev_el_e5_body'      => "<p><strong>Concepto:</strong> brunch o comida informal saludable y moderna.</p>\n<p><strong>Incluye:</strong></p>\n<ul>\n<li>Bowls.</li>\n<li>Focaccias.</li>\n<li>Ensaladas premium.</li>\n<li>Platos para compartir.</li>\n<li>Opciones funcionales.</li>\n<li>Postres saludables.</li>\n</ul>",
+        // Table Experience Signature
+        'ev_el_e6_tagline'   => 'Una experiencia gastronómica premium donde bienestar, estética y sabor se unen.',
+        'ev_el_e6_body'      => "<p><strong>Añadir:</strong></p>\n<ul>\n<li>Brunch experiencial.</li>\n<li>Estaciones gastronómicas.</li>\n<li>Menú personalizado.</li>\n<li>Platos inspirados en nutrición deportiva.</li>\n<li>Showcooking.</li>\n<li>Menú wellness.</li>\n<li>Experiencia sensorial.</li>\n<li>Maridaje funcional.</li>\n<li>Diseño visual personalizado.</li>\n</ul>",
+        // Servicio incluido (común a todas las experiencias)
+        'ev_el_service_body' => "<ul>\n<li>Opciones alimentarias adaptadas: sin gluten, sin lactosa y vegetarianas.</li>\n<li>Uso preferente de materiales de servicio reciclables o reutilizables, reduciendo plásticos de un solo uso. Envases reutilizables o reciclables (tapers) para minimizar el desperdicio alimentario.</li>\n<li>Transporte y logística del servicio.</li>\n<li>Montaje y preparación del espacio.</li>\n<li>Material de servicio: menaje, mesas auxiliares y mantelería si procede.</li>\n<li>Personal para atención durante el servicio.</li>\n</ul>",
+        // Condiciones de contratación y pago
+        'ev_el_conditions_body' => "<h4>Condiciones de contratación</h4>\n<p>El número final de comensales y el desglose de menús (vegetarianos, intolerancias alimentarias) deberá confirmarse como máximo 8 días antes de la fecha del evento. Cualquier modificación posterior estará sujeta a disponibilidad y posible ajuste presupuestario.</p>\n<h4>Anulaciones</h4>\n<p>Las anulaciones deberán realizarse exclusivamente por teléfono o correo electrónico, siendo imprescindible la confirmación expresa por parte de la empresa. No se aceptarán anulaciones en el buzón de voz. Con menos de 24 horas laborables de antelación, se cobrará el importe íntegro del pedido.</p>\n<p>Toda la vajilla, menaje o material atribuibles al evento será de materiales desechables y biodegradables si no se indica lo contrario. La aceptación de esta propuesta implica la plena conformidad con todas las condiciones aquí expuestas.</p>\n<h4>Condiciones de pago</h4>\n<p>Para confirmar la fecha y el servicio, será necesario realizar un anticipo del 50% del importe total, que servirá como garantía de reserva. El 50% restante se deberá abonar 48 horas antes del inicio del servicio.</p>\n<p>En caso de contratación con menos de 7 días de antelación, se requerirá el 100% del importe total como pago único y anticipado.</p>",
         // Eventos — CTA
         'ev_cta_h2'          => '¿Tienes un evento en mente?',
         'ev_cta_text'        => 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.',
