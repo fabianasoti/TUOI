@@ -9,37 +9,38 @@ $page_title = $lang === 'en' ? 'Ready to enjoy | TUOI' : 'Listos para disfrutar 
 require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);
 
-// Estructura fija de categorías y experiencias. Los textos se editan desde
-// admin/contenido.php (keys ev_el_*).
+// Estructura fija de categorías y experiencias. Los textos vienen de claves
+// editables desde admin/contenido.php (keys ev_el_*). Solo el "anchor" y el
+// "level_key" (que apunta a la clave compartida de nivel) son fijos.
 $el_categories = [
     [
-        'anchor'   => 'flow-coffee',
-        'label'    => 'Catering corporativo',
-        'title'    => 'Coffee Break',
-        'audience' => 'Reuniones · Workshops · Eventos corporativos · Presentaciones · Jornadas deportivas',
-        'cards'  => [
-            ['key' => 'e1', 'level' => 'Essential', 'name' => 'Flow Coffee Essential'],
-            ['key' => 'e2', 'level' => 'Signature', 'name' => 'Flow Coffee Signature'],
+        'anchor'    => 'flow-coffee',
+        'label_key' => 'ev_el_cat1_label',
+        'title_key' => 'ev_el_cat1_title',
+        'audience_key' => 'ev_el_cat1_audience',
+        'cards'     => [
+            ['key' => 'e1', 'level_key' => 'ev_el_level_essential', 'name_key' => 'ev_el_e1_name', 'level_class' => 'essential'],
+            ['key' => 'e2', 'level_key' => 'ev_el_level_signature', 'name_key' => 'ev_el_e2_name', 'level_class' => 'signature'],
         ],
     ],
     [
-        'anchor'   => 'social-cocktail',
-        'label'    => 'Cóctel',
-        'title'    => 'Social Cocktail',
-        'audience' => '',
-        'cards'  => [
-            ['key' => 'e3', 'level' => 'Essential', 'name' => 'Social Cocktail Essential'],
-            ['key' => 'e4', 'level' => 'Signature', 'name' => 'Social Cocktail Signature'],
+        'anchor'    => 'social-cocktail',
+        'label_key' => 'ev_el_cat2_label',
+        'title_key' => 'ev_el_cat2_title',
+        'audience_key' => 'ev_el_cat2_audience',
+        'cards'     => [
+            ['key' => 'e3', 'level_key' => 'ev_el_level_essential', 'name_key' => 'ev_el_e3_name', 'level_class' => 'essential'],
+            ['key' => 'e4', 'level_key' => 'ev_el_level_signature', 'name_key' => 'ev_el_e4_name', 'level_class' => 'signature'],
         ],
     ],
     [
-        'anchor'   => 'table-experience',
-        'label'    => 'Brunch & Comida',
-        'title'    => 'Table Experience',
-        'audience' => '',
-        'cards'  => [
-            ['key' => 'e5', 'level' => 'Essential', 'name' => 'Table Experience Essential'],
-            ['key' => 'e6', 'level' => 'Signature', 'name' => 'Table Experience Signature'],
+        'anchor'    => 'table-experience',
+        'label_key' => 'ev_el_cat3_label',
+        'title_key' => 'ev_el_cat3_title',
+        'audience_key' => 'ev_el_cat3_audience',
+        'cards'     => [
+            ['key' => 'e5', 'level_key' => 'ev_el_level_essential', 'name_key' => 'ev_el_e5_name', 'level_class' => 'essential'],
+            ['key' => 'e6', 'level_key' => 'ev_el_level_signature', 'name_key' => 'ev_el_e6_name', 'level_class' => 'signature'],
         ],
     ],
 ];
@@ -51,7 +52,7 @@ $el_categories = [
 <section class="page-hero ev-hero el-hero">
     <a href="<?= $base ?>pages/eventos/" class="el-hero__back">
         <span class="el-hero__back-arrow" aria-hidden="true">←</span>
-        <span class="el-hero__back-text"><?= $lang === 'en' ? 'Back to Events' : 'Volver a Eventos' ?></span>
+        <span class="el-hero__back-text"><?= htmlspecialchars($c['ev_el_back_text'] ?? 'Volver a Eventos') ?></span>
     </a>
     <span class="section-label"><?= htmlspecialchars($c['ev_opt1_label'] ?? 'Experiencias TUOI') ?></span>
     <h1><?= htmlspecialchars($c['ev_el_h1'] ?? 'Listos para disfrutar') ?></h1>
@@ -64,32 +65,38 @@ $el_categories = [
 <nav class="el-subnav" aria-label="Categorías">
     <div class="el-subnav__inner">
         <?php foreach ($el_categories as $cat): ?>
-        <a href="#<?= $cat['anchor'] ?>" class="el-subnav__link"><?= htmlspecialchars($cat['title']) ?></a>
+        <a href="#<?= $cat['anchor'] ?>" class="el-subnav__link"><?= htmlspecialchars($c[$cat['title_key']] ?? '') ?></a>
         <?php endforeach; ?>
     </div>
 </nav>
 
 <!-- ── CATEGORÍAS ────────────────────────────────────────────────────────── -->
-<?php foreach ($el_categories as $cat): ?>
+<?php foreach ($el_categories as $cat):
+    $catLabel    = $c[$cat['label_key']]    ?? '';
+    $catTitle    = $c[$cat['title_key']]    ?? '';
+    $catAudience = $c[$cat['audience_key']] ?? '';
+?>
 <section class="el-section" id="<?= $cat['anchor'] ?>">
     <div class="el-section__inner">
         <header class="el-section__head">
-            <?php if (!empty($cat['label'])): ?>
-            <span class="section-label"><?= htmlspecialchars($cat['label']) ?></span>
+            <?php if ($catLabel !== ''): ?>
+            <span class="section-label"><?= htmlspecialchars($catLabel) ?></span>
             <?php endif; ?>
-            <h2><?= htmlspecialchars($cat['title']) ?></h2>
-            <?php if (!empty($cat['audience'])): ?>
-            <p class="el-section__audience"><?= htmlspecialchars($cat['audience']) ?></p>
+            <h2><?= htmlspecialchars($catTitle) ?></h2>
+            <?php if ($catAudience !== ''): ?>
+            <p class="el-section__audience"><?= htmlspecialchars($catAudience) ?></p>
             <?php endif; ?>
         </header>
         <div class="el-cards">
             <?php foreach ($cat['cards'] as $card):
-                $tk = "ev_el_{$card['key']}_tagline";
-                $bk = "ev_el_{$card['key']}_body";
+                $tk        = "ev_el_{$card['key']}_tagline";
+                $bk        = "ev_el_{$card['key']}_body";
+                $cardName  = $c[$card['name_key']]  ?? '';
+                $cardLevel = $c[$card['level_key']] ?? '';
             ?>
-            <article class="el-card el-card--<?= strtolower($card['level']) ?>">
-                <span class="el-card__level"><?= htmlspecialchars($card['level']) ?></span>
-                <h3 class="el-card__title"><?= htmlspecialchars($card['name']) ?></h3>
+            <article class="el-card el-card--<?= $card['level_class'] ?>">
+                <span class="el-card__level"><?= htmlspecialchars($cardLevel) ?></span>
+                <h3 class="el-card__title"><?= htmlspecialchars($cardName) ?></h3>
                 <?php if (!empty($c[$tk])): ?>
                 <blockquote class="el-card__tagline"><?= htmlspecialchars($c[$tk]) ?></blockquote>
                 <?php endif; ?>
@@ -107,8 +114,10 @@ $el_categories = [
 <?php if (!empty($c['ev_el_service_body'])): ?>
 <section class="el-service">
     <div class="el-service__inner">
-        <span class="section-label">Servicio</span>
-        <h2><?= $lang === 'en' ? 'What the service includes' : 'Lo que incluye el servicio' ?></h2>
+        <?php if (!empty($c['ev_el_service_label'])): ?>
+        <span class="section-label"><?= htmlspecialchars($c['ev_el_service_label']) ?></span>
+        <?php endif; ?>
+        <h2><?= htmlspecialchars($c['ev_el_service_h2'] ?? 'Lo que incluye el servicio') ?></h2>
         <div class="el-service__body"><?= $c['ev_el_service_body'] ?></div>
     </div>
 </section>
@@ -120,7 +129,7 @@ $el_categories = [
     <div class="el-conditions__inner">
         <details class="el-conditions__details">
             <summary>
-                <span class="el-conditions__label"><?= $lang === 'en' ? 'Booking & payment terms' : 'Condiciones de contratación y pago' ?></span>
+                <span class="el-conditions__label"><?= htmlspecialchars($c['ev_el_conditions_label'] ?? 'Condiciones de contratación y pago') ?></span>
                 <span class="el-conditions__icon" aria-hidden="true">+</span>
             </summary>
             <div class="el-conditions__body"><?= $c['ev_el_conditions_body'] ?></div>

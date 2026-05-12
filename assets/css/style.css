@@ -2390,6 +2390,22 @@ a { color: inherit; }
     background: radial-gradient(ellipse at center top, rgba(227, 148, 53, .08), transparent 60%);
     pointer-events: none;
 }
+/* ── Variante con imagen de fondo (--ev-cta-img inyectada en línea) ── */
+.ev-cta--with-image {
+    background-image: var(--ev-cta-img);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--texto-oscuro);
+}
+.ev-cta--with-image .ev-cta__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(20, 14, 8, .55) 0%, rgba(20, 14, 8, .78) 100%);
+    pointer-events: none;
+}
+.ev-cta--with-image .ev-cta__inner { z-index: 1; }
 .ev-cta__inner {
     max-width: 720px;
     margin: 0 auto;

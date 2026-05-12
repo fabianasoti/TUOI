@@ -133,6 +133,11 @@ $why_img  = !empty($why_imgs) ? basename($why_imgs[0]) : null;
 $logos_dir  = dirname(__DIR__, 2) . '/assets/img/eventos/logos/';
 $logos_imgs = load_ordered_images($conexion, 'eventos/logos', $logos_dir, '*.{webp,jpg,jpeg,png,svg}');
 
+// ── Imagen de fondo del CTA final ───────────────────────────────────────────
+$cta_dir  = dirname(__DIR__, 2) . '/assets/img/eventos/cta-fondo/';
+$cta_imgs = load_ordered_images($conexion, 'eventos/cta-fondo', $cta_dir, '*.{webp,jpg,jpeg,png}');
+$cta_img  = !empty($cta_imgs) ? basename($cta_imgs[0]) : null;
+
 // ── Testimonios (carrusel) ─────────────────────────────────────────────────
 $testimonios = [];
 if ($conexion) {
@@ -371,7 +376,11 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
 <?php endif; ?>
 
 <!-- ── CTA ────────────────────────────────────────────────────────────────── -->
-<section class="ev-cta">
+<section class="ev-cta<?= $cta_img ? ' ev-cta--with-image' : '' ?>"
+         <?= $cta_img ? 'style="--ev-cta-img: url(\'' . $base . 'assets/img/eventos/cta-fondo/' . htmlspecialchars($cta_img, ENT_QUOTES) . '\');"' : '' ?>>
+    <?php if ($cta_img): ?>
+    <div class="ev-cta__overlay" aria-hidden="true"></div>
+    <?php endif; ?>
     <div class="ev-cta__inner">
         <h2><?= htmlspecialchars($c['ev_cta_h2'] ?? '¿Tienes un evento en mente?') ?></h2>
         <p><?= htmlspecialchars($c['ev_cta_text'] ?? 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.') ?></p>

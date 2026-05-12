@@ -18,14 +18,11 @@ $sections = [
     'carta/momento-dulce'    => ['label' => 'Carta — Momento Dulce',        'path' => $base_img . 'carta/momento-dulce/'],
     'carta/bebidas'          => ['label' => 'Carta — Bebidas',              'path' => $base_img . 'carta/bebidas/'],
     'carta/superalimentos'   => ['label' => 'Carta — Superalimentos',       'path' => $base_img . 'carta/superalimentos/'],
-    // Eventos — carrusel y por qué TUOI
+    // Eventos — bloques de la página
     'eventos/carrusel'       => ['label' => 'Eventos — Carrusel',           'path' => $base_img . 'eventos/carrusel/'],
     'eventos/por-que-tuoi'   => ['label' => 'Eventos — Por qué TUOI',       'path' => $base_img . 'eventos/por-que-tuoi/'],
     'eventos/logos'          => ['label' => 'Eventos — Logos clientes',     'path' => $base_img . 'eventos/logos/'],
-    // Eventos — imágenes de sub-menús (se suben desde "Gestión de Eventos")
-    'eventos/coffee-break'   => ['label' => 'Eventos — Coffee Break',       'path' => $base_img . 'eventos/coffee-break/'],
-    'eventos/brunch'         => ['label' => 'Eventos — Brunch',             'path' => $base_img . 'eventos/brunch/'],
-    'eventos/tardeo'         => ['label' => 'Eventos — Tardeo',             'path' => $base_img . 'eventos/tardeo/'],
+    'eventos/cta-fondo'      => ['label' => 'Eventos — Fondo del CTA',      'path' => $base_img . 'eventos/cta-fondo/'],
     // Carta — English
     'carta/desayunos-en'     => ['label' => 'Carta — Desayunos (EN)',       'path' => $base_img . 'carta/desayunos-en/'],
     'carta/toque-salado-en'  => ['label' => 'Carta — Toque Salado (EN)',    'path' => $base_img . 'carta/toque-salado-en/'],
@@ -40,6 +37,14 @@ if (!array_key_exists($active_section, $sections)) $active_section = 'carteles';
 $dir_path = $sections[$active_section]['path'];
 $success  = '';
 $error    = '';
+
+// Auto-creación de la carpeta de la sección si aún no existe. Lo hace PHP (no
+// Windows / PowerShell) para que el owner y los permisos coincidan con los del
+// usuario de Apache; así evitamos errores de "no se puede mover al servidor"
+// al subir archivos a carpetas recién registradas en el admin.
+if (!is_dir($dir_path)) {
+    @mkdir($dir_path, 0775, true);
+}
 
 // ── Handle upload ────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagen'])) {

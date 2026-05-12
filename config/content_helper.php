@@ -128,6 +128,34 @@ function load_site_content($conexion, string $lang = 'es') {
         // Eventos · Página hija "Experiencias listas para disfrutar"
         'ev_el_h1'           => 'Listos para disfrutar',
         'ev_el_intro'        => 'Tres formatos pensados para acompañar cada tipo de encuentro: desde una pausa que activa, hasta una experiencia gastronómica completa.',
+        'ev_el_back_text'    => 'Volver a Eventos',
+        // Niveles de tarjeta (compartido por todas las experiencias)
+        'ev_el_level_essential' => 'Essential',
+        'ev_el_level_signature' => 'Signature',
+        // Categoría 1 — Coffee Break
+        'ev_el_cat1_label'    => 'Catering corporativo',
+        'ev_el_cat1_title'    => 'Coffee Break',
+        'ev_el_cat1_audience' => 'Reuniones · Workshops · Eventos corporativos · Presentaciones · Jornadas deportivas',
+        // Categoría 2 — Social Cocktail
+        'ev_el_cat2_label'    => 'Cóctel',
+        'ev_el_cat2_title'    => 'Social Cocktail',
+        'ev_el_cat2_audience' => '',
+        // Categoría 3 — Table Experience
+        'ev_el_cat3_label'    => 'Brunch & Comida',
+        'ev_el_cat3_title'    => 'Table Experience',
+        'ev_el_cat3_audience' => '',
+        // Nombres de las 6 tarjetas
+        'ev_el_e1_name'       => 'Flow Coffee Essential',
+        'ev_el_e2_name'       => 'Flow Coffee Signature',
+        'ev_el_e3_name'       => 'Social Cocktail Essential',
+        'ev_el_e4_name'       => 'Social Cocktail Signature',
+        'ev_el_e5_name'       => 'Table Experience Essential',
+        'ev_el_e6_name'       => 'Table Experience Signature',
+        // Servicio (encabezado)
+        'ev_el_service_label' => 'Servicio',
+        'ev_el_service_h2'    => 'Lo que incluye el servicio',
+        // Condiciones (label del colapsable)
+        'ev_el_conditions_label' => 'Condiciones de contratación y pago',
         // Flow Coffee Essential
         'ev_el_e1_tagline'   => 'La pausa perfecta para mantener la energía y el ritmo del evento.',
         'ev_el_e1_body'      => "<p><strong>Concepto:</strong> coffee break saludable, elegante y funcional.</p>\n<p><strong>Ideal para:</strong></p>\n<ul>\n<li>Reuniones</li>\n<li>Workshops</li>\n<li>Eventos corporativos</li>\n<li>Presentaciones</li>\n<li>Jornadas deportivas</li>\n</ul>\n<p><strong>Incluye:</strong></p>\n<ul>\n<li>Café de especialidad, infusiones, zumo de naranja natural, leche semi, sin lactosa y de avena, botellas de agua.</li>\n<li>Mini bakery (croissant y pops de chocolate).</li>\n<li>Mini salados: pulguitas de brie, jamón y mermelada de tomate; pavo con cremoso de aguacate; mini croissant de tomate, 4 quesos y espinacas.</li>\n<li>Fruta.</li>\n<li>Opciones veganas y sin gluten, bajo petición.</li>\n</ul>",

@@ -503,6 +503,234 @@ textarea.form-control {
     .form-grid-2 { grid-template-columns: 1fr; }
 }
 
+/* ── Editor rico (Quill) ──────────────────────────────── */
+.rt-wrapper {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--card-bg);
+}
+.rt-wrapper:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(197,99,210,.12);
+}
+/* Anular bordes propios de Quill — usamos el del wrapper para alinear con el resto del form */
+.rt-wrapper .ql-toolbar.ql-snow,
+.rt-wrapper .ql-container.ql-snow {
+    border: 0;
+}
+.rt-wrapper .ql-toolbar.ql-snow {
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,.02);
+}
+.rt-wrapper .ql-container {
+    font-family: inherit;
+    font-size: 14px;
+}
+.rt-wrapper .ql-editor {
+    min-height: 140px;
+    color: var(--text);
+}
+.rt-wrapper .ql-editor.ql-blank::before {
+    color: var(--muted);
+    font-style: normal;
+}
+
+/* ── Toolbar (buscador + acciones) ─────────────────────── */
+.cards-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--bg);
+    padding: 10px 0 14px;
+    margin-bottom: 4px;
+}
+.cards-search {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0 12px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.cards-search:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(197,99,210,.12);
+}
+.cards-search__icon {
+    color: var(--muted);
+    font-size: 14px;
+    margin-right: 8px;
+    line-height: 1;
+}
+.cards-search__input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--text);
+    min-width: 0;
+}
+.cards-search__clear {
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 6px;
+}
+.cards-search__clear:hover { color: var(--text); }
+.cards-toolbar__actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* ── Card plegable (acordeón) ──────────────────────────── */
+.card.is-collapsible > .card-header {
+    cursor: pointer;
+    user-select: none;
+    transition: margin-bottom .15s ease, padding-bottom .15s ease, border-color .15s ease;
+}
+.card.is-collapsible > .card-header:hover .card-chevron {
+    color: var(--accent);
+}
+.card-chevron {
+    color: var(--muted);
+    font-size: 13px;
+    transition: transform .2s ease, color .15s ease;
+    flex-shrink: 0;
+    margin-left: 4px;
+    line-height: 1;
+}
+.card.is-collapsed > .card-header {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom-color: transparent;
+}
+.card.is-collapsed > .card-body {
+    display: none;
+}
+.card.is-collapsed .card-chevron {
+    transform: rotate(-90deg);
+}
+
+/* ── Topbar breadcrumb (sección hija de Eventos, etc.) ── */
+.topbar-title .tb-parent {
+    color: var(--muted);
+    font-weight: 500;
+}
+.topbar-title .tb-sep {
+    color: var(--muted);
+    margin: 0 4px;
+    font-weight: 400;
+}
+
+/* ── Section-badge — variante atenuada para anidamiento ── */
+.section-badge.section-badge--muted {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+}
+
+/* ── Hub de contenido (selector de página) ─────────────── */
+.hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+}
+
+.hub-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.hub-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+.hub-card__icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.hub-card__body { flex: 1; min-width: 0; }
+.hub-card__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.hub-card__desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+/* Grupo (Eventos + sus 2 hijas) — ocupa el ancho del grid */
+.hub-group {
+    grid-column: 1 / -1;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px 18px;
+    background: rgba(197,99,210,.03);
+}
+.hub-group__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+}
+.hub-group__icon { font-size: 14px; }
+.hub-group__children {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+}
+.hub-card--parent {
+    grid-column: 1 / -1;
+    background: var(--card-bg);
+}
+.hub-card--child {
+    position: relative;
+    padding-left: 28px;
+}
+.hub-card--child::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 22px;
+    width: 10px;
+    height: 1px;
+    background: var(--accent);
+    opacity: .5;
+}
+
 /* ── Login page ──────────────────────────────────────────*/
 .login-page {
     min-height: 100vh;
