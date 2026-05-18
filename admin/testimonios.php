@@ -217,6 +217,7 @@ function tab_url($lang, $extra = []) {
                     <div class="card-title"><span>➕</span> Añadir testimonio</div>
                 </div>
                 <form method="post">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="add">
                     <div class="form-group">
                         <label class="form-label">Cita *</label>
@@ -243,6 +244,7 @@ function tab_url($lang, $extra = []) {
                     <div class="card-title"><span>✏️</span> Editar testimonio #<?= (int)$edit_t['id'] ?></div>
                 </div>
                 <form method="post">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="edit_es">
                     <input type="hidden" name="id" value="<?= (int)$edit_t['id'] ?>">
                     <div class="form-group">
@@ -293,6 +295,7 @@ function tab_url($lang, $extra = []) {
                 </div>
 
                 <form method="post">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="edit_en">
                     <input type="hidden" name="id" value="<?= (int)$edit_t['id'] ?>">
                     <div class="form-group">
@@ -364,6 +367,7 @@ function tab_url($lang, $extra = []) {
                                     <?= $t['active'] ? 'Activo' : 'Inactivo' ?>
                                 </span>
                                 <form method="post" style="display:inline;">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="toggle">
                                     <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
                                     <button type="submit" class="btn btn-secondary btn-sm" title="Alternar visibilidad">
@@ -372,6 +376,7 @@ function tab_url($lang, $extra = []) {
                                 </form>
                                 <a href="<?= tab_url('es', ['edit' => (int)$t['id']]) ?>" class="btn btn-secondary btn-sm" title="Editar">✏️</a>
                                 <form method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar este testimonio?');">
+                                    <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
                                     <button type="submit" class="btn btn-secondary btn-sm" style="color:#c0392b;" title="Eliminar">🗑️</button>
@@ -418,6 +423,7 @@ function tab_url($lang, $extra = []) {
         const ids = [...list.querySelectorAll('.t-item')].map(el => el.dataset.id);
         const fd = new FormData();
         fd.append('save_order', JSON.stringify(ids));
+        fd.append('csrf_token', <?= json_encode(csrf_token()) ?>);
         fetch('testimonios.php', { method: 'POST', body: fd });
     }
 })();

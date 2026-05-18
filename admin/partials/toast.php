@@ -15,9 +15,9 @@
 <?php if (!empty($success) || !empty($error)): ?>
 <div class="admin-toast <?= !empty($success) ? 'toast-success' : 'toast-error' ?>" id="admin-toast" role="alert">
     <?php if (!empty($success)): ?>
-        ✅ <?= $success ?>
+        ✅ <?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?>
     <?php else: ?>
-        ⚠️ <?= htmlspecialchars($error) ?>
+        ⚠️ <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
     <?php endif; ?>
     <button class="toast-close" onclick="this.parentElement.remove()" aria-label="Cerrar">✕</button>
 </div>

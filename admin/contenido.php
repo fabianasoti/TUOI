@@ -272,6 +272,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">
                             Etiqueta superior <span class="hint">ej: "Cafetería · Valencia"</span>
@@ -302,6 +303,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
@@ -335,6 +337,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Etiqueta</label>
                         <input name="fil_label<?= $key_suffix ?>" type="text" class="form-control"
@@ -423,6 +426,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta superior</label>
@@ -484,6 +488,7 @@ if ($section) {
                     Bloque manifiesto entre el carrusel y "Por qué TUOI". Si los dos párrafos quedan vacíos, la sección no se muestra.
                 </p>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Etiqueta superior</label>
                         <input name="ev_intro_label<?= $key_suffix ?>" type="text" class="form-control"
@@ -510,6 +515,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
@@ -561,6 +567,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Etiqueta de la sección</label>
                         <input name="ev_social_label<?= $key_suffix ?>" type="text" class="form-control"
@@ -589,6 +596,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
@@ -618,6 +626,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta</label>
@@ -656,6 +665,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Etiqueta</label>
                         <input name="ev_opt2_label<?= $key_suffix ?>" type="text" class="form-control"
@@ -695,6 +705,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Título H2</label>
                         <input name="ev_cta_h2<?= $key_suffix ?>" type="text" class="form-control"
@@ -722,6 +733,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">
                             Texto del banner
@@ -742,6 +754,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Teléfono</label>
                         <input name="contact_phone<?= $key_suffix ?>" type="text" class="form-control"
@@ -774,6 +787,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-intro">
+                    <?= csrf_field() ?>
                     <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
                         Hero de <a href="../pages/eventos/eventos-listos/" target="_blank" style="color:var(--primary);">/eventos/eventos-listos/</a>. El título grande y la introducción que aparece debajo.
                     </p>
@@ -806,6 +820,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-categories">
+                    <?= csrf_field() ?>
                     <p style="font-size:13px;color:var(--muted);margin:0 0 14px;">
                         Encabezado de cada una de las 3 categorías (Coffee Break, Social Cocktail, Table Experience) y el nombre de los 2 niveles compartidos (Essential / Signature).
                     </p>
@@ -885,6 +900,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>#<?= $cardId ?>">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Nombre de la tarjeta</label>
                         <input name="ev_el_<?= $exKey ?>_name<?= $key_suffix ?>" type="text" class="form-control"
@@ -914,6 +930,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-service">
+                    <?= csrf_field() ?>
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Etiqueta superior</label>
@@ -945,6 +962,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>#card-el-conditions">
+                    <?= csrf_field() ?>
                     <div class="form-group">
                         <label class="form-label">Título del bloque desplegable</label>
                         <input name="ev_el_conditions_label<?= $key_suffix ?>" type="text" class="form-control"
@@ -989,6 +1007,7 @@ if ($section) {
                     </div>
                 </div>
                 <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
 
                     <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Hero de página</p>
                     <div class="form-grid-2">

@@ -277,6 +277,7 @@ $url_path      = $base_url . ltrim(str_replace($base_img, '', $dir_path), '/');
                     </div>
                 </div>
                 <form method="post" enctype="multipart/form-data" id="upload-form">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="section" value="<?= htmlspecialchars($active_section) ?>">
                     <input id="file-input" name="imagen[]" type="file"
                            accept=".jpg,.jpeg,.png,.webp,.gif" multiple style="display:none">
@@ -303,6 +304,7 @@ $url_path      = $base_url . ltrim(str_replace($base_img, '', $dir_path), '/');
                     <div style="display:flex;align-items:center;gap:10px;">
                         <span style="font-size:12px;color:var(--muted);">Arrastra para reordenar</span>
                         <form method="post" id="order-form">
+                            <?= csrf_field() ?>
                             <input type="hidden" name="section" value="<?= htmlspecialchars($active_section) ?>">
                             <input type="hidden" name="save_order" id="order-input" value="">
                             <button type="submit" id="save-order-btn" class="btn btn-verde btn-sm" disabled>
@@ -340,6 +342,7 @@ $url_path      = $base_url . ltrim(str_replace($base_img, '', $dir_path), '/');
 
                 <!-- Hidden delete form -->
                 <form method="post" id="delete-form" style="display:none">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="section"     value="<?= htmlspecialchars($active_section) ?>">
                     <input type="hidden" name="delete_file" id="delete-filename" value="">
                 </form>

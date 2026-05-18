@@ -50,9 +50,6 @@ if (isset($conexion) && $conexion) {
             <span class="nav-icon">🖼️</span> Imágenes
         </a>
 
-        <a href="eventos.php" class="nav-item <?= $current_admin_page === 'eventos.php' ? 'active' : '' ?>">
-            <span class="nav-icon">🎉</span> Eventos
-        </a>
         <a href="testimonios.php" class="nav-item <?= $current_admin_page === 'testimonios.php' ? 'active' : '' ?>">
             <span class="nav-icon">💬</span> Testimonios
         </a>

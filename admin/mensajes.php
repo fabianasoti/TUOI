@@ -137,6 +137,7 @@ if ($res) while ($row = mysqli_fetch_assoc($res)) $messages[] = $row;
 
                 <?php if ($unread_count > 0): ?>
                 <form method="post" style="margin-left:auto;">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="mark_all_read">
                     <button type="submit" class="btn btn-secondary btn-sm">✓ Marcar todos como leídos</button>
                 </form>
@@ -190,6 +191,7 @@ if ($res) while ($row = mysqli_fetch_assoc($res)) $messages[] = $row;
 
                         <div class="msg-actions">
                             <form method="post" style="display:inline;">
+                                <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="toggle_read">
                                 <input type="hidden" name="id" value="<?= (int) $m['id'] ?>">
                                 <button type="submit" class="btn-link">
@@ -200,6 +202,7 @@ if ($res) while ($row = mysqli_fetch_assoc($res)) $messages[] = $row;
                                class="btn-link">↩ Responder</a>
                             <form method="post" style="display:inline; margin-left:auto;"
                                   onsubmit="return confirm('¿Eliminar este mensaje? Esta acción no se puede deshacer.');">
+                                <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= (int) $m['id'] ?>">
                                 <button type="submit" class="btn-link danger">🗑 Eliminar</button>
