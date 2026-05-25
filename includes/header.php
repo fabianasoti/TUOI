@@ -58,10 +58,11 @@ require_once $base . 'config/lang.php';
             </a>
             <div class="dropdown-menu" role="menu">
                 <a href="<?= $base ?>pages/carta/" role="menuitem"><?= t('cat_desayunos') ?></a>
+                <a href="<?= $base ?>pages/carta/?cat=menu-brunch" role="menuitem"><?= t('cat_brunch') ?></a>
                 <a href="<?= $base ?>pages/carta/?cat=toque-salado" role="menuitem"><?= t('cat_toque') ?></a>
+                <a href="<?= $base ?>pages/carta/?cat=menu-lunch" role="menuitem"><?= t('cat_lunch') ?></a>
                 <a href="<?= $base ?>pages/carta/?cat=momento-dulce" role="menuitem"><?= t('cat_dulce') ?></a>
                 <a href="<?= $base ?>pages/carta/?cat=bebidas" role="menuitem"><?= t('cat_bebidas') ?></a>
-                <a href="<?= $base ?>pages/carta/?cat=superalimentos" role="menuitem"><?= t('cat_super') ?></a>
             </div>
         </div>
 

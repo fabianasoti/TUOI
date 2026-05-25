@@ -49,6 +49,9 @@ if (isset($conexion) && $conexion) {
         <a href="imagenes.php" class="nav-item <?= $current_admin_page === 'imagenes.php' ? 'active' : '' ?>">
             <span class="nav-icon">🖼️</span> Imágenes
         </a>
+        <a href="carta.php" class="nav-item <?= $current_admin_page === 'carta.php' ? 'active' : '' ?>">
+            <span class="nav-icon">🍽️</span> Carta
+        </a>
 
         <a href="testimonios.php" class="nav-item <?= $current_admin_page === 'testimonios.php' ? 'active' : '' ?>">
             <span class="nav-icon">💬</span> Testimonios

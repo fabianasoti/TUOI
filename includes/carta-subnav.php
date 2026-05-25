@@ -10,10 +10,11 @@ global $carta_info;
 $carta_categorias = [
     'index'          => t_raw('subnav_all'),
     'desayunos'      => t_raw('cat_desayunos'),
+    'menu-brunch'    => t_raw('cat_brunch'),
     'toque-salado'   => t_raw('cat_toque'),
+    'menu-lunch'     => t_raw('cat_lunch'),
     'momento-dulce'  => t_raw('cat_dulce'),
     'bebidas'        => t_raw('cat_bebidas'),
-    'superalimentos' => t_raw('cat_super'),
 ];
 ?>
 <nav class="carta-subnav" aria-label="Categorías de la carta">

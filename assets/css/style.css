@@ -647,96 +647,281 @@ a { color: inherit; }
     margin: 0 auto;
 }
 
-/* Cada imagen/PDF → tarjeta con márgenes, fondo y sombra */
-.carta-item {
-    background: var(--blanco);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
-}
-
-.carta-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* PDF embed */
-.carta-pdf-wrap {
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--blanco);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-.carta-pdf {
-    width: 100%;
-    height: 80vh;
-    min-height: 500px;
-    border: none;
-    display: block;
-}
-
-.carta-pdf-fallback {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 4rem 2rem;
-    text-align: center;
-}
-
-/* Sin resultados */
-.carta-sin-resultados {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 5rem 2rem;
-}
-
-.carta-sin-resultados .empty-icon { font-size: 2.5rem; opacity: 0.4; margin-bottom: 1rem; }
-.carta-sin-resultados h3 { font-size: 1.2rem; margin-bottom: 0.4rem; }
-.carta-sin-resultados p { font-size: 0.9rem; color: #999; }
-
 /* ============================================================
-   CARTA — SUBNAV (páginas de categoría individuales)
+   CARTA — Página completa (formato menú impreso)
    ============================================================ */
-.carta-subnav {
-    background: var(--blanco);
-    border-bottom: 1px solid rgba(0,0,0,0.07);
-    padding: 0 5%;
-    overflow-x: auto;
-    scrollbar-width: none;
-    position: sticky;
-    top: var(--navbar-h);
-    z-index: 100;
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+:root {
+    --carta-verde:       #c8d3b0;  /* fondo salvia */
+    --carta-verde-borde: #6b7257;  /* líneas y bordes */
+    --carta-tinta:       #3d4636;  /* texto principal */
+    --carta-tinta-2:     #5d6453;  /* texto secundario */
 }
 
-.carta-subnav::-webkit-scrollbar { display: none; }
+.carta-page {
+    background: var(--carta-verde);
+    color: var(--carta-tinta);
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    padding: 2.5rem 4% 4rem;
+    min-height: calc(100vh - var(--navbar-h, 70px));
+}
 
-.carta-subnav-inner {
-    display: flex;
-    max-width: 1200px;
+/* Cabecera enmarcada con el título de la categoría */
+.carta-cabecera {
+    max-width: 1100px;
     margin: 0 auto;
+    border: 1px solid var(--carta-verde-borde);
+    border-bottom: none;
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
 }
 
-.carta-subnav a {
-    display: block;
-    padding: 1rem 1.1rem;
-    text-decoration: none;
+.carta-cabecera-titulo {
+    font-family: 'Courier Prime', monospace;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--carta-tinta);
+    margin: 0 0 0.6rem;
+}
+
+.carta-cabecera-sub {
+    font-size: 0.95rem;
+    color: var(--carta-tinta-2);
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+/* Tabs de categoría — barra sólida que destaca sobre el fondo salvia */
+.carta-filtros-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--carta-tinta);
+    border: 1px solid var(--carta-tinta);
+    padding: 0;
+}
+
+.carta-filtros {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0;
+    justify-content: center;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+}
+.carta-filtros::-webkit-scrollbar { display: none; }
+
+.filtro-btn { scroll-snap-align: center; }
+
+.filtro-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
     font-size: 0.75rem;
     font-weight: 700;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #999;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    padding: 0.85rem 1.4rem;
+    text-decoration: none;
     white-space: nowrap;
-    border-bottom: 3px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
+    transition: background 0.15s, color 0.15s;
+}
+.filtro-btn:hover {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.12);
+}
+.filtro-btn.active {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.25);
 }
 
-.carta-subnav a:hover { color: var(--texto-oscuro); border-color: rgba(0,0,0,0.15); }
-.carta-subnav a.active { color: var(--naranja); border-color: var(--naranja); }
+/* Cuerpo: layout en 2 columnas tipo periódico (auto-balancea alturas).
+   Cada grupo es un bloque que no se parte entre columnas. */
+.carta-cuerpo {
+    max-width: 1100px;
+    margin: 0 auto;
+    border: 1px solid var(--carta-verde-borde);
+    border-top: none;
+    padding: 2rem 1.5rem;
+    column-count: 2;
+    column-gap: 2rem;
+}
+
+/* Cada grupo (sub-categoría) — bloque que respeta break-inside dentro
+   de la columna y se ajusta a su propio contenido. */
+.carta-grupo {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin: 0 0 1.5rem;
+    padding: 1rem;
+}
+
+/* Cuando el grupo tiene label vertical, lo convertimos en flex row:
+   la columna izquierda (label vertical) y la derecha (ítems) comparten
+   altura por flex. Así si el label rotado necesita más alto que los
+   ítems, el bloque entero crece para que no se salga del borde. */
+.carta-grupo--con-label {
+    border: 1px solid var(--carta-verde-borde);
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+}
+
+.carta-grupo-label {
+    flex: 0 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--carta-verde-borde);
+    padding: 0.6rem 0;
+}
+
+.carta-grupo-label span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--carta-tinta);
+    white-space: nowrap;
+}
+
+/* Lista de ítems dentro de grupo con label: ocupa el resto y tiene su
+   propio padding (sustituye al padding del grupo, que ahora es 0). */
+.carta-grupo--con-label .carta-items {
+    flex: 1 1 auto;
+    padding: 1rem;
+    min-width: 0;
+}
+
+/* Lista de ítems dentro del grupo */
+.carta-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+.carta-item {
+    display: block;
+}
+
+.item-foto {
+    margin-bottom: 0.4rem;
+}
+.item-foto img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+}
+
+.item-cuerpo { display: block; }
+
+/* Cabecera: nombre a la izquierda, precio a la derecha — en la misma línea */
+.item-cabecera {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.item-nombre {
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--carta-tinta);
+    margin: 0;
+    line-height: 1.3;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.item-precio {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--carta-tinta);
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.item-desc {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--carta-tinta-2);
+    margin: 0;
+}
+
+.item-ingredientes {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--carta-tinta-2);
+    font-style: italic;
+    margin: 0.3rem 0 0;
+}
+
+.item-alergenos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0 0;
+}
+
+.alergeno {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.65rem;
+    color: var(--carta-tinta);
+    background: rgba(255,255,255,0.35);
+    border: 1px solid rgba(107,114,87,0.3);
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+}
+.alergeno-label { font-weight: 500; }
+
+/* Estado vacío dentro del marco verde */
+.carta-empty {
+    column-span: all;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--carta-tinta-2);
+    font-size: 0.95rem;
+}
+.carta-empty p { margin: 0.3rem 0; }
+
+/* ── Responsive ── */
+@media (max-width: 800px) {
+    .carta-page { padding: 1.5rem 4% 3rem; }
+    .carta-cabecera { padding: 1.8rem 1rem 1.5rem; }
+    .carta-cuerpo { column-count: 1; padding: 1.5rem 1rem; }
+    .carta-grupo-label { flex-basis: 2rem; }
+    .carta-grupo-label span { font-size: 0.7rem; letter-spacing: 0.25em; }
+    .carta-grupo--con-label .carta-items { padding: 0.8rem; }
+    .item-nombre { font-size: 0.8rem; }
+
+    /* En móvil los tabs no se centran (no caben todos) — se alinean al
+       inicio y dejan deslizar horizontalmente sin scrollbar visible. */
+    .carta-filtros { justify-content: flex-start; }
+    .filtro-btn { padding: 0.8rem 1.1rem; font-size: 0.7rem; }
+}
 
 /* Estado vacío (compartido) */
 .carta-empty {

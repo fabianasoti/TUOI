@@ -4,168 +4,165 @@ $current_page = 'carta';
 $page_title   = 'Carta | TUOI';
 
 require $base . 'config/conexion.php';
-require $base . 'config/content_helper.php';
+require $base . 'config/carta_meta.php';
 require $base . 'includes/header.php';
-
-// $lang is set by header.php → lang.php
+// $lang lo define lang.php (cargado desde header.php).
 global $carta_info;
-$categorias = [
-    'desayunos'      => t_raw('cat_desayunos'),
-    'toque-salado'   => t_raw('cat_toque'),
-    'momento-dulce'  => t_raw('cat_dulce'),
-    'bebidas'        => t_raw('cat_bebidas'),
-    'superalimentos' => t_raw('cat_super'),
-];
 
-// Cargar imágenes respetando orden y idioma (EN dirs con fallback a ES)
-$all_images = [];
-foreach ($categorias as $slug => $label) {
-    $img_slug = ($lang === 'en') ? $slug . '-en' : $slug;
-    $dir      = __DIR__ . '/../../assets/img/carta/' . $img_slug . '/';
-    $section  = 'carta/' . $img_slug;
+// La carta ahora se ve "una categoría por pantalla". Sin parámetro ?cat
+// caemos a la primera categoría definida en $CARTA_CATEGORIAS.
+$cat_slugs   = array_keys($CARTA_CATEGORIAS);
+$cat_activa  = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $CARTA_CATEGORIAS))
+    ? $_GET['cat']
+    : $cat_slugs[0];
 
-    // Fall back to ES if EN dir is empty or missing
-    if ($lang === 'en' && (!is_dir($dir) || empty(glob($dir . '*.{webp,jpg,jpeg,png,pdf}', GLOB_BRACE)))) {
-        $img_slug = $slug;
-        $dir      = __DIR__ . '/../../assets/img/carta/' . $slug . '/';
-        $section  = 'carta/' . $slug;
-    }
-
-    $found = load_ordered_images($conexion, $section, $dir, '*.{webp,jpg,jpeg,png,pdf}');
-    foreach ($found as $filepath) {
-        $ext = strtolower(pathinfo($filepath, PATHINFO_EXTENSION));
-        $all_images[] = [
-            'src'       => $base . 'assets/img/carta/' . $img_slug . '/' . basename($filepath),
-            'categoria' => $slug,
-            'label'     => $label,
-            'tipo'      => ($ext === 'pdf') ? 'pdf' : 'img',
-        ];
-    }
+// Título y subtítulo de la categoría — se sacan de $carta_info (lang.php),
+// con fallback a la etiqueta corta si la entrada no existe.
+$cat_titulo = $CARTA_CATEGORIAS[$cat_activa][$lang] ?? $CARTA_CATEGORIAS[$cat_activa]['es'];
+$cat_sub    = '';
+if (isset($carta_info[$cat_activa])) {
+    $info        = $carta_info[$cat_activa][$lang] ?? $carta_info[$cat_activa]['es'];
+    $cat_titulo  = $info[0] ?? $cat_titulo;
+    $cat_sub     = $info[1] ?? '';
 }
 
-// Detectar categoría activa via GET param (?cat=desayunos)
-// Sin param → null = mostrar todo, sin ningún tab activo
-$cat_activa = (isset($_GET['cat']) && array_key_exists($_GET['cat'], $categorias))
-    ? $_GET['cat']
-    : null;
+// Cargar ítems visibles de la categoría activa, ordenados.
+$items = [];
+$cat_esc = mysqli_real_escape_string($conexion, $cat_activa);
+$res = mysqli_query($conexion,
+    "SELECT * FROM carta_items WHERE categoria='$cat_esc' AND visible = 1
+     ORDER BY sort_order ASC, id ASC"
+);
+if ($res) while ($row = mysqli_fetch_assoc($res)) $items[] = $row;
+
+// Agrupar ítems consecutivos por sub-categoría preservando el orden definido
+// en admin. Un cambio en el campo `subcategoria` corta el grupo.
+$grupos = []; // [['sub' => ..., 'sub_en' => ..., 'items' => [...]], ...]
+$current = null;
+foreach ($items as $it) {
+    $sub = trim($it['subcategoria'] ?? '');
+    if ($current === null || $current['sub'] !== $sub) {
+        if ($current !== null) $grupos[] = $current;
+        $current = [
+            'sub'    => $sub,
+            'sub_en' => trim($it['subcategoria_en'] ?? ''),
+            'items'  => [],
+        ];
+    }
+    $current['items'][] = $it;
+}
+if ($current !== null) $grupos[] = $current;
+
+// Helper: campo con fallback EN→ES.
+function carta_field(array $item, string $base_field, string $lang): string {
+    $en_key = $base_field . '_en';
+    if ($lang === 'en' && !empty($item[$en_key])) return $item[$en_key];
+    return (string) ($item[$base_field] ?? '');
+}
+
+$items_url = $base . 'assets/img/carta/items/';
 ?>
 
-<main>
+<main class="carta-page">
 
-    <!-- Hero de página -->
-    <section class="page-hero">
-        <span class="section-label"><?= t('carta_page_label') ?></span>
-        <h1><?= t('carta_page_title') ?></h1>
-        <p><?= t('carta_page_sub') ?></p>
+    <!-- Cabecera con título de la categoría -->
+    <section class="carta-cabecera">
+        <h1 class="carta-cabecera-titulo"><?= htmlspecialchars($cat_titulo) ?></h1>
+        <?php if ($cat_sub !== ''): ?>
+            <p class="carta-cabecera-sub"><?= htmlspecialchars($cat_sub) ?></p>
+        <?php endif; ?>
     </section>
 
-    <!-- Subnav / filtros de categoría -->
-    <div class="carta-filtros-wrap">
-        <div class="carta-filtros" role="tablist" aria-label="Filtrar por categoría">
-            <?php foreach ($categorias as $slug => $label): ?>
-                <button
-                    class="filtro-btn <?= $cat_activa === $slug ? 'active' : '' ?>"
-                    data-filtro="<?= $slug ?>"
-                    role="tab"
-                    aria-selected="<?= $cat_activa === $slug ? 'true' : 'false' ?>">
-                    <?= htmlspecialchars($label) ?>
-                </button>
+    <!-- Filtros de categoría (sirven como navegación entre páginas) -->
+    <nav class="carta-filtros-wrap" aria-label="Categorías">
+        <div class="carta-filtros" role="tablist">
+            <?php foreach ($CARTA_CATEGORIAS as $slug => $labels):
+                $href = 'index.php' . ($slug === $cat_slugs[0] ? '' : '?cat=' . urlencode($slug));
+            ?>
+                <a class="filtro-btn <?= $cat_activa === $slug ? 'active' : '' ?>"
+                   href="<?= htmlspecialchars($href) ?>"
+                   role="tab"
+                   aria-selected="<?= $cat_activa === $slug ? 'true' : 'false' ?>">
+                    <?= htmlspecialchars($labels[$lang] ?? $labels['es']) ?>
+                </a>
             <?php endforeach; ?>
         </div>
-    </div>
+    </nav>
 
-    <!-- Lista de imágenes -->
-    <div class="carta-lista-wrap">
+    <!-- Cuerpo: grupos de ítems en 2 columnas -->
+    <div class="carta-cuerpo">
 
-        <?php if (!empty($all_images)): ?>
-            <div class="carta-lista" id="carta-lista">
-                <?php foreach ($all_images as $item): ?>
-                    <div class="carta-item"
-                         data-categoria="<?= $item['categoria'] ?>"
-                         <?= ($cat_activa !== null && $cat_activa !== $item['categoria']) ? 'hidden' : '' ?>>
-
-                        <?php if ($item['tipo'] === 'pdf'): ?>
-                            <div class="carta-pdf-wrap">
-                                <object
-                                    data="<?= htmlspecialchars($item['src']) ?>"
-                                    type="application/pdf"
-                                    class="carta-pdf">
-                                    <div class="carta-pdf-fallback">
-                                        <p><?= t('pdf_no_show') ?></p>
-                                        <a href="<?= htmlspecialchars($item['src']) ?>"
-                                           target="_blank" rel="noopener" class="btn-primary">
-                                            <?= t('open_pdf') ?>
-                                        </a>
-                                    </div>
-                                </object>
-                            </div>
-                        <?php else: ?>
-                            <img
-                                src="<?= htmlspecialchars($item['src']) ?>"
-                                alt="<?= htmlspecialchars($item['label']) ?>"
-                                loading="lazy">
-                        <?php endif; ?>
-
-                    </div>
-                <?php endforeach; ?>
+        <?php if (empty($grupos)): ?>
+            <div class="carta-empty">
+                <p><?= t('carta_soon') ?></p>
+                <p><?= t('carta_soon_desc') ?></p>
             </div>
+        <?php else: ?>
+            <?php foreach ($grupos as $grupo):
+                $sub_label = ($lang === 'en' && $grupo['sub_en'] !== '') ? $grupo['sub_en'] : $grupo['sub'];
+            ?>
+                <section class="carta-grupo<?= $sub_label !== '' ? ' carta-grupo--con-label' : '' ?>">
+                    <?php if ($sub_label !== ''): ?>
+                        <div class="carta-grupo-label" aria-hidden="true">
+                            <span><?= htmlspecialchars($sub_label) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <ul class="carta-items">
+                    <?php foreach ($grupo['items'] as $item):
+                        $nombre       = carta_field($item, 'nombre', $lang);
+                        $descripcion  = carta_field($item, 'descripcion', $lang);
+                        $ingredientes = carta_field($item, 'ingredientes', $lang);
+                        $tags         = array_filter(explode(',', $item['alergenos'] ?? ''));
+                        $es_supl      = !empty($item['es_suplemento']);
+                    ?>
+                        <li class="carta-item">
+                            <?php if (!empty($item['foto'])): ?>
+                                <div class="item-foto">
+                                    <img src="<?= htmlspecialchars($items_url . $item['foto']) ?>"
+                                         alt="<?= htmlspecialchars($nombre) ?>" loading="lazy">
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="item-cuerpo">
+                                <div class="item-cabecera">
+                                    <h3 class="item-nombre"><?= htmlspecialchars($nombre) ?></h3>
+                                    <?php if ($item['precio'] !== null): ?>
+                                        <span class="item-precio">
+                                            <?= $es_supl ? '+' : '' ?><?= number_format((float)$item['precio'], 2, ',', '') ?> €
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if ($descripcion !== ''): ?>
+                                    <p class="item-desc"><?= nl2br(htmlspecialchars($descripcion)) ?></p>
+                                <?php endif; ?>
+                                <?php if ($ingredientes !== ''): ?>
+                                    <p class="item-ingredientes"><?= nl2br(htmlspecialchars($ingredientes)) ?></p>
+                                <?php endif; ?>
+                                <?php if (!empty($tags)): ?>
+                                    <ul class="item-alergenos" aria-label="Etiquetas">
+                                        <?php foreach ($tags as $tag):
+                                            if (!isset($CARTA_ALERGENOS[$tag])) continue;
+                                            $meta = $CARTA_ALERGENOS[$tag];
+                                            $label = $meta[$lang] ?? $meta['es'];
+                                        ?>
+                                            <li class="alergeno" title="<?= htmlspecialchars($label) ?>">
+                                                <span aria-hidden="true"><?= $meta['icon'] ?></span>
+                                                <span class="alergeno-label"><?= htmlspecialchars($label) ?></span>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                    </ul>
+                </section>
+            <?php endforeach; ?>
         <?php endif; ?>
 
     </div>
 
 </main>
-
-<script>
-(function () {
-    const filtros = document.querySelectorAll('.filtro-btn');
-    const items   = document.querySelectorAll('.carta-item');
-    if (!filtros.length) return;
-
-    function showAll() {
-        items.forEach(item => item.hidden = false);
-        filtros.forEach(f => {
-            f.classList.remove('active');
-            f.setAttribute('aria-selected', 'false');
-        });
-        const url = new URL(window.location);
-        url.searchParams.delete('cat');
-        history.replaceState(null, '', url);
-    }
-
-    filtros.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const yaActivo = btn.classList.contains('active');
-
-            // Si el tab ya estaba activo → reset: mostrar todo (como si pulsaras "Carta")
-            if (yaActivo) {
-                showAll();
-                return;
-            }
-
-            // Activar este tab
-            filtros.forEach(f => {
-                f.classList.remove('active');
-                f.setAttribute('aria-selected', 'false');
-            });
-            btn.classList.add('active');
-            btn.setAttribute('aria-selected', 'true');
-
-            // Filtrar
-            const filtro = btn.dataset.filtro;
-            let visible = 0;
-            items.forEach(item => {
-                const match = item.dataset.categoria === filtro;
-                item.hidden = !match;
-                if (match) visible++;
-            });
-
-            // Actualizar URL sin recargar
-            const url = new URL(window.location);
-            url.searchParams.set('cat', filtro);
-            history.replaceState(null, '', url);
-        });
-    });
-})();
-</script>
 
 <?php require $base . 'includes/footer.php'; ?>

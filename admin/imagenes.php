@@ -12,23 +12,11 @@ $sections = [
     'carteles'               => ['label' => 'Carteles / Logos',             'path' => $base_img . 'carteles/'],
     'quienes_somos'          => ['label' => 'Quiénes somos',                'path' => $base_img . 'quienes_somos/'],
     'inicio'                 => ['label' => 'Inicio (imagen principal)',     'path' => $base_img],
-    // Carta — Español
-    'carta/desayunos'        => ['label' => 'Carta — Desayunos',            'path' => $base_img . 'carta/desayunos/'],
-    'carta/toque-salado'     => ['label' => 'Carta — Toque Salado',         'path' => $base_img . 'carta/toque-salado/'],
-    'carta/momento-dulce'    => ['label' => 'Carta — Momento Dulce',        'path' => $base_img . 'carta/momento-dulce/'],
-    'carta/bebidas'          => ['label' => 'Carta — Bebidas',              'path' => $base_img . 'carta/bebidas/'],
-    'carta/superalimentos'   => ['label' => 'Carta — Superalimentos',       'path' => $base_img . 'carta/superalimentos/'],
     // Eventos — bloques de la página
     'eventos/carrusel'       => ['label' => 'Eventos — Carrusel',           'path' => $base_img . 'eventos/carrusel/'],
     'eventos/por-que-tuoi'   => ['label' => 'Eventos — Por qué TUOI',       'path' => $base_img . 'eventos/por-que-tuoi/'],
     'eventos/logos'          => ['label' => 'Eventos — Logos clientes',     'path' => $base_img . 'eventos/logos/'],
     'eventos/cta-fondo'      => ['label' => 'Eventos — Fondo del CTA',      'path' => $base_img . 'eventos/cta-fondo/'],
-    // Carta — English
-    'carta/desayunos-en'     => ['label' => 'Carta — Desayunos (EN)',       'path' => $base_img . 'carta/desayunos-en/'],
-    'carta/toque-salado-en'  => ['label' => 'Carta — Toque Salado (EN)',    'path' => $base_img . 'carta/toque-salado-en/'],
-    'carta/momento-dulce-en' => ['label' => 'Carta — Momento Dulce (EN)',   'path' => $base_img . 'carta/momento-dulce-en/'],
-    'carta/bebidas-en'       => ['label' => 'Carta — Bebidas (EN)',         'path' => $base_img . 'carta/bebidas-en/'],
-    'carta/superalimentos-en'=> ['label' => 'Carta — Superalimentos (EN)',  'path' => $base_img . 'carta/superalimentos-en/'],
 ];
 
 $active_section = $_GET['s'] ?? 'carteles';
@@ -44,6 +32,10 @@ $error    = '';
 // al subir archivos a carpetas recién registradas en el admin.
 if (!is_dir($dir_path)) {
     @mkdir($dir_path, 0775, true);
+    // mkdir() respeta el umask del proceso (típicamente 022 → 0755),
+    // dejando la carpeta sin permiso de escritura para el grupo. Forzamos
+    // 0775 con chmod para que tanto el owner como www-data puedan escribir.
+    @chmod($dir_path, 0775);
 }
 
 // ── Handle upload ────────────────────────────────────────

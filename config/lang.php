@@ -31,10 +31,11 @@ $_ui = [
     'nav_about'         => ['es' => 'Quiénes somos',     'en' => 'About us'],
     // Header dropdown category names
     'cat_desayunos'     => ['es' => 'Desayunos',         'en' => 'Breakfasts'],
-    'cat_toque'         => ['es' => 'Toque Salado',      'en' => 'Savory Touch'],
+    'cat_brunch'        => ['es' => 'Menú brunch',       'en' => 'Brunch menu'],
+    'cat_toque'         => ['es' => 'Opciones saladas',  'en' => 'Savory options'],
+    'cat_lunch'         => ['es' => 'Menú lunch',        'en' => 'Lunch menu'],
     'cat_dulce'         => ['es' => 'Momento Dulce',     'en' => 'Sweet Moment'],
-    'cat_bebidas'       => ['es' => 'Bebidas',            'en' => 'Drinks'],
-    'cat_super'         => ['es' => 'Superalimentos',    'en' => 'Superfoods'],
+    'cat_bebidas'       => ['es' => 'Bebidas',           'en' => 'Drinks'],
     // Buttons
     'btn_see_menu'      => ['es' => 'Ver la carta',      'en' => 'See the menu'],
     'btn_our_story'     => ['es' => 'Conoce nuestra historia', 'en' => 'Our story'],
@@ -142,9 +143,17 @@ $carta_info = [
         'es' => ['Desayunos',      'Activa tu mañana con energía real.'],
         'en' => ['Breakfasts',     'Power up your morning with real energy.'],
     ],
+    'menu-brunch' => [
+        'es' => ['Menú brunch',    'Incluye plato principal, bebida, café y postre.'],
+        'en' => ['Brunch menu',    'Includes main course, drink, coffee, and dessert.'],
+    ],
     'toque-salado' => [
-        'es' => ['Toque Salado',   'Bocados sabrosos para cualquier momento del día.'],
-        'en' => ['Savory Touch',   'Savory bites for any moment of the day.'],
+        'es' => ['Opciones saladas', 'Bocados sabrosos para cualquier momento del día.'],
+        'en' => ['Savory options',   'Savory bites for any moment of the day.'],
+    ],
+    'menu-lunch' => [
+        'es' => ['Menú lunch',     'De Lunes a Viernes de 13:00 a 16:00'],
+        'en' => ['Lunch menu',     'Monday to Friday from 1:00 PM to 4:00 PM'],
     ],
     'momento-dulce' => [
         'es' => ['Momento Dulce',  'Bollería artesanal para darte ese gusto.'],
@@ -153,9 +162,5 @@ $carta_info = [
     'bebidas' => [
         'es' => ['Bebidas',        'Café de especialidad y bebidas funcionales.'],
         'en' => ['Drinks',         'Specialty coffee and functional beverages.'],
-    ],
-    'superalimentos' => [
-        'es' => ['Superalimentos', 'Ingredientes que potencian tu rendimiento.'],
-        'en' => ['Superfoods',     'Ingredients that boost your performance.'],
     ],
 ];

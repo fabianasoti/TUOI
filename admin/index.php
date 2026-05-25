@@ -12,16 +12,6 @@ $base = dirname(__DIR__) . '/assets/img/';
 $img_sections = [
     'carteles'               => $base . 'carteles',
     'quienes_somos'          => $base . 'quienes_somos',
-    'carta/desayunos'        => $base . 'carta/desayunos',
-    'carta/toque-salado'     => $base . 'carta/toque-salado',
-    'carta/momento-dulce'    => $base . 'carta/momento-dulce',
-    'carta/bebidas'          => $base . 'carta/bebidas',
-    'carta/superalimentos'   => $base . 'carta/superalimentos',
-    'carta/desayunos-en'     => $base . 'carta/desayunos-en',
-    'carta/toque-salado-en'  => $base . 'carta/toque-salado-en',
-    'carta/momento-dulce-en' => $base . 'carta/momento-dulce-en',
-    'carta/bebidas-en'       => $base . 'carta/bebidas-en',
-    'carta/superalimentos-en'=> $base . 'carta/superalimentos-en',
 ];
 
 $total_images = 0;
@@ -102,6 +92,13 @@ foreach ($img_sections as $dir) {
                         <div>
                             <div class="quick-label">Gestionar imágenes</div>
                             <div class="quick-desc">Subir, ver y eliminar imágenes</div>
+                        </div>
+                    </a>
+                    <a href="carta.php" class="quick-card">
+                        <span class="quick-icon">🍽️</span>
+                        <div>
+                            <div class="quick-label">Editar carta</div>
+                            <div class="quick-desc">Ítems, precios y traducciones</div>
                         </div>
                     </a>
                     <a href="../index.php" target="_blank" class="quick-card">
