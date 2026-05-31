@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TUOI — Comparador de color oscuro</title>
+<link rel="stylesheet" href="assets/fonts/inter.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:#F8F5E6;
+  color:#2A2C29;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── UI del comparador ── */
+.bar{
+  position:sticky;top:0;z-index:99;
+  background:rgba(248,245,230,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(42,44,41,.1);
+  padding:.9rem 4%;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+}
+.bar__title{
+  font-family:'Courier Prime',monospace;
+  font-size:.72rem;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(42,44,41,.5);
+}
+.bar__tabs{display:flex;gap:.4rem}
+.tab{
+  padding:.5rem 1rem;border-radius:999px;
+  font-size:.75rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  border:1.5px solid rgba(42,44,41,.15);
+  background:none;cursor:pointer;
+  transition:all .2s;color:#2A2C29;
+}
+.tab:hover{border-color:#E39435;color:#E39435}
+.tab.active{background:#2A2C29;color:#F8F5E6;border-color:#2A2C29}
+
+/* ── Columnas ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  min-height:100vh;
+}
+.col{display:flex;flex-direction:column}
+.col__label{
+  padding:.6rem 1.2rem;
+  font-family:'Courier Prime',monospace;
+  font-size:.65rem;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.col__hex{opacity:.55}
+
+/* Colores de cada columna */
+.col--a .dark{background:#231812}
+.col--b .dark{background:#2C1B0E}
+.col--c .dark{background:#1C1410}
+.col--orig .dark{background:#2A2C29}
+
+/* ── Bloque HERO simulado ── */
+.dark{
+  flex:1;
+  padding:3rem 2rem;
+  display:flex;flex-direction:column;gap:1.5rem;
+  position:relative;
+}
+.hero-sim{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:1rem}
+.eyebrow{
+  font-family:'Courier Prime',monospace;
+  font-size:.7rem;font-weight:700;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:#95CABA;
+}
+.h1-sim{
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:800;
+  color:#fff;
+  line-height:1.1;
+  letter-spacing:-1px;
+}
+.sub-sim{
+  font-size:.9rem;
+  color:rgba(248,245,230,.65);
+  line-height:1.6;
+  max-width:28ch;
+}
+.btn-sim{
+  display:inline-block;
+  align-self:flex-start;
+  padding:.7rem 1.5rem;
+  background:#E39435;color:#fff;
+  border-radius:999px;
+  font-size:.75rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+
+/* Divisor beige */
+.beige-block{
+  background:#F8F5E6;
+  padding:2rem;
+  border-top:1px solid rgba(42,44,41,.08);
+}
+.beige-block p{
+  font-size:.85rem;line-height:1.7;
+  color:rgba(42,44,41,.7);margin-bottom:.75rem;
+}
+.beige-block strong{color:#2A2C29}
+
+/* ── Bloque de texto con el color (footer / nav) ── */
+.text-sample{
+  padding:2rem;
+  border-top:1px solid rgba(42,44,41,.08);
+  background:#F8F5E6;
+}
+.text-sample__heading{
+  font-size:1.1rem;font-weight:800;
+  letter-spacing:-.4px;margin-bottom:.4rem;
+}
+.text-sample__nav{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  margin-top:.75rem;
+}
+.text-sample__link{
+  font-size:.75rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;
+}
+
+/* ── Footer sim ── */
+.footer-sim{
+  padding:2rem;
+  display:flex;flex-direction:column;gap:1rem;
+}
+.footer-sim .logo-text{
+  font-weight:800;font-size:1.3rem;letter-spacing:-.04em;
+  color:#F8F5E6;
+}
+.footer-sim p{font-size:.8rem;color:rgba(248,245,230,.4);line-height:1.6}
+.footer-sim .nav-f{display:flex;flex-direction:column;gap:.35rem}
+.footer-sim .nav-f a{font-size:.8rem;color:rgba(248,245,230,.5);text-decoration:none}
+.footer-sim .col-label{
+  font-family:'Courier Prime',monospace;
+  font-size:.62rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:#95CABA;margin-bottom:.3rem;
+}
+
+/* ── Nombre de la opción ── */
+.option-name{
+  padding:.5rem 1.2rem;
+  font-size:.7rem;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  background:#F8F5E6;
+  border-top:3px solid;
+  border-bottom:1px solid rgba(42,44,41,.08);
+}
+.col--a .option-name{color:#231812;border-color:#231812}
+.col--b .option-name{color:#2C1B0E;border-color:#2C1B0E}
+.col--c .option-name{color:#1C1410;border-color:#1C1410}
+.col--orig .option-name{color:#2A2C29;border-color:#2A2C29}
+
+/* colores de texto en bloques beige por columna */
+.col--a .text-sample__heading,.col--a .text-sample__link{color:#231812}
+.col--b .text-sample__heading,.col--b .text-sample__link{color:#2C1B0E}
+.col--c .text-sample__heading,.col--c .text-sample__link{color:#1C1410}
+.col--orig .text-sample__heading,.col--orig .text-sample__link{color:#2A2C29}
+
+/* separador vertical */
+.col:not(:last-child){border-right:1px solid rgba(42,44,41,.1)}
+
+/* Original tag */
+.tag-orig{
+  display:inline-block;
+  font-family:'Courier Prime',monospace;
+  font-size:.6rem;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  background:rgba(255,255,255,.12);
+  padding:.2rem .5rem;border-radius:4px;
+  color:rgba(255,255,255,.5);
+}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .col{border-right:none!important;border-bottom:2px solid rgba(42,44,41,.1)}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="bar__title">TUOI · Comparador de color oscuro</span>
+  <div class="bar__tabs">
+    <button class="tab active" onclick="show('all')">Ver todos</button>
+    <button class="tab" onclick="show('a')">A · Espresso</button>
+    <button class="tab" onclick="show('b')">B · Café tostado</button>
+    <button class="tab" onclick="show('c')">C · Casi negro</button>
+    <button class="tab" onclick="show('orig')">Actual</button>
+  </div>
+</div>
+
+<div class="grid" id="grid">
+
+  <!-- OPCIÓN A -->
+  <div class="col col--a" id="col-a">
+    <div class="option-name">A · Espresso sutil &nbsp;·&nbsp; <code>#231812</code></div>
+    <div class="dark">
+      <div class="col__label">
+        <span>Hero / Sección oscura</span>
+        <span class="col__hex">#231812</span>
+      </div>
+      <div class="hero-sim">
+        <span class="eyebrow">Functional coffee · Smart food</span>
+        <div class="h1-sim">Functional coffee<br>&amp; smart food</div>
+        <p class="sub-sim">Comida adaptada a las necesidades de tu día.</p>
+        <span class="btn-sim">Ver la carta →</span>
+      </div>
+      <div class="footer-sim">
+        <span class="col-label">TUOI</span>
+        <span class="logo-text">TUOI</span>
+        <p>Functional coffee &amp; smart food. Una pausa que te suma.</p>
+        <div class="nav-f">
+          <span class="col-label" style="margin-top:.5rem">Sitio</span>
+          <a href="#">Carta</a>
+          <a href="#">Eventos</a>
+          <a href="#">Quiénes somos</a>
+        </div>
+      </div>
+    </div>
+    <div class="text-sample">
+      <p class="text-sample__heading">Así se ve el texto en beige</p>
+      <p style="font-size:.85rem;color:rgba(42,44,41,.6);line-height:1.6">Títulos, nav y labels usarían este color. Cálido, sin frialdad, todavía elegante.</p>
+      <div class="text-sample__nav">
+        <a class="text-sample__link" href="#">Inicio</a>
+        <a class="text-sample__link" href="#">Carta</a>
+        <a class="text-sample__link" href="#">Eventos</a>
+        <a class="text-sample__link" href="#">Contacto</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPCIÓN B -->
+  <div class="col col--b" id="col-b">
+    <div class="option-name">B · Café tostado &nbsp;·&nbsp; <code>#2C1B0E</code></div>
+    <div class="dark">
+      <div class="col__label">
+        <span>Hero / Sección oscura</span>
+        <span class="col__hex">#2C1B0E</span>
+      </div>
+      <div class="hero-sim">
+        <span class="eyebrow">Functional coffee · Smart food</span>
+        <div class="h1-sim">Functional coffee<br>&amp; smart food</div>
+        <p class="sub-sim">Comida adaptada a las necesidades de tu día.</p>
+        <span class="btn-sim">Ver la carta →</span>
+      </div>
+      <div class="footer-sim">
+        <span class="col-label">TUOI</span>
+        <span class="logo-text">TUOI</span>
+        <p>Functional coffee &amp; smart food. Una pausa que te suma.</p>
+        <div class="nav-f">
+          <span class="col-label" style="margin-top:.5rem">Sitio</span>
+          <a href="#">Carta</a>
+          <a href="#">Eventos</a>
+          <a href="#">Quiénes somos</a>
+        </div>
+      </div>
+    </div>
+    <div class="text-sample">
+      <p class="text-sample__heading">Así se ve el texto en beige</p>
+      <p style="font-size:.85rem;color:rgba(42,44,41,.6);line-height:1.6">El marrón es visible en títulos y nav. Más carácter "coffeehouse", más arriesgado.</p>
+      <div class="text-sample__nav">
+        <a class="text-sample__link" href="#">Inicio</a>
+        <a class="text-sample__link" href="#">Carta</a>
+        <a class="text-sample__link" href="#">Eventos</a>
+        <a class="text-sample__link" href="#">Contacto</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPCIÓN C -->
+  <div class="col col--c" id="col-c">
+    <div class="option-name">C · Casi negro cálido &nbsp;·&nbsp; <code>#1C1410</code></div>
+    <div class="dark">
+      <div class="col__label">
+        <span>Hero / Sección oscura</span>
+        <span class="col__hex">#1C1410</span>
+      </div>
+      <div class="hero-sim">
+        <span class="eyebrow">Functional coffee · Smart food</span>
+        <div class="h1-sim">Functional coffee<br>&amp; smart food</div>
+        <p class="sub-sim">Comida adaptada a las necesidades de tu día.</p>
+        <span class="btn-sim">Ver la carta →</span>
+      </div>
+      <div class="footer-sim">
+        <span class="col-label">TUOI</span>
+        <span class="logo-text">TUOI</span>
+        <p>Functional coffee &amp; smart food. Una pausa que te suma.</p>
+        <div class="nav-f">
+          <span class="col-label" style="margin-top:.5rem">Sitio</span>
+          <a href="#">Carta</a>
+          <a href="#">Eventos</a>
+          <a href="#">Quiénes somos</a>
+        </div>
+      </div>
+    </div>
+    <div class="text-sample">
+      <p class="text-sample__heading">Así se ve el texto en beige</p>
+      <p style="font-size:.85rem;color:rgba(42,44,41,.6);line-height:1.6">Casi idéntico al actual. El cambio más conservador — calienta sin que se note.</p>
+      <div class="text-sample__nav">
+        <a class="text-sample__link" href="#">Inicio</a>
+        <a class="text-sample__link" href="#">Carta</a>
+        <a class="text-sample__link" href="#">Eventos</a>
+        <a class="text-sample__link" href="#">Contacto</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(opt){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  const cols = {a:'col-a',b:'col-b',c:'col-c',orig:'col-orig'};
+  if(opt==='all'){
+    document.getElementById('grid').style.gridTemplateColumns='repeat(3,1fr)';
+    ['col-a','col-b','col-c'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.style.display='flex';
+    });
+  } else {
+    document.getElementById('grid').style.gridTemplateColumns='1fr';
+    ['col-a','col-b','col-c','col-orig'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.style.display = id===cols[opt] ? 'flex' : 'none';
+    });
+  }
+}
+</script>
+</body>
+</html>

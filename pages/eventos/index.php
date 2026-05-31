@@ -1,121 +1,11 @@
 <?php
 $base         = '../../';
 $current_page = 'eventos';
+$extra_css    = 'eventos';
 require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php';
 $page_title = $lang === 'en' ? 'Events | TUOI' : 'Eventos | TUOI';
-
-// ── Contact form handler ────────────────────────────────────────────────────
-$contact_success = false;
-$contact_errors  = []; // field => translation key
-
-$is_ajax = (
-    !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
-);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
-    // Need lang loaded early for AJAX response
-    require_once $base . 'config/lang.php';
-
-    // ── Honeypot anti-spam ──
-    // Campo oculto que los humanos no ven. Si llega con valor, es un bot:
-    // simulamos éxito silenciosamente (no guardamos, no enviamos email).
-    $is_bot = !empty(trim($_POST['c_website'] ?? ''));
-
-    $name    = trim($_POST['c_name']    ?? '');
-    $email   = trim($_POST['c_email']   ?? '');
-    $phone   = trim($_POST['c_phone']   ?? '');
-    $message = trim($_POST['c_message'] ?? '');
-    $consent = isset($_POST['c_consent']);
-
-    if (!$is_bot) {
-        if ($name === '')                                  $contact_errors['c_name']    = 'ev_form_required';
-        if ($email === '')                                 $contact_errors['c_email']   = 'ev_form_required';
-        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $contact_errors['c_email']   = 'ev_form_email_bad';
-        if ($message === '')                               $contact_errors['c_message'] = 'ev_form_required';
-        if (!$consent)                                     $contact_errors['c_consent'] = 'ev_contact_consent_err';
-    }
-
-    if ($is_bot) {
-        // Fingimos éxito al bot pero no procesamos nada.
-        $contact_success = true;
-        $_POST = [];
-    } elseif (empty($contact_errors)) {
-        if ($conexion) {
-            // Asegura las columnas RGPD en instalaciones existentes (idempotente).
-            try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_at DATETIME NULL DEFAULT NULL AFTER source_page"); } catch (\Throwable $e) {}
-            try { @mysqli_query($conexion, "ALTER TABLE contact_submissions ADD COLUMN consent_ip VARCHAR(45) NULL DEFAULT NULL AFTER consent_at"); } catch (\Throwable $e) {}
-
-            $n  = mysqli_real_escape_string($conexion, $name);
-            $e  = mysqli_real_escape_string($conexion, $email);
-            $p  = mysqli_real_escape_string($conexion, $phone);
-            $m  = mysqli_real_escape_string($conexion, $message);
-            $ip = mysqli_real_escape_string($conexion, $_SERVER['REMOTE_ADDR'] ?? '');
-            try {
-                mysqli_query($conexion,
-                    "INSERT INTO contact_submissions (name, email, phone, message, source_page, consent_at, consent_ip)
-                     VALUES ('$n','$e','$p','$m','eventos', NOW(), '$ip')"
-                );
-            } catch (\Throwable $e) {
-                // Fallback: instalación antigua sin columnas de consentimiento.
-                @mysqli_query($conexion,
-                    "INSERT INTO contact_submissions (name, email, phone, message, source_page)
-                     VALUES ('$n','$e','$p','$m','eventos')"
-                );
-            }
-        }
-
-        $admin_email  = !empty($c['contact_email']) ? $c['contact_email'] : 'hola@miobiosport.com';
-        $mail_subject = '=?UTF-8?B?' . base64_encode('Nuevo contacto desde Eventos · TUOI') . '?=';
-        $mail_body    = "Has recibido un nuevo mensaje desde el formulario de Eventos.\n\n";
-        $mail_body   .= "Nombre:    $name\n";
-        $mail_body   .= "Email:     $email\n";
-        $mail_body   .= "Teléfono:  " . ($phone ?: '—') . "\n\n";
-        $mail_body   .= "Mensaje:\n$message\n";
-        $mail_headers  = "From: TUOI Eventos <noreply@tuoi.es>\r\n";
-        $mail_headers .= "Reply-To: $email\r\n";
-        $mail_headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-
-        // En local guardamos el correo en un fichero (no hay MTA). En producción usamos mail().
-        $host = $_SERVER['HTTP_HOST'] ?? '';
-        $is_local = str_contains($host, 'localhost') || str_starts_with($host, '127.') || str_contains($host, '.local');
-        if ($is_local) {
-            $log_path = dirname(__DIR__, 2) . '/logs/mail.log';
-            @mkdir(dirname($log_path), 0775, true);
-            $entry  = "==== " . date('Y-m-d H:i:s') . " ====\n";
-            $entry .= "To:      $admin_email\n";
-            $entry .= "Subject: Nuevo contacto desde Eventos · TUOI\n";
-            $entry .= "Headers:\n$mail_headers\n";
-            $entry .= "Body:\n$mail_body\n\n";
-            // Intenta escribir en /logs/mail.log; si no hay permisos, manda al error_log de PHP/Apache.
-            if (@file_put_contents($log_path, $entry, FILE_APPEND) === false) {
-                error_log("[TUOI mail simulado]\n" . $entry);
-            }
-        } else {
-            @mail($admin_email, $mail_subject, $mail_body, $mail_headers);
-        }
-
-        $contact_success = true;
-        $_POST = [];
-    }
-
-    // AJAX: respond with JSON and exit. Non-AJAX: continue to render page.
-    if ($is_ajax) {
-        header('Content-Type: application/json; charset=utf-8');
-        if ($contact_success) {
-            echo json_encode(['ok' => true, 'message' => t('ev_contact_ok')]);
-        } else {
-            $errors_translated = [];
-            foreach ($contact_errors as $field => $key) {
-                $errors_translated[$field] = t($key);
-            }
-            echo json_encode(['ok' => false, 'errors' => $errors_translated]);
-        }
-        exit;
-    }
-}
 
 require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);
@@ -190,7 +80,7 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
     <h1><?= htmlspecialchars($c['ev_hero_h1'] ?? 'Celebra con nosotros') ?></h1>
     <p><?= htmlspecialchars($c['ev_hero_sub'] ?? '') ?></p>
     <div class="ev-hero__ctas">
-        <a href="#contacto" class="btn-primary ev-hero__cta-primary">
+        <a href="<?= $base ?>pages/contacto/" class="btn-primary ev-hero__cta-primary">
             <?= htmlspecialchars($c['ev_hero_cta_primary'] ?? 'Hablemos de tu evento') ?>
         </a>
         <a href="#menus" class="ev-hero__cta-secondary">
@@ -306,7 +196,7 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
                 <a href="<?= $base ?>pages/eventos/a-tu-medida/" class="btn-primary ev-option__cta">
                     <?= htmlspecialchars($c['ev_opt2_cta_primary'] ?? 'Descubre tus posibilidades') ?> <span aria-hidden="true">→</span>
                 </a>
-                <a href="#contacto" class="ev-option__cta ev-option__cta--ghost">
+                <a href="<?= $base ?>pages/contacto/" class="ev-option__cta ev-option__cta--ghost">
                     <?= htmlspecialchars($c['ev_opt2_cta_secondary'] ?? 'Contáctanos') ?>
                 </a>
             </div>
@@ -384,7 +274,7 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
     <div class="ev-cta__inner">
         <h2><?= htmlspecialchars($c['ev_cta_h2'] ?? '¿Tienes un evento en mente?') ?></h2>
         <p><?= htmlspecialchars($c['ev_cta_text'] ?? 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.') ?></p>
-        <a href="#contacto" class="btn-primary ev-cta__btn">
+        <a href="<?= $base ?>pages/contacto/" class="btn-primary ev-cta__btn">
             <?= htmlspecialchars($c['ev_cta_btn'] ?? 'Hablamos →') ?>
         </a>
     </div>
@@ -405,218 +295,6 @@ $marquee_items = array_values(array_filter(array_map('trim', explode('–', $mar
     </div>
 </div>
 <?php endif; ?>
-
-<!-- ── CONTACTO ──────────────────────────────────────────────────────────── -->
-<section class="ev-contact" id="contacto">
-    <div class="ev-contact__inner">
-
-        <div class="ev-contact__info">
-            <span class="section-label ev-contact__label"><?= t('ev_contact_title') ?></span>
-            <h2><?= t('ev_contact_h2') ?></h2>
-            <p><?= t('ev_contact_lead') ?></p>
-
-            <ul class="ev-contact__list">
-                <li>
-                    <span class="ev-contact__icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.16h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.75a16 16 0 0 0 8.34 8.34l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    </span>
-                    <a href="tel:<?= htmlspecialchars(preg_replace('/[\s\-()]/', '', $c['contact_phone'] ?? '')) ?>">
-                        <?= htmlspecialchars($c['contact_phone'] ?? '') ?>
-                    </a>
-                </li>
-                <li>
-                    <span class="ev-contact__icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    </span>
-                    <a href="mailto:<?= htmlspecialchars($c['contact_email'] ?? '') ?>">
-                        <?= htmlspecialchars($c['contact_email'] ?? '') ?>
-                    </a>
-                </li>
-                <li>
-                    <span class="ev-contact__icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    </span>
-                    <span><?= htmlspecialchars($c['contact_address'] ?? '') ?></span>
-                </li>
-            </ul>
-        </div>
-
-        <div class="ev-contact__form-wrap">
-            <?php
-                $err = function($field) use ($contact_errors) {
-                    return isset($contact_errors[$field]) ? t($contact_errors[$field]) : '';
-                };
-            ?>
-
-            <div class="ev-form-success" role="status" aria-live="polite" <?= $contact_success ? '' : 'hidden' ?>>
-                <p class="ev-form-success__msg"><?= t('ev_contact_ok') ?></p>
-                <button type="button" class="ev-form-success__again">
-                    <?= t('ev_contact_send_another') ?>
-                </button>
-            </div>
-
-            <form class="ev-form<?= $contact_success ? ' is-hidden' : '' ?>"
-                  method="post" action="#contacto" novalidate
-                  data-msg-required="<?= t('ev_form_required') ?>"
-                  data-msg-email="<?= t('ev_form_email_bad') ?>"
-                  data-msg-consent="<?= t('ev_contact_consent_err') ?>">
-                <input type="hidden" name="contact_submit" value="1">
-                <!-- Honeypot anti-spam: oculto para humanos, los bots lo rellenan -->
-                <div class="ev-form__hp" aria-hidden="true">
-                    <label for="c_website">Website</label>
-                    <input id="c_website" name="c_website" type="text" tabindex="-1" autocomplete="off">
-                </div>
-                <div class="ev-form__row ev-form__row--half">
-                    <div class="ev-form__group">
-                        <label for="c_name"><?= t('ev_contact_name') ?> *</label>
-                        <p class="ev-form__error" data-error-for="c_name" <?= $err('c_name') ? '' : 'hidden' ?>><?= $err('c_name') ?></p>
-                        <input id="c_name" name="c_name" type="text"
-                               placeholder="<?= t('ev_form_ph_name') ?>"
-                               value="<?= htmlspecialchars($_POST['c_name'] ?? '') ?>"
-                               aria-describedby="err-c_name">
-                    </div>
-                    <div class="ev-form__group">
-                        <label for="c_email"><?= t('ev_contact_email') ?> *</label>
-                        <p class="ev-form__error" data-error-for="c_email" <?= $err('c_email') ? '' : 'hidden' ?>><?= $err('c_email') ?></p>
-                        <input id="c_email" name="c_email" type="email"
-                               placeholder="<?= t('ev_form_ph_email') ?>"
-                               value="<?= htmlspecialchars($_POST['c_email'] ?? '') ?>">
-                    </div>
-                </div>
-                <div class="ev-form__group">
-                    <label for="c_phone"><?= t('ev_contact_phone') ?></label>
-                    <input id="c_phone" name="c_phone" type="tel"
-                           placeholder="<?= t('ev_form_ph_phone') ?>"
-                           value="<?= htmlspecialchars($_POST['c_phone'] ?? '') ?>">
-                </div>
-                <div class="ev-form__group">
-                    <label for="c_message"><?= t('ev_contact_msg') ?> *</label>
-                    <p class="ev-form__error" data-error-for="c_message" <?= $err('c_message') ? '' : 'hidden' ?>><?= $err('c_message') ?></p>
-                    <textarea id="c_message" name="c_message" rows="5"
-                              placeholder="<?= t('ev_form_ph_msg') ?>"><?= htmlspecialchars($_POST['c_message'] ?? '') ?></textarea>
-                </div>
-                <p class="ev-form__error" data-error-for="c_consent" <?= $err('c_consent') ? '' : 'hidden' ?>><?= $err('c_consent') ?></p>
-                <label class="ev-form__consent<?= $err('c_consent') ? ' has-error' : '' ?>">
-                    <input type="checkbox" name="c_consent" value="1"
-                           <?= !empty($_POST['c_consent']) ? 'checked' : '' ?>>
-                    <span><?= t_raw('ev_contact_consent') ?></span>
-                </label>
-                <button type="submit" class="btn-primary ev-form__btn">
-                    <?= t('ev_contact_send') ?> <span aria-hidden="true">→</span>
-                </button>
-            </form>
-            <script>
-            (function () {
-                var form    = document.querySelector('.ev-form');
-                var success = document.querySelector('.ev-form-success');
-                if (!form || !success) return;
-
-                var msgRequired = form.dataset.msgRequired || '';
-                var msgEmail    = form.dataset.msgEmail    || '';
-                var msgConsent  = form.dataset.msgConsent  || '';
-
-                function showError(field, msg) {
-                    var p = form.querySelector('[data-error-for="' + field + '"]');
-                    if (!p) return;
-                    p.textContent = msg;
-                    p.hidden = !msg;
-                    var input = form.querySelector('[name="' + field + '"]');
-                    if (input) input.classList.toggle('is-invalid', !!msg);
-                }
-                function clearErrors() {
-                    form.querySelectorAll('[data-error-for]').forEach(function (p) {
-                        p.textContent = '';
-                        p.hidden = true;
-                    });
-                    form.querySelectorAll('.is-invalid').forEach(function (el) {
-                        el.classList.remove('is-invalid');
-                    });
-                }
-
-                function clientValidate() {
-                    clearErrors();
-                    var ok = true;
-                    var name    = form.elements['c_name'];
-                    var email   = form.elements['c_email'];
-                    var msg     = form.elements['c_message'];
-                    var consent = form.elements['c_consent'];
-
-                    if (!name.value.trim())    { showError('c_name', msgRequired); ok = false; }
-                    if (!email.value.trim())   { showError('c_email', msgRequired); ok = false; }
-                    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { showError('c_email', msgEmail); ok = false; }
-                    if (!msg.value.trim())     { showError('c_message', msgRequired); ok = false; }
-                    if (!consent.checked)      { showError('c_consent', msgConsent); ok = false; }
-                    return ok;
-                }
-
-                form.addEventListener('submit', function (ev) {
-                    ev.preventDefault();
-                    if (!clientValidate()) {
-                        var firstErr = form.querySelector('.ev-form__error:not([hidden])');
-                        if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
-                        return;
-                    }
-                    var btn = form.querySelector('button[type="submit"]');
-                    if (btn) btn.disabled = true;
-
-                    fetch(form.action.split('#')[0], {
-                        method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
-                        body: new FormData(form)
-                    })
-                    .then(function (r) { return r.json(); })
-                    .then(function (data) {
-                        if (data && data.ok) {
-                            form.reset();
-                            form.classList.add('is-hidden');
-                            success.hidden = false;
-                            // small delay so the fade is visible
-                            setTimeout(function () { success.classList.add('is-visible'); }, 20);
-                        } else if (data && data.errors) {
-                            Object.keys(data.errors).forEach(function (k) {
-                                showError(k, data.errors[k]);
-                            });
-                            var firstErr = form.querySelector('.ev-form__error:not([hidden])');
-                            if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
-                        }
-                    })
-                    .catch(function () {
-                        // Network error: fall back to native submit so user sees something
-                        form.submit();
-                    })
-                    .finally(function () {
-                        if (btn) btn.disabled = false;
-                    });
-                });
-
-                // Clear field error as user types/changes
-                form.querySelectorAll('input, textarea').forEach(function (el) {
-                    var clear = function () { showError(el.name, ''); };
-                    el.addEventListener('input',  clear);
-                    el.addEventListener('change', clear);
-                });
-
-                // "Send another" button
-                success.querySelector('.ev-form-success__again').addEventListener('click', function () {
-                    success.classList.remove('is-visible');
-                    setTimeout(function () {
-                        success.hidden = true;
-                        form.classList.remove('is-hidden');
-                        var first = form.querySelector('input[name="c_name"]');
-                        if (first) first.focus();
-                    }, 250);
-                });
-
-                // If page rendered with success state (no-JS fallback), animate it in.
-                if (!success.hidden) {
-                    setTimeout(function () { success.classList.add('is-visible'); }, 20);
-                }
-            })();
-            </script>
-        </div>
-
-    </div>
-</section>
 
 </main>
 

@@ -687,7 +687,7 @@ if ($section) {
                                    value="<?= cv($content, 'ev_opt2_cta_primary' . $key_suffix) ?>">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">CTA secundario <span class="hint">→ #contacto</span></label>
+                            <label class="form-label">CTA secundario <span class="hint">→ /contacto/</span></label>
                             <input name="ev_opt2_cta_secondary<?= $key_suffix ?>" type="text" class="form-control"
                                    value="<?= cv($content, 'ev_opt2_cta_secondary' . $key_suffix) ?>">
                         </div>

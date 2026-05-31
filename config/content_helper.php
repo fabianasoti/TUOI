@@ -190,8 +190,135 @@ function load_site_content($conexion, string $lang = 'es') {
         'contact_address'    => 'C. de la Travesía, 15B, 46024 València',
     ];
 
-    // Sin conexión: devolvemos los defaults en español tal cual.
-    if (!$conexion) return $defaults;
+    // Traducciones en inglés definidas en código. La BD tiene prioridad (claves
+    // '<clave>_en'), pero si un texto aún no está traducido en BD este array
+    // sirve de fallback para que la página no muestre español en modo EN.
+    $defaults_en = [
+        // Homepage
+        'hero_subtitle'         => 'Eat like you think.<br>Food adapted to the needs of your day.',
+        'qs_label'              => 'Who are we?',
+        'qs_h2'                 => 'From high performance<br>to your table.',
+        'qs_p1'                 => 'TUOI is much more than a café: it\'s your place to enjoy, take care of yourself and feel good. A space where you can take a break, start your day or recharge while enjoying great coffee and healthy, flavourful food designed for your daily routine.',
+        'qs_p2'                 => 'Taking care of yourself here is not complicated. It\'s natural, accessible… and appealing. Behind TUOI is the knowledge of <strong><a href="https://miobiosport.com/" target="_blank">MIOBIO</a></strong>, specialists in functional nutrition applied to elite sport. All that expertise translates into something very simple: giving you options that not only taste great, but help you have more energy, feel better and keep your pace.',
+        'fil_label'             => 'Our philosophy',
+        'fil_h2'                => 'Everything under one philosophy:<br>functional, balanced and flavourful nutrition.',
+        'card_balance_title'    => 'Balanced nutrition',
+        'card_balance_desc'     => 'Every dish designed to give you what you need — no excesses, no gaps. Real nutrition in every bite.',
+        'card_energy_title'     => 'Power up your morning',
+        'card_energy_desc'      => 'Breakfasts designed to wake up your performance from the very first hour of the day. No artificial stimulants.',
+        'card_focus_title'      => 'Sustained focus',
+        'card_focus_desc'       => 'No sugar spikes, no mid-afternoon slumps. Food that keeps your mind active when you need it most.',
+        'card_power_title'      => 'Perform at your best',
+        'card_power_desc'       => 'Proteins, carbohydrates and fats in the right measure so your body performs at full capacity, always.',
+        'value1'                => 'Breakfasts focused on activating energy',
+        'value2'                => 'Lunches designed to sustain performance',
+        'value3'                => 'Meals aimed at recovery',
+        'value4'                => 'Options adapted to different nutritional needs',
+        // Quiénes somos page
+        'qs_page_hero_label'    => 'Our story',
+        'qs_page_hero_h1'       => 'Who are we?',
+        'qs_page_hero_sub'      => 'From elite sport to your work desk.',
+        'qs_page_b1_label'      => 'Who we are',
+        'qs_page_b1_h2'         => 'Your place to take care of yourself without the hassle',
+        'qs_page_b1_p1'         => 'TUOI is much more than a café: it\'s your place to enjoy, take care of yourself and feel good.',
+        'qs_page_b1_p2'         => 'A space where you can take a break, start your day or recharge while enjoying coffee and healthy, flavourful food designed for your daily routine.',
+        'qs_page_b1_p3'         => 'Taking care of yourself here is not complicated. It\'s natural, accessible… and appealing.',
+        'qs_page_b2_label'      => 'Our origin',
+        'qs_page_b2_h2'         => 'The knowledge of elite sport, at your table',
+        'qs_page_b2_p1'         => 'Behind TUOI is the knowledge of <strong>MIOBIO</strong>, specialists in functional nutrition applied to elite sport. All that expertise translates into something very simple: giving you options that not only taste great, but help you have more energy, feel better and keep your pace.',
+        'qs_page_b2_p2'         => 'Because what you eat influences how you feel.',
+        'qs_page_b3_label'      => 'Our offering',
+        'qs_page_b3_h2'         => 'At TUOI you can',
+        'qs_page_b3_intro'      => 'At TUOI you can:',
+        'qs_page_b3_li1'        => 'Start the day with breakfasts that activate your energy',
+        'qs_page_b3_li2'        => 'Enjoy coffee and healthy options at any time',
+        'qs_page_b3_li3'        => 'Take a break with balanced food that truly appeals',
+        'qs_page_b3_p'          => 'All under one idea: eat well without the fuss.',
+        'qs_page_close_p'       => 'TUOI is the meeting point between high-performance knowledge and your everyday life. <strong>A place where healthy eating becomes a natural part of your routine.</strong>',
+        'qs_page_close_btn'     => 'Explore the menu',
+        // Eventos — página principal
+        'ev_hero_label'         => 'Events · TUOI',
+        'ev_hero_h1'            => 'Events with purpose, energy and meaning',
+        'ev_hero_sub'           => 'Gastronomic experiences that enhance every gathering.',
+        'ev_hero_cta_primary'   => "Let's talk about your event",
+        'ev_hero_cta_secondary' => 'See menus',
+        'ev_intro_label'        => 'Our philosophy',
+        'ev_intro_p1'           => 'At TUOI we bring our functional coffee & smart food philosophy to the world of events. We design gastronomic experiences that do not just accompany, but enhance what happens at every gathering: sharper focus, better energy and a genuine sense of wellbeing.',
+        'ev_intro_p2'           => 'We work with local ingredients and balanced proposals that adapt to the pace and goal of each gathering. The result: light, tasty and functional food that avoids energy dips and accompanies the natural rhythm of each moment.',
+        'ev_why_label'          => 'Why TUOI',
+        'ev_why_h2'             => 'Why TUOI?',
+        'ev_why_b1_title'       => 'Local and meaningful',
+        'ev_why_b1_desc'        => 'We work with local ingredients, responsible materials and careful processes. Because a great event should not cost the planet.',
+        'ev_why_b2_title'       => 'Light and real',
+        'ev_why_b2_desc'        => 'Real food, no ultra-processed ingredients or excess. Tasty, balanced and easy to enjoy — no heaviness.',
+        'ev_why_b3_title'       => 'Energy that keeps up',
+        'ev_why_b3_desc'        => 'We design menus so the event flows: steady energy, an alert mind and zero slumps.',
+        'ev_why_b4_title'       => 'Made for your event',
+        'ev_why_b4_desc'        => 'Every proposal adapts to your needs: the format, the people and what you want to convey.',
+        'ev_social_label'       => 'They trust us',
+        'ev_social_quote'       => 'We organised an afterwork for 40 people and the difference was clear: people connected, ate well and no one suffered the mid-afternoon slump. We\'ll be back.',
+        'ev_social_author'      => 'Marta Soler',
+        'ev_social_role'        => 'People & Culture · Innovae',
+        'ev_menus_label'        => 'Our menus',
+        'ev_menus_h2'           => 'Menus that adapt to your event',
+        'ev_menus_intro'        => 'We offer different formats that fit the type of gathering and the experience you want to create.',
+        'ev_opt1_label'         => 'TUOI Experiences',
+        'ev_opt1_title'         => 'TUOI Experiences',
+        'ev_opt1_desc'          => 'Three formats designed to suit every type of gathering. Choose and we take care of the rest.',
+        'ev_opt1_cta'           => 'See experiences',
+        'ev_opt2_label'         => 'Tailored for you',
+        'ev_opt2_title'         => 'Designed for you',
+        'ev_opt2_desc'          => 'We design the menu with you according to the format, the people and what you want to convey.',
+        'ev_opt2_cta_primary'   => 'Discover your options',
+        'ev_opt2_cta_secondary' => 'Contact us',
+        'ev_marquee_text'       => 'Networking events – Afterworks – Team buildings – Presentations – Corporate or creative gatherings',
+        // Eventos — Listos para disfrutar
+        'ev_el_h1'              => 'Ready to enjoy',
+        'ev_el_intro'           => 'Three formats designed to accompany every type of gathering: from an energising break to a complete gastronomic experience.',
+        'ev_el_back_text'       => 'Back to Events',
+        'ev_el_cat1_label'      => 'Corporate catering',
+        'ev_el_cat1_title'      => 'Coffee Break',
+        'ev_el_cat1_audience'   => 'Meetings · Workshops · Corporate events · Presentations · Sports days',
+        'ev_el_cat2_label'      => 'Cocktail',
+        'ev_el_cat2_title'      => 'Social Cocktail',
+        'ev_el_cat3_label'      => 'Brunch & Lunch',
+        'ev_el_cat3_title'      => 'Table Experience',
+        'ev_el_service_label'   => 'Service',
+        'ev_el_service_h2'      => 'What the service includes',
+        'ev_el_conditions_label'=> 'Contracting and payment terms',
+        'ev_el_e1_tagline'      => 'The perfect break to keep energy and momentum flowing throughout the event.',
+        'ev_el_e1_body'         => "<p><strong>Concept:</strong> healthy, elegant and functional coffee break.</p>\n<p><strong>Ideal for:</strong></p>\n<ul>\n<li>Meetings</li>\n<li>Workshops</li>\n<li>Corporate events</li>\n<li>Presentations</li>\n<li>Sports days</li>\n</ul>\n<p><strong>Includes:</strong></p>\n<ul>\n<li>Specialty coffee, herbal teas, fresh orange juice, semi-skimmed, lactose-free and oat milk, water bottles.</li>\n<li>Mini bakery (croissants and chocolate pops).</li>\n<li>Mini savouries: brie, ham and tomato jam rolls; turkey with avocado cream; mini croissants with tomato, four cheeses and spinach.</li>\n<li>Fresh fruit.</li>\n<li>Vegan and gluten-free options available on request.</li>\n</ul>",
+        'ev_el_e2_tagline'      => 'Much more than a coffee break: an experience designed to activate body and mind.',
+        'ev_el_e2_body'         => "<p><strong>Concept:</strong> premium coffee break experience with a wellness and functional focus.</p>\n<p><strong>Includes:</strong></p>\n<ul>\n<li>Specialty coffee, herbal teas, fresh orange juice, semi-skimmed, lactose-free and oat milk, water bottles.</li>\n<li>Mini croissant.</li>\n<li>Mini cookies.</li>\n<li>Mini muffins.</li>\n<li>Mini savouries: brie, ham and tomato jam rolls; turkey with avocado cream; mini croissants with tomato, four cheeses and spinach.</li>\n<li>Mini pisto pastries.</li>\n<li>Yoghurt pot with homemade granola.</li>\n<li>Fresh fruit.</li>\n<li>Vegan and gluten-free options available on request.</li>\n</ul>",
+        'ev_el_e3_tagline'      => 'A fresh, curated proposal for events where connecting is part of the experience.',
+        'ev_el_e3_body'         => "<p><strong>Concept:</strong> dynamic, elegant and social cocktail.</p>\n<p><strong>Includes:</strong></p>\n<ul>\n<li>Drink: beer, soft drink or water.</li>\n<li>Iberian ham and avocado cream pastries.</li>\n<li>Spanish omelette.</li>\n</ul>",
+        'ev_el_e4_tagline'      => 'A gastronomic experience designed to surprise, delight and create lasting memories.',
+        'ev_el_e4_body'         => "<p><strong>Add:</strong></p>\n<ul>\n<li>Live cooking.</li>\n<li>Live stations.</li>\n<li>Functional pairings.</li>\n<li>Healthy mixology.</li>\n<li>Signature cocktails.</li>\n<li>Themed experiences.</li>\n<li>Menu designed around the event type.</li>\n<li>Premium presentation.</li>\n</ul>",
+        'ev_el_e5_tagline'      => 'Real, balanced food for gatherings where sharing is part of the moment.',
+        'ev_el_e5_body'         => "<p><strong>Concept:</strong> healthy and modern informal brunch or lunch.</p>\n<p><strong>Includes:</strong></p>\n<ul>\n<li>Bowls.</li>\n<li>Focaccias.</li>\n<li>Premium salads.</li>\n<li>Sharing dishes.</li>\n<li>Functional options.</li>\n<li>Healthy desserts.</li>\n</ul>",
+        'ev_el_e6_tagline'      => 'A premium gastronomic experience where wellbeing, aesthetics and flavour come together.',
+        'ev_el_e6_body'         => "<p><strong>Add:</strong></p>\n<ul>\n<li>Experiential brunch.</li>\n<li>Gastronomic stations.</li>\n<li>Personalised menu.</li>\n<li>Dishes inspired by sports nutrition.</li>\n<li>Live cooking.</li>\n<li>Wellness menu.</li>\n<li>Sensory experience.</li>\n<li>Functional pairing.</li>\n<li>Custom visual design.</li>\n</ul>",
+        'ev_el_service_body'    => "<ul>\n<li>Dietary options available: gluten-free, lactose-free and vegetarian.</li>\n<li>Preferential use of recyclable or reusable service materials, reducing single-use plastics. Reusable or recyclable containers to minimise food waste.</li>\n<li>Transport and service logistics.</li>\n<li>Set-up and preparation of the space.</li>\n<li>Service equipment: tableware, auxiliary tables and linen where applicable.</li>\n<li>Service staff for on-site attendance.</li>\n</ul>",
+        'ev_el_conditions_body' => "<h4>Contracting conditions</h4>\n<p>The final number of guests and the menu breakdown (vegetarian, dietary intolerances) must be confirmed no later than 8 days before the event date. Any subsequent changes are subject to availability and possible budget adjustment.</p>\n<h4>Cancellations</h4>\n<p>Cancellations must be made exclusively by phone or email, with express written confirmation from the company being required. Cancellations left as voicemails will not be accepted. With less than 24 working hours' notice, the full order amount will be charged.</p>\n<p>All tableware, equipment or materials attributable to the event will be made of disposable and biodegradable materials unless otherwise stated. Acceptance of this proposal implies full agreement with all the conditions set out herein.</p>\n<h4>Payment conditions</h4>\n<p>To confirm the date and the service, a 50% advance payment of the total amount is required as a booking deposit. The remaining 50% must be paid 48 hours before the start of the service.</p>\n<p>If the booking is made less than 7 days in advance, 100% of the total amount will be required as a single advance payment.</p>",
+        // CTA
+        'ev_cta_h2'             => 'Have an event in mind?',
+        'ev_cta_text'           => 'Tell us how you picture it and we will design the menu for you.',
+        'ev_cta_btn'            => "Let's talk →",
+        // Contacto
+        'contact_phone'         => '+34 604 39 43 47',
+        'contact_email'         => 'hola@miobiosport.com',
+        'contact_address'       => 'C. de la Travesía, 15B, 46024 València',
+    ];
+
+    // Sin conexión: devolvemos los defaults (español) o los en-defaults según idioma.
+    if (!$conexion) {
+        if ($lang === 'en') {
+            foreach ($defaults_en as $key => $val) {
+                $defaults[$key] = $val;
+            }
+        }
+        return $defaults;
+    }
 
     // Cargamos TODA la tabla en memoria de una sola consulta (es pequeña, decenas
     // de filas) en vez de hacer un SELECT por clave. El @ silencia el warning si
@@ -211,13 +338,15 @@ function load_site_content($conexion, string $lang = 'es') {
     }
 
     // Paso 2: si el idioma activo es inglés, buscar la versión '<clave>_en'.
-    // Usamos !empty (no isset) para que un campo EN vacío en el admin caiga
-    // automáticamente al texto en español, en vez de mostrar un hueco.
+    // Prioridad: BD > defaults_en > español (ya aplicado en paso 1).
+    // Usamos !empty (no isset) para que un campo EN vacío en BD caiga al siguiente nivel.
     if ($lang === 'en') {
         foreach (array_keys($defaults) as $key) {
             $en_key = $key . '_en';
             if (!empty($all[$en_key])) {
                 $defaults[$key] = $all[$en_key];
+            } elseif (isset($defaults_en[$key])) {
+                $defaults[$key] = $defaults_en[$key];
             }
         }
     }

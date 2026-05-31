@@ -1,6 +1,7 @@
 <?php
 $base         = '';
 $current_page = 'inicio';
+$extra_css    = 'home';
 $page_title   = 'TUOI | Functional Coffee & Smart Food';
 require 'config/conexion.php';
 require 'config/content_helper.php';

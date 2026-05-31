@@ -10,13 +10,14 @@
 1. [Acceder al panel](#1-acceder-al-panel)
 2. [El dashboard (inicio)](#2-el-dashboard-inicio)
 3. [Editar textos del sitio](#3-editar-textos-del-sitio)
-4. [Gestionar imágenes](#4-gestionar-imágenes)
-5. [Testimonios de clientes](#5-testimonios-de-clientes)
-6. [Mensajes de contacto](#6-mensajes-de-contacto)
-7. [Traducción al inglés](#7-traducción-al-inglés)
-8. [Ver cómo queda en la web](#8-ver-cómo-queda-en-la-web)
-9. [Cerrar sesión](#9-cerrar-sesión)
-10. [Preguntas frecuentes](#10-preguntas-frecuentes)
+4. [Gestionar la carta](#4-gestionar-la-carta)
+5. [Gestionar imágenes](#5-gestionar-imágenes)
+6. [Testimonios de clientes](#6-testimonios-de-clientes)
+7. [Mensajes de contacto](#7-mensajes-de-contacto)
+8. [Traducción al inglés](#8-traducción-al-inglés)
+9. [Ver cómo queda en la web](#9-ver-cómo-queda-en-la-web)
+10. [Cerrar sesión](#10-cerrar-sesión)
+11. [Preguntas frecuentes](#11-preguntas-frecuentes)
 
 ---
 
@@ -50,9 +51,11 @@ Debajo hay **accesos rápidos** a las cuatro acciones más habituales:
 | Acceso rápido | Para qué sirve |
 |---|---|
 | ✏️ Editar contenido | Cambiar textos, títulos y descripciones del sitio |
-| 🖼️ Gestionar imágenes | Subir, reordenar o borrar fotos |
+| 🍽️ Gestionar la carta | Añadir, editar y reordenar platos y bebidas (con foto y precio) |
+| 🖼️ Gestionar imágenes | Subir, reordenar o borrar fotos de las distintas secciones |
+| 💬 Testimonios | Gestionar opiniones de clientes |
+| 📨 Mensajes | Bandeja de entrada del formulario de contacto |
 | 🌐 Ver el sitio | Abre la web pública en una pestaña nueva |
-| 🍽️ Ver la carta | Abre directamente la sección de menú |
 
 También hay una tabla al final del dashboard con un resumen de cuántas imágenes hay en cada sección, para que de un vistazo sepas qué secciones tienen contenido y cuáles están vacías.
 
@@ -64,17 +67,18 @@ Ve a **Editar contenido** desde el menú lateral o desde el acceso rápido del d
 
 ### Seleccionar la sección a editar
 
-Los textos están organizados por sección de la web. Verás un menú en la parte superior con las opciones:
+Los textos están organizados por página de la web. Al entrar en **Editar contenido** verás un *hub* con tarjetas, una por cada página editable:
 
-| Sección | Qué contiene |
+| Tarjeta | Qué contiene |
 |---|---|
-| **Inicio** | Hero principal, "¿Quiénes somos?" preview, tarjetas de filosofía (Balance, Energy, Focus, Power) y valores |
-| **Eventos** | Página de eventos: hero, intro, "¿Por qué TUOI?", menús disponibles, CTA |
-| **Experiencias listas** | Textos de la subpágina de eventos con menús predefinidos |
-| **Eventos a medida** | Textos de la subpágina de eventos personalizados |
-| **Quiénes somos** | Todos los textos de la página "Quiénes somos" |
+| 🏠 **Página de inicio** | Hero principal, "¿Quiénes somos?" preview, tarjetas de filosofía (Balance, Energy, Focus, Power) y valores |
+| 👥 **Quiénes somos** | Hero, los tres bloques (origen, propuesta, etc.) y cierre |
+| 🎉 **Eventos** (grupo) | Tarjeta padre + 2 hijas dentro del mismo grupo: |
+| ↳ Página principal de Eventos | Hero, intro/filosofía, "Por qué TUOI", las 2 opciones, CTA y datos de contacto |
+| ↳ Listos para disfrutar | 6 experiencias prediseñadas + servicio incluido + condiciones de contratación |
+| ↳ Evento a tu medida | Subpágina personalizable (placeholder hasta que se defina el contenido) |
 
-Haz clic en la sección que quieras editar.
+Haz clic en la tarjeta de la página que quieras editar.
 
 ### Editar un campo
 
@@ -103,28 +107,79 @@ Evita usar HTML complejo (tablas, scripts, etc.) en estos campos.
 
 ---
 
-## 4. Gestionar imágenes
+## 4. Gestionar la carta
 
-Ve a **Gestionar imágenes** desde el menú lateral.
+Ve a **Carta** desde el menú lateral. Aquí gestionas los platos, bebidas y postres del menú **uno a uno** (no como un PDF ni como imágenes sueltas, sino como una base de datos editable).
+
+### Cómo está organizada
+
+La carta tiene **6 categorías** (los "pills" de colores en la parte superior):
+
+- **Desayunos** · **Menú brunch** · **Opciones saladas** · **Menú lunch** · **Momento dulce** · **Bebidas**
+
+Dentro de cada categoría puedes crear **sub-grupos** (por ejemplo dentro de *Desayunos*: "Tostadas", "Bowls", "Wraps", "Bocadillos", "Extras"…). El sub-grupo es opcional pero ayuda a ordenar visualmente la carta del sitio.
+
+### Añadir un ítem nuevo
+
+1. Asegúrate de estar en la pestaña **🇪🇸 Español** (los ítems siempre se crean primero en español).
+2. Pulsa el pill de la **categoría** donde quieres añadirlo.
+3. Rellena el formulario "Añadir ítem":
+   - **Sub-grupo** *(opcional)*: si escribes un nombre que ya existe, el ítem se une al grupo. Si pones uno nuevo, se crea.
+   - **Nombre** (obligatorio).
+   - **Precio en €** (opcional). Marca **"Es suplemento"** si quieres que se muestre como *"+2,00 €"* en lugar de *"2,00 €"*.
+   - **Descripción**: frase corta debajo del nombre.
+   - **Ingredientes / nota**: lista de ingredientes o nota destacada.
+   - **Alérgenos**: marca las casillas correspondientes (vegano, sin gluten, sin lactosa, etc.).
+   - **Foto** *(opcional)*: se convierte a WebP automáticamente.
+   - **Visible en la web**: déjalo marcado salvo que quieras prepararlo y publicarlo más tarde.
+4. Pulsa **+ Añadir ítem**.
+
+### Editar, ocultar o eliminar un ítem
+
+En la lista de cada categoría tienes, a la derecha de cada ítem, varios botones:
+
+| Botón | Qué hace |
+|---|---|
+| ✏️ | Abre el formulario completo de edición (incluye cambiar de categoría) |
+| 👁️ / 🙈 | Activa o desactiva la visibilidad en la web (sin borrarlo) |
+| 🗑️ | Elimina el ítem (y su foto) **permanentemente** — pide confirmación |
+
+### Reordenar ítems
+
+**Arrastra** cualquier ítem de la lista con el ratón para colocarlo en otra posición. El nuevo orden se guarda automáticamente. El orden dentro de cada sub-grupo es independiente.
+
+> ⚠️ Si en algún momento ves el aviso **"⚠️ Reparar orden"** en la cabecera de la lista, púlsalo: significa que hay ítems con el mismo número de orden (por una migración antigua) y el botón los recoloca limpiamente.
+
+### Renombrar un sub-grupo en bloque
+
+Si quieres cambiar el nombre de un sub-grupo (por ejemplo "Bocadillos" → "Bocadillos especiales"), no hace falta editar ítem por ítem: pulsa **✏️ Renombrar** en la cabecera del sub-grupo, escribe el nombre nuevo y guarda. Se aplicará a todos los ítems de ese grupo.
+
+### Traducir un ítem al inglés
+
+1. Cambia a la pestaña **🇬🇧 English**.
+2. En la lista, cada ítem muestra un chip *"Traducido ✓"* (si ya tiene traducción) o *"Sin traducir"*.
+3. Pulsa el botón **🇬🇧 Traducir** / **🇬🇧 Editar** del ítem.
+4. Verás el original en español arriba como referencia, y debajo los campos para escribir el nombre, descripción, ingredientes y sub-grupo en inglés.
+
+> Si dejas algún campo EN vacío, el sitio mostrará el texto en español cuando el visitante esté en modo inglés. No se rompe nada.
+
+---
+
+## 5. Gestionar imágenes
+
+Ve a **Gestionar imágenes** desde el menú lateral. Esta sección es para imágenes que **no** son de la carta (las fotos de los platos se gestionan dentro de cada ítem en la sección **Carta**, ver punto 4).
 
 ### Elegir la sección
 
-En la parte superior hay un desplegable o lista de secciones. Cada sección corresponde a una parte del sitio:
+En la parte superior hay una lista de secciones. Cada sección corresponde a una parte del sitio:
 
 | Sección | Dónde aparecen las imágenes |
 |---|---|
 | **Carteles / Logos** | Logos de Balance, Energy, Focus, Power en el home |
 | **Quiénes somos** | Foto del equipo o local en la página "Quiénes somos" |
 | **Inicio (imagen principal)** | Imagen de fondo del hero de la portada |
-| **Carta — Desayunos** | Fotos de platos en la categoría Desayunos (versión ES) |
-| **Carta — Toque Salado** | Fotos de platos en Toque Salado (ES) |
-| **Carta — Momento Dulce** | Fotos de platos en Momento Dulce (ES) |
-| **Carta — Bebidas** | Fotos de bebidas (ES) |
-| **Carta — Superalimentos** | Fotos de superalimentos (ES) |
-| **Carta — Desayunos (EN)** | Fotos con texto en inglés para la versión EN |
-| *(ídem para el resto de categorías EN)* | — |
 | **Eventos — Carrusel** | Fotos que aparecen en el carrusel de la página de Eventos |
-| **Eventos — Por qué TUOI** | Imágenes del bloque "¿Por qué TUOI?" |
+| **Eventos — Por qué TUOI** | Imagen del bloque "¿Por qué TUOI?" |
 | **Eventos — Logos clientes** | Logos de empresas que han contratado eventos |
 | **Eventos — Fondo del CTA** | Imagen de fondo de la llamada a la acción de Eventos |
 
@@ -151,15 +206,9 @@ Después de seleccionar una sección verás una galería con todas las imágenes
 
 > ⚠️ Borrar una imagen es permanente. No hay papelera de reciclaje. Asegúrate antes de confirmar.
 
-### Imágenes de la carta en inglés
-
-Si tienes fotos con texto rotulado en inglés (por ejemplo, el nombre del plato escrito sobre la imagen), súbelas en la sección correspondiente con **(EN)** al final, por ejemplo **Carta — Desayunos (EN)**.
-
-Si esa carpeta está vacía, la web mostrará automáticamente las imágenes en español como alternativa.
-
 ---
 
-## 5. Testimonios de clientes
+## 6. Testimonios de clientes
 
 Ve a **Testimonios** desde el menú lateral. Aquí puedes gestionar las opiniones de clientes que aparecen en la página de Eventos.
 
@@ -195,9 +244,11 @@ Pulsa el botón **Eliminar** junto al testimonio. Se pedirá confirmación. Esta
 
 ---
 
-## 6. Mensajes de contacto
+## 7. Mensajes de contacto
 
-Ve a **Mensajes** desde el menú lateral. Aquí ves todos los mensajes enviados desde el formulario de contacto de la página de Eventos.
+Ve a **Mensajes** desde el menú lateral. Aquí ves todos los mensajes enviados desde el formulario de contacto del sitio (en `/contacto/`).
+
+> 💡 Antes había varios CTAs distintos (uno en Eventos, otro en Eventos-listos, etc.) y cada mensaje guardaba de dónde venía. Desde mayo de 2026 hay **un único formulario** en `/contacto/`, así que esa columna "origen" ya no se muestra.
 
 ### Leer un mensaje
 
@@ -221,14 +272,14 @@ Pulsa **Eliminar** junto al mensaje. Se pedirá confirmación. Una vez borrado n
 
 ---
 
-## 7. Traducción al inglés
+## 8. Traducción al inglés
 
 La web de TUOI está disponible en español e inglés. Los visitantes pueden cambiar de idioma con el selector **ES / EN** del menú.
 
-Tanto en el editor de textos como en testimonios, hay un selector de idioma en la parte superior:
+En el editor de textos, en testimonios y en la carta hay un selector de idioma en la parte superior:
 
 ```
-[ Español ]  [ English ]
+[ 🇪🇸 Español ]  [ 🇬🇧 English ]
 ```
 
 - **Español** — editas los textos principales del sitio.
@@ -236,15 +287,21 @@ Tanto en el editor de textos como en testimonios, hay un selector de idioma en l
 
 ### ¿Qué pasa si no traduzco un texto?
 
-No pasa nada grave. Si un texto no tiene versión en inglés, la web mostrará automáticamente el texto en español para ese campo. Así que puedes ir traduciendo poco a poco sin que la web se rompa.
+No pasa nada grave. Si un texto no tiene versión en inglés, la web mostrará automáticamente el texto en español para ese campo. Puedes ir traduciendo poco a poco sin que la web se rompa.
 
-### Imágenes en inglés
+### Traducir la carta
 
-Si las imágenes de la carta tienen texto escrito encima (por ejemplo el nombre del plato en español), necesitarás subir versiones alternativas con el texto en inglés en las carpetas **"(EN)"** del gestor de imágenes.
+La carta es el bloque más largo (más de 100 ítems). Para traducirla:
+
+1. Ve a **Carta** → pestaña **🇬🇧 English**.
+2. Recorre las categorías (pills de la parte superior). Cada ítem muestra un chip *"Sin traducir"* o *"Traducido ✓"*.
+3. Pulsa **🇬🇧 Traducir** en cualquier ítem sin traducir; se abre un formulario con el original ES como referencia y los campos EN debajo. Guarda y pasa al siguiente.
+
+> Las traducciones iniciales de los 115 ítems ya se cargaron en bloque (mayo 2026). Solo tendrás que traducir los ítems **nuevos** que añadas a partir de ahora, o ajustar los existentes si quieres afinar la traducción.
 
 ---
 
-## 8. Ver cómo queda en la web
+## 9. Ver cómo queda en la web
 
 Desde cualquier página del panel admin puedes pulsar el botón **🌐 Ver sitio** (arriba a la derecha) para abrir la web pública en una nueva pestaña y comprobar cómo se ven tus cambios.
 
@@ -253,13 +310,16 @@ También puedes ir directamente a cualquier página del sitio:
 - **Inicio:** `tuoicoffee.com/`
 - **Carta:** `tuoicoffee.com/pages/carta/`
 - **Eventos:** `tuoicoffee.com/pages/eventos/`
+- **Listos para disfrutar:** `tuoicoffee.com/pages/eventos/eventos-listos/`
+- **A tu medida:** `tuoicoffee.com/pages/eventos/a-tu-medida/`
 - **Quiénes somos:** `tuoicoffee.com/pages/quienes-somos.php`
+- **Contacto:** `tuoicoffee.com/pages/contacto/`
 
 > 💡 Si acabas de guardar cambios y no los ves, recarga la página con **Ctrl+F5** (Windows/Linux) o **Cmd+Shift+R** (Mac) para forzar la descarga de la versión nueva.
 
 ---
 
-## 9. Cerrar sesión
+## 10. Cerrar sesión
 
 Cuando termines, cierra siempre la sesión para evitar que otra persona acceda al panel desde el mismo ordenador.
 
@@ -269,7 +329,7 @@ Pulsa **Cerrar sesión** en la parte inferior del menú lateral.
 
 ---
 
-## 10. Preguntas frecuentes
+## 11. Preguntas frecuentes
 
 **¿Puedo romper la web si cambio algo mal?**  
 Los textos siempre tienen un valor por defecto guardado en el sistema. Si borras el contenido de un campo y guardas, el sitio puede quedar con ese campo vacío, pero no se "rompe". Para restaurar un texto, simplemente vuelve al editor y escríbelo de nuevo.
@@ -286,9 +346,18 @@ Técnicamente sí, pero no es recomendable editar la misma sección de textos si
 **¿Cómo cambio mi contraseña?**  
 La gestión de contraseñas no está disponible desde el panel de usuario actual. Contacta con el responsable técnico para que la cambie.
 
-**¿Se guarda un historial de cambios?**  
+**¿Se guarda un historial de cambios?**
 No hay historial de versiones. Cada vez que guardas, el texto anterior se sobreescribe. Si necesitas recuperar una versión antigua de un texto, tendrás que recordarlo o pedírselo al responsable técnico.
+
+**Añadí un plato pero no aparece en la web, ¿qué pasa?**
+Comprueba que el ítem tenga la casilla **Visible en la web** marcada (en la lista debe aparecer el pill verde *"Visible"* en lugar del rojo *"Oculto"*). Si está visible, recarga la página con Ctrl+F5.
+
+**¿Puedo cambiar un plato de categoría?**
+Sí. Edita el ítem con el botón ✏️ y cambia el desplegable **Categoría** por la que quieras. Al guardar se mueve directamente.
+
+**Borré sin querer un plato, ¿se puede recuperar?**
+No, la eliminación es permanente y también borra la foto del servidor. Vuelve a crearlo desde cero.
 
 ---
 
-*Guía elaborada en Mayo 2026 · Para dudas o problemas técnicos, contacta con el equipo de desarrollo.*
+*Guía elaborada en Mayo 2026 (revisión 27-05-2026: nueva sección de Carta editable plato a plato y formulario de contacto unificado) · Para dudas o problemas técnicos, contacta con el equipo de desarrollo.*

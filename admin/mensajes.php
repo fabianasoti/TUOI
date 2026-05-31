@@ -171,9 +171,6 @@ if ($res) while ($row = mysqli_fetch_assoc($res)) $messages[] = $row;
                                 <?php if ($is_unread): ?>
                                 <span class="msg-pill">Sin leer</span>
                                 <?php endif; ?>
-                                <?php if (!empty($m['source_page'])): ?>
-                                <span>📍 <?= htmlspecialchars($m['source_page']) ?></span>
-                                <?php endif; ?>
                                 <span>🕒 <?= htmlspecialchars($when) ?></span>
                             </div>
                         </div>

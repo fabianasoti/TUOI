@@ -17,6 +17,10 @@ $sections = [
     'eventos/por-que-tuoi'   => ['label' => 'Eventos — Por qué TUOI',       'path' => $base_img . 'eventos/por-que-tuoi/'],
     'eventos/logos'          => ['label' => 'Eventos — Logos clientes',     'path' => $base_img . 'eventos/logos/'],
     'eventos/cta-fondo'      => ['label' => 'Eventos — Fondo del CTA',      'path' => $base_img . 'eventos/cta-fondo/'],
+    // Eventos Listos — imágenes por categoría
+    'eventos/coffee-break'     => ['label' => 'Eventos Listos — Coffee Break',     'path' => $base_img . 'eventos/coffee-break/'],
+    'eventos/social-cocktail'  => ['label' => 'Eventos Listos — Social Cocktail',  'path' => $base_img . 'eventos/social-cocktail/'],
+    'eventos/table-experience' => ['label' => 'Eventos Listos — Table Experience', 'path' => $base_img . 'eventos/table-experience/'],
 ];
 
 $active_section = $_GET['s'] ?? 'carteles';

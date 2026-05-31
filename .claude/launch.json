@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "tuoi",
+      "runtimeExecutable": "wsl",
+      "runtimeArgs": ["php", "-S", "localhost:8765", "-t", "/var/www/html/proyectos/TUOI"],
+      "port": 8765
+    }
+  ]
+}

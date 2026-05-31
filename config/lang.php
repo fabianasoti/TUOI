@@ -29,6 +29,11 @@ $_ui = [
     'nav_home'          => ['es' => 'Inicio',            'en' => 'Home'],
     'nav_menu'          => ['es' => 'Carta',             'en' => 'Menu'],
     'nav_about'         => ['es' => 'Quiénes somos',     'en' => 'About us'],
+    'nav_contacto'      => ['es' => 'Contacto',          'en' => 'Contact'],
+    // Contacto — página
+    'contacto_hero_label' => ['es' => 'Contacto',                            'en' => 'Contact'],
+    'contacto_hero_h1'    => ['es' => 'Hablemos',                            'en' => "Let's talk"],
+    'contacto_hero_sub'   => ['es' => 'Cuéntanos qué necesitas y te respondemos lo antes posible.', 'en' => 'Tell us what you need and we will reply as soon as possible.'],
     // Header dropdown category names
     'cat_desayunos'     => ['es' => 'Desayunos',         'en' => 'Breakfasts'],
     'cat_brunch'        => ['es' => 'Menú brunch',       'en' => 'Brunch menu'],
@@ -68,6 +73,7 @@ $_ui = [
     'qs_link'           => ['es' => 'Conoce nuestra historia', 'en' => 'Our story'],
     // Eventos
     'nav_eventos'       => ['es' => 'Eventos',                 'en' => 'Events'],
+    'nav_ev_all'        => ['es' => 'Ver todos los eventos',    'en' => 'All events'],
     'nav_ev_listos'     => ['es' => 'Listos para disfrutar',   'en' => 'Ready to enjoy'],
     'nav_ev_medida'     => ['es' => 'Diseñado a tu medida',    'en' => 'Designed for you'],
     'nav_ev_contacto'   => ['es' => 'Contacto',                'en' => 'Contact'],
@@ -103,6 +109,19 @@ $_ui = [
     'ev_form_required'  => ['es' => 'Este campo es obligatorio.',                'en' => 'This field is required.'],
     'ev_form_email_bad' => ['es' => 'Introduce una dirección de email válida.',  'en' => 'Please enter a valid email address.'],
     'ev_contact_send_another' => ['es' => 'Enviar otro mensaje →',               'en' => 'Send another message →'],
+    // Eventos — Listos para disfrutar (fallbacks)
+    'ev_el_back_text'        => ['es' => 'Volver a Eventos',                          'en' => 'Back to Events'],
+    'ev_el_service_h2'       => ['es' => 'Lo que incluye el servicio',                'en' => 'What the service includes'],
+    'ev_el_conditions_label' => ['es' => 'Condiciones de contratación y pago',        'en' => 'Contracting and payment terms'],
+    'ev_cta_h2'              => ['es' => '¿Tienes un evento en mente?',               'en' => 'Have an event in mind?'],
+    'ev_cta_text'            => ['es' => 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.', 'en' => 'Tell us how you picture it and we will design the menu for you.'],
+    'ev_cta_btn'             => ['es' => 'Hablamos →',                                'en' => "Let's talk →"],
+    // Eventos — A tu medida (provisional)
+    'atm_intro_label'   => ['es' => 'A tu medida',                                 'en' => 'Designed for you'],
+    'atm_intro_h2'      => ['es' => 'Adaptamos tu evento a lo que necesites',     'en' => 'We adapt your event to what you need'],
+    'atm_intro_p'       => ['es' => 'Sin formatos rígidos ni paquetes cerrados: partimos de tu idea, tu espacio y tu gente para diseñar contigo el menú, la propuesta y el ritmo del evento. Networking, presentaciones, celebraciones íntimas o brunches corporativos — lo construimos contigo, paso a paso, hasta que encaje.', 'en' => 'No rigid formats, no fixed packages: we start from your idea, your venue and your guests to design the menu, the proposal and the pace of the event together with you. Networking sessions, launches, intimate celebrations or corporate brunches — we build it with you, step by step, until it fits.'],
+    'atm_gallery_h2'    => ['es' => 'Algunos momentos',                            'en' => 'A few moments'],
+    'atm_cta_btn'       => ['es' => 'Cuéntanos tu evento →',                       'en' => 'Tell us about your event →'],
 ];
 
 /**

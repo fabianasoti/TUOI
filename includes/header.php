@@ -19,9 +19,15 @@ require_once $base . 'config/lang.php';
         // se modifique el archivo, el navegador descargue la versión nueva
         // sin que el usuario tenga que limpiar caché. time() es un fallback
         // por si filemtime() falla (devolvería false y romperíamos la URL).
-        $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time();
+        $css_root = dirname(__DIR__) . '/assets/css/';
+        $css_v    = @filemtime($css_root . 'style.css') ?: time();
     ?>
     <link rel="stylesheet" href="<?= $base ?>assets/css/style.css?v=<?= $css_v ?>">
+    <?php if (!empty($extra_css)):
+        $extra_v = @filemtime($css_root . $extra_css . '.css') ?: time();
+    ?>
+    <link rel="stylesheet" href="<?= $base ?>assets/css/<?= htmlspecialchars($extra_css) ?>.css?v=<?= $extra_v ?>">
+    <?php endif; ?>
     <link rel="stylesheet" href="<?= $base ?>assets/fonts/inter.css">
 </head>
 <body>
@@ -72,15 +78,22 @@ require_once $base . 'config/lang.php';
                 <?= t('nav_eventos') ?> <span class="arrow" aria-hidden="true">▾</span>
             </a>
             <div class="dropdown-menu" role="menu">
+                <a href="<?= $base ?>pages/eventos/" role="menuitem" class="dropdown-item-eventos-all"><?= t('nav_ev_all') ?></a>
+                <div class="dropdown-divider dropdown-divider--mobile"></div>
                 <a href="<?= $base ?>pages/eventos/eventos-listos/" role="menuitem"><?= t('nav_ev_listos') ?></a>
                 <a href="<?= $base ?>pages/eventos/a-tu-medida/"    role="menuitem"><?= t('nav_ev_medida') ?></a>
-                <a href="<?= $base ?>pages/eventos/#contacto"       role="menuitem"><?= t('nav_ev_contacto') ?></a>
+                <a href="<?= $base ?>pages/contacto/"   role="menuitem"><?= t('nav_ev_contacto') ?></a>
             </div>
         </div>
 
         <a href="<?= $base ?>pages/quienes-somos.php"
            class="nav-link <?= ($current_page ?? '') === 'quienes-somos' ? 'active' : '' ?>">
             <?= t('nav_about') ?>
+        </a>
+
+        <a href="<?= $base ?>pages/contacto/"
+           class="nav-link <?= ($current_page ?? '') === 'contacto' ? 'active' : '' ?>">
+            <?= t('nav_contacto') ?>
         </a>
 
         <!-- Toggle de idioma -->

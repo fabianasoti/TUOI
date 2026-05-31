@@ -1,6 +1,7 @@
 <?php
 $base         = '../../';
 $current_page = 'carta';
+$extra_css    = 'carta';
 $page_title   = 'Carta | TUOI';
 
 require $base . 'config/conexion.php';
@@ -63,6 +64,28 @@ function carta_field(array $item, string $base_field, string $lang): string {
 $items_url = $base . 'assets/img/carta/items/';
 ?>
 
+<section class="page-hero">
+    <span class="section-label"><?= t('carta_page_label') ?></span>
+    <h1><?= t('carta_page_title') ?></h1>
+    <p><?= t('carta_page_sub') ?></p>
+</section>
+
+<!-- Filtros sticky — fuera del main para no quedar limitado por su padding -->
+<nav class="carta-filtros-wrap" aria-label="Categorías">
+    <div class="carta-filtros" role="tablist">
+        <?php foreach ($CARTA_CATEGORIAS as $slug => $labels):
+            $href = 'index.php' . ($slug === $cat_slugs[0] ? '' : '?cat=' . urlencode($slug));
+        ?>
+            <a class="filtro-btn <?= $cat_activa === $slug ? 'active' : '' ?>"
+               href="<?= htmlspecialchars($href) ?>"
+               role="tab"
+               aria-selected="<?= $cat_activa === $slug ? 'true' : 'false' ?>">
+                <?= htmlspecialchars($labels[$lang] ?? $labels['es']) ?>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</nav>
+
 <main class="carta-page">
 
     <!-- Cabecera con título de la categoría -->
@@ -72,22 +95,6 @@ $items_url = $base . 'assets/img/carta/items/';
             <p class="carta-cabecera-sub"><?= htmlspecialchars($cat_sub) ?></p>
         <?php endif; ?>
     </section>
-
-    <!-- Filtros de categoría (sirven como navegación entre páginas) -->
-    <nav class="carta-filtros-wrap" aria-label="Categorías">
-        <div class="carta-filtros" role="tablist">
-            <?php foreach ($CARTA_CATEGORIAS as $slug => $labels):
-                $href = 'index.php' . ($slug === $cat_slugs[0] ? '' : '?cat=' . urlencode($slug));
-            ?>
-                <a class="filtro-btn <?= $cat_activa === $slug ? 'active' : '' ?>"
-                   href="<?= htmlspecialchars($href) ?>"
-                   role="tab"
-                   aria-selected="<?= $cat_activa === $slug ? 'true' : 'false' ?>">
-                    <?= htmlspecialchars($labels[$lang] ?? $labels['es']) ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </nav>
 
     <!-- Cuerpo: grupos de ítems en 2 columnas -->
     <div class="carta-cuerpo">

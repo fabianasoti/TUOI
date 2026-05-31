@@ -1,6 +1,7 @@
 <?php
 $base         = '../';
 $current_page = 'quienes-somos';
+$extra_css    = 'quienes-somos';
 require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php'; // sets $lang early so page_title can be translated

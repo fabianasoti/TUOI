@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TUOI — Mockup secciones de color</title>
+<link rel="stylesheet" href="assets/fonts/inter.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   TUOI — Mockup: secciones con color de marca en vez de oscuro
+   3 variantes lado a lado para comparar
+   ========================================================= */
+:root{
+  --morado:      #C563D2;
+  --verde:       #95CABA;
+  --amarillo:    #D5D034;
+  --naranja:     #E39435;
+  --beige:       #F8F5E6;
+  --beige-soft:  #EFE9DC;
+  --tinta:       #1C1410;
+  --blanco:      #FFFFFF;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:var(--beige)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ── Barra de selección ── */
+.switcher{
+  position:sticky;top:0;z-index:99;
+  background:rgba(248,245,230,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(28,20,16,.1);
+  padding:.85rem 4%;
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  justify-content:space-between;
+}
+.switcher__label{
+  font-family:'Courier Prime',monospace;
+  font-size:.7rem;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(28,20,16,.45);
+}
+.switcher__tabs{display:flex;gap:.4rem;flex-wrap:wrap}
+.stab{
+  padding:.5rem 1.1rem;border-radius:999px;
+  font-size:.73rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  border:1.5px solid rgba(28,20,16,.15);
+  background:none;cursor:pointer;color:var(--tinta);
+  transition:all .2s;
+}
+.stab:hover{border-color:var(--naranja);color:var(--naranja)}
+.stab.active{background:var(--tinta);color:var(--beige);border-color:var(--tinta)}
+
+/* ── Cada variante es una sección oculta/visible ── */
+.variant{display:none}
+.variant.active{display:block}
+
+/* ── NAV compartida ── */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 5%;
+  border-bottom:1px solid rgba(28,20,16,.08);
+  background:var(--beige);
+}
+.nav__logo{font-weight:800;font-size:1.3rem;letter-spacing:-.04em;color:var(--tinta)}
+.nav__links{display:flex;gap:.25rem}
+.nav__link{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.5rem .8rem;border-radius:6px;color:var(--tinta);transition:color .2s}
+.nav__link:hover{color:var(--naranja)}
+.nav__lang{font-family:'Courier Prime',monospace;font-size:.7rem;letter-spacing:.15em;padding:.4rem .8rem;border:1px solid rgba(28,20,16,.2);border-radius:999px;color:var(--tinta)}
+
+/* ── HERO compartido ── */
+.hero{
+  min-height:60vh;
+  background:linear-gradient(to bottom,rgba(28,20,16,.28) 0%,rgba(28,20,16,.52) 50%,rgba(28,20,16,.78) 100%),
+    url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053') center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:4rem 5%;
+}
+.hero__inner{max-width:720px}
+.hero__label{
+  font-family:'Courier Prime',monospace;font-size:.72rem;font-weight:700;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--verde);
+  display:block;margin-bottom:1.5rem;
+}
+.hero__h1{font-size:clamp(2.4rem,5vw,4.5rem);color:#fff;line-height:1.06;letter-spacing:-2px;font-weight:800;margin-bottom:1rem}
+.hero__p{font-size:1rem;color:rgba(248,245,230,.75);margin-bottom:2rem;font-weight:300;line-height:1.6}
+.hero__btn{
+  display:inline-block;padding:.85rem 2rem;background:var(--naranja);color:#fff;
+  border-radius:999px;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;
+}
+
+/* ── QUIENES ── */
+.quienes{padding:5rem 5%;background:var(--beige);border-top:1px solid rgba(28,20,16,.08)}
+.quienes__inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.quienes__label{font-family:'Courier Prime',monospace;font-size:.78rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--naranja);display:block;margin-bottom:1rem}
+.quienes h2{font-size:clamp(1.8rem,3vw,2.8rem);font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:1.25rem;color:var(--tinta)}
+.quienes p{color:rgba(28,20,16,.6);line-height:1.8;margin-bottom:1rem;font-size:.97rem}
+.quienes__img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:1rem 3rem 1rem 3rem;box-shadow:0 20px 48px rgba(28,20,16,.1)}
+
+/* ════════════════════════════════════════
+   VARIANTE 1 — VERDE MENTA
+   ════════════════════════════════════════ */
+.sec--verde{
+  background:var(--verde);
+  padding:7rem 5%;
+  border-top:1px solid rgba(28,20,16,.1);
+}
+.sec--verde .sec__inner{max-width:1200px;margin:0 auto}
+.sec--verde .sec__label{
+  font-family:'Courier Prime',monospace;font-size:.78rem;font-weight:700;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(28,20,16,.55);display:block;margin-bottom:1rem;
+}
+.sec--verde h2{
+  font-size:clamp(1.8rem,3.5vw,3rem);font-weight:800;color:var(--tinta);
+  letter-spacing:-1.5px;line-height:1.1;margin-bottom:4rem;text-align:center;
+}
+
+/* Cards en verde menta — blancas con sombra suave */
+.cards-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-bottom:4rem}
+.card-v{
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(28,20,16,.1);
+  border-top:3px solid transparent;
+  padding:1.5rem;border-radius:20px;
+  transition:transform .3s,box-shadow .3s;
+}
+.card-v:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(28,20,16,.12)}
+.card-v--balance{border-top-color:var(--verde)}
+.card-v--energy {border-top-color:var(--naranja)}
+.card-v--focus  {border-top-color:var(--morado)}
+.card-v--power  {border-top-color:var(--amarillo)}
+.card-v .badge{display:inline-block;padding:.28rem .75rem;border-radius:999px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.badge--verde   {background:var(--verde);color:var(--tinta)}
+.badge--naranja {background:var(--naranja);color:#fff}
+.badge--morado  {background:var(--morado);color:#fff}
+.badge--amarillo{background:var(--amarillo);color:var(--tinta)}
+.card-v h3{font-size:1rem;font-weight:700;color:var(--tinta);margin-bottom:.5rem;line-height:1.3}
+.card-v p{font-size:.86rem;color:rgba(28,20,16,.6);line-height:1.6}
+
+/* Values en verde menta */
+.values--verde{
+  border-top:1px solid rgba(28,20,16,.15);
+  padding-top:3rem;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;
+}
+.val{display:flex;align-items:flex-start;gap:.8rem}
+.val__dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:.45rem}
+.val__dot--1{background:var(--tinta)}
+.val__dot--2{background:var(--tinta)}
+.val__dot--3{background:var(--tinta)}
+.val__dot--4{background:var(--tinta)}
+.val p{color:rgba(28,20,16,.7);font-size:.9rem;line-height:1.55;font-weight:500}
+
+/* ════════════════════════════════════════
+   VARIANTE 2 — BICOLOR (beige oscuro + naranja)
+   ════════════════════════════════════════ */
+.sec--bicolor{
+  background:#E8DFD0;   /* beige más profundo */
+  padding:7rem 5%;
+  border-top:1px solid rgba(28,20,16,.1);
+}
+.sec--bicolor .sec__inner{max-width:1200px;margin:0 auto}
+.sec--bicolor .sec__label{
+  font-family:'Courier Prime',monospace;font-size:.78rem;font-weight:700;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:var(--naranja);display:block;margin-bottom:1rem;
+}
+.sec--bicolor h2{
+  font-size:clamp(1.8rem,3.5vw,3rem);font-weight:800;color:var(--tinta);
+  letter-spacing:-1.5px;line-height:1.1;margin-bottom:4rem;text-align:center;
+}
+/* Cards en bicolor — blancas */
+.card-b{
+  background:var(--blanco);
+  border:1px solid rgba(28,20,16,.07);
+  border-top:3px solid transparent;
+  padding:1.5rem;border-radius:20px;
+  transition:transform .3s,box-shadow .3s;
+}
+.card-b:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(28,20,16,.1)}
+.card-b--balance{border-top-color:var(--verde)}
+.card-b--energy {border-top-color:var(--naranja)}
+.card-b--focus  {border-top-color:var(--morado)}
+.card-b--power  {border-top-color:var(--amarillo)}
+.card-b h3{font-size:1rem;font-weight:700;color:var(--tinta);margin-bottom:.5rem;line-height:1.3}
+.card-b p{font-size:.86rem;color:rgba(28,20,16,.55);line-height:1.6}
+
+.values--bicolor{
+  border-top:1px solid rgba(28,20,16,.12);
+  padding-top:3rem;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;
+}
+.val--b{display:flex;align-items:flex-start;gap:.8rem}
+.val--b p{color:rgba(28,20,16,.65);font-size:.9rem;line-height:1.55}
+
+/* ════════════════════════════════════════
+   VARIANTE 3 — MORADO
+   ════════════════════════════════════════ */
+.sec--morado{
+  background:var(--morado);
+  padding:7rem 5%;
+  border-top:1px solid rgba(28,20,16,.1);
+}
+.sec--morado .sec__inner{max-width:1200px;margin:0 auto}
+.sec--morado .sec__label{
+  font-family:'Courier Prime',monospace;font-size:.78rem;font-weight:700;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);display:block;margin-bottom:1rem;
+}
+.sec--morado h2{
+  font-size:clamp(1.8rem,3.5vw,3rem);font-weight:800;color:#fff;
+  letter-spacing:-1.5px;line-height:1.1;margin-bottom:4rem;text-align:center;
+}
+/* Cards en morado — blancas */
+.card-m{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.3);
+  border-top:3px solid transparent;
+  padding:1.5rem;border-radius:20px;
+  transition:transform .3s,box-shadow .3s,background .3s;
+}
+.card-m:hover{transform:translateY(-5px);background:rgba(255,255,255,.26)}
+.card-m--balance{border-top-color:var(--verde)}
+.card-m--energy {border-top-color:var(--naranja)}
+.card-m--focus  {border-top-color:rgba(255,255,255,.8)}
+.card-m--power  {border-top-color:var(--amarillo)}
+.card-m h3{font-size:1rem;font-weight:700;color:#fff;margin-bottom:.5rem;line-height:1.3}
+.card-m p{font-size:.86rem;color:rgba(255,255,255,.7);line-height:1.6}
+
+.values--morado{
+  border-top:1px solid rgba(255,255,255,.2);
+  padding-top:3rem;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;
+}
+.val--m{display:flex;align-items:flex-start;gap:.8rem}
+.val--m .val__dot{background:rgba(255,255,255,.55)}
+.val--m p{color:rgba(255,255,255,.75);font-size:.9rem;line-height:1.55}
+
+/* ── Footer compartido ── */
+.footer{
+  background:var(--tinta);color:var(--beige);
+  padding:3rem 5% 1.5rem;
+  margin-top:0;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.footer__grid{display:grid;grid-template-columns:2fr 1fr 1.5fr;gap:3rem;max-width:1200px;margin:0 auto;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.footer h4{font-family:'Courier Prime',monospace;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--verde);margin-bottom:.9rem}
+.footer p,.footer a{color:rgba(248,245,230,.45);font-size:.87rem;line-height:1.8;display:block}
+.footer a:hover{color:var(--naranja)}
+.footer__bottom{max-width:1200px;margin:0 auto;padding-top:1.2rem;font-size:.75rem;color:rgba(248,245,230,.3);display:flex;justify-content:space-between}
+
+/* ── Badge compartida ── */
+.badge-m{display:inline-block;padding:.28rem .75rem;border-radius:999px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.badge-m--verde   {background:var(--verde);color:var(--tinta)}
+.badge-m--naranja {background:var(--naranja);color:#fff}
+.badge-m--morado  {background:rgba(255,255,255,.25);color:#fff}
+.badge-m--amarillo{background:var(--amarillo);color:var(--tinta)}
+
+/* nota de mockup */
+.note{position:fixed;bottom:1rem;right:1rem;z-index:99;background:var(--tinta);color:var(--beige);font-family:'Courier Prime',monospace;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;padding:.5rem 1rem;border-radius:999px}
+
+@media(max-width:900px){
+  .cards-grid{grid-template-columns:1fr 1fr}
+  .values--verde,.values--bicolor,.values--morado{grid-template-columns:1fr 1fr}
+  .quienes__inner{grid-template-columns:1fr}
+  .footer__grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Selector de variante ── -->
+<div class="switcher">
+  <span class="switcher__label">TUOI · Secciones con color de marca</span>
+  <div class="switcher__tabs">
+    <button class="stab active" onclick="switchTo('verde',this)">🌿 Verde menta</button>
+    <button class="stab" onclick="switchTo('bicolor',this)">☕ Beige profundo</button>
+    <button class="stab" onclick="switchTo('morado',this)">🫐 Morado</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANTE 1 — VERDE MENTA
+═══════════════════════════════════════ -->
+<div class="variant active" id="v-verde">
+
+  <nav class="nav">
+    <span class="nav__logo">TUOI</span>
+    <div class="nav__links">
+      <a class="nav__link" href="#">Inicio</a>
+      <a class="nav__link" href="#">Carta</a>
+      <a class="nav__link" href="#">Eventos</a>
+      <a class="nav__link" href="#">Quiénes somos</a>
+    </div>
+    <span class="nav__lang">ES / EN</span>
+  </nav>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <span class="hero__label">Cafetería · Valencia</span>
+      <h1 class="hero__h1">Functional coffee<br>&amp; smart food</h1>
+      <p class="hero__p">Come como piensas. Comida adaptada a las necesidades de tu día.</p>
+      <a class="hero__btn" href="#">Ver la carta</a>
+    </div>
+  </header>
+
+  <section class="quienes">
+    <div class="quienes__inner">
+      <div>
+        <span class="quienes__label">Quiénes somos</span>
+        <h2>Somos lo que comemos.<br>Y lo que bebemos.</h2>
+        <p>En TUOI diseñamos cada plato y cada taza con un propósito. No hay recetas sin intención — todo está pensado para que te sientas bien durante y después.</p>
+        <p>Café de especialidad, ingredientes locales de temporada y cero atajos. Así trabajamos desde el primer día.</p>
+      </div>
+      <img class="quienes__img" src="assets/img/tuoi_quienes_somos.jpg" alt="TUOI equipo">
+    </div>
+  </section>
+
+  <!-- SECCIÓN FILOSOFÍA — fondo VERDE MENTA -->
+  <section class="sec--verde">
+    <div class="sec__inner">
+      <span class="sec__label">Nuestra filosofía</span>
+      <h2>Cuatro estados, una misma idea.</h2>
+      <div class="cards-grid">
+        <div class="card-v card-v--balance">
+          <span class="badge badge--verde">Balance</span>
+          <h3>Encuentra el equilibrio.</h3>
+          <p>Recetas suaves, hidratación inteligente y proteína vegetal para mantenerte en tu eje.</p>
+        </div>
+        <div class="card-v card-v--energy">
+          <span class="badge badge--naranja">Energy</span>
+          <h3>Enciéndete bien.</h3>
+          <p>Cafeína de calidad + adaptógenos para arrancar sin bajón.</p>
+        </div>
+        <div class="card-v card-v--focus">
+          <span class="badge badge--morado">Focus</span>
+          <h3>Mente clara.</h3>
+          <p>L-teanina, omega 3 y cacao puro para horas de trabajo profundo.</p>
+        </div>
+        <div class="card-v card-v--power">
+          <span class="badge badge--amarillo">Power</span>
+          <h3>Fuerza que dura.</h3>
+          <p>Carbohidratos lentos y proteína completa para los días largos.</p>
+        </div>
+      </div>
+      <div class="values--verde">
+        <div class="val"><span class="val__dot val__dot--1"></span><p>Sin azúcares añadidos en ninguna preparación</p></div>
+        <div class="val"><span class="val__dot val__dot--2"></span><p>Ingredientes locales y de temporada siempre</p></div>
+        <div class="val"><span class="val__dot val__dot--3"></span><p>Café de especialidad con trazabilidad total</p></div>
+        <div class="val"><span class="val__dot val__dot--4"></span><p>Cocina en directo — sin procesados ni aditivos</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div><h4>TUOI</h4><p>Functional coffee &amp; smart food. Una pausa que te suma.</p></div>
+      <div><h4>Sitio</h4><a href="#">Carta</a><a href="#">Eventos</a><a href="#">Quiénes somos</a></div>
+      <div><h4>Visítanos</h4><p>Calle Ejemplo 123 · Valencia<br>L–D 8:00 – 22:00</p></div>
+    </div>
+    <div class="footer__bottom"><span>© 2026 TUOI</span><span>Made with care · Valencia</span></div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANTE 2 — BEIGE PROFUNDO
+═══════════════════════════════════════ -->
+<div class="variant" id="v-bicolor">
+
+  <nav class="nav">
+    <span class="nav__logo">TUOI</span>
+    <div class="nav__links">
+      <a class="nav__link" href="#">Inicio</a>
+      <a class="nav__link" href="#">Carta</a>
+      <a class="nav__link" href="#">Eventos</a>
+      <a class="nav__link" href="#">Quiénes somos</a>
+    </div>
+    <span class="nav__lang">ES / EN</span>
+  </nav>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <span class="hero__label">Cafetería · Valencia</span>
+      <h1 class="hero__h1">Functional coffee<br>&amp; smart food</h1>
+      <p class="hero__p">Come como piensas. Comida adaptada a las necesidades de tu día.</p>
+      <a class="hero__btn" href="#">Ver la carta</a>
+    </div>
+  </header>
+
+  <section class="quienes">
+    <div class="quienes__inner">
+      <div>
+        <span class="quienes__label">Quiénes somos</span>
+        <h2>Somos lo que comemos.<br>Y lo que bebemos.</h2>
+        <p>En TUOI diseñamos cada plato y cada taza con un propósito. No hay recetas sin intención — todo está pensado para que te sientas bien durante y después.</p>
+        <p>Café de especialidad, ingredientes locales de temporada y cero atajos. Así trabajamos desde el primer día.</p>
+      </div>
+      <img class="quienes__img" src="assets/img/tuoi_quienes_somos.jpg" alt="TUOI equipo">
+    </div>
+  </section>
+
+  <!-- SECCIÓN FILOSOFÍA — fondo BEIGE PROFUNDO -->
+  <section class="sec--bicolor">
+    <div class="sec__inner">
+      <span class="sec__label">Nuestra filosofía</span>
+      <h2>Cuatro estados, una misma idea.</h2>
+      <div class="cards-grid">
+        <div class="card-b card-b--balance">
+          <span class="badge badge--verde">Balance</span>
+          <h3>Encuentra el equilibrio.</h3>
+          <p>Recetas suaves, hidratación inteligente y proteína vegetal para mantenerte en tu eje.</p>
+        </div>
+        <div class="card-b card-b--energy">
+          <span class="badge badge--naranja">Energy</span>
+          <h3>Enciéndete bien.</h3>
+          <p>Cafeína de calidad + adaptógenos para arrancar sin bajón.</p>
+        </div>
+        <div class="card-b card-b--focus">
+          <span class="badge badge--morado">Focus</span>
+          <h3>Mente clara.</h3>
+          <p>L-teanina, omega 3 y cacao puro para horas de trabajo profundo.</p>
+        </div>
+        <div class="card-b card-b--power">
+          <span class="badge badge--amarillo">Power</span>
+          <h3>Fuerza que dura.</h3>
+          <p>Carbohidratos lentos y proteína completa para los días largos.</p>
+        </div>
+      </div>
+      <div class="values--bicolor">
+        <div class="val--b"><span class="val__dot" style="background:var(--verde)"></span><p>Sin azúcares añadidos en ninguna preparación</p></div>
+        <div class="val--b"><span class="val__dot" style="background:var(--naranja)"></span><p>Ingredientes locales y de temporada siempre</p></div>
+        <div class="val--b"><span class="val__dot" style="background:var(--morado)"></span><p>Café de especialidad con trazabilidad total</p></div>
+        <div class="val--b"><span class="val__dot" style="background:var(--amarillo)"></span><p>Cocina en directo — sin procesados ni aditivos</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div><h4>TUOI</h4><p>Functional coffee &amp; smart food. Una pausa que te suma.</p></div>
+      <div><h4>Sitio</h4><a href="#">Carta</a><a href="#">Eventos</a><a href="#">Quiénes somos</a></div>
+      <div><h4>Visítanos</h4><p>Calle Ejemplo 123 · Valencia<br>L–D 8:00 – 22:00</p></div>
+    </div>
+    <div class="footer__bottom"><span>© 2026 TUOI</span><span>Made with care · Valencia</span></div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     VARIANTE 3 — MORADO
+═══════════════════════════════════════ -->
+<div class="variant" id="v-morado">
+
+  <nav class="nav">
+    <span class="nav__logo">TUOI</span>
+    <div class="nav__links">
+      <a class="nav__link" href="#">Inicio</a>
+      <a class="nav__link" href="#">Carta</a>
+      <a class="nav__link" href="#">Eventos</a>
+      <a class="nav__link" href="#">Quiénes somos</a>
+    </div>
+    <span class="nav__lang">ES / EN</span>
+  </nav>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <span class="hero__label">Cafetería · Valencia</span>
+      <h1 class="hero__h1">Functional coffee<br>&amp; smart food</h1>
+      <p class="hero__p">Come como piensas. Comida adaptada a las necesidades de tu día.</p>
+      <a class="hero__btn" href="#">Ver la carta</a>
+    </div>
+  </header>
+
+  <section class="quienes">
+    <div class="quienes__inner">
+      <div>
+        <span class="quienes__label">Quiénes somos</span>
+        <h2>Somos lo que comemos.<br>Y lo que bebemos.</h2>
+        <p>En TUOI diseñamos cada plato y cada taza con un propósito. No hay recetas sin intención — todo está pensado para que te sientas bien durante y después.</p>
+        <p>Café de especialidad, ingredientes locales de temporada y cero atajos. Así trabajamos desde el primer día.</p>
+      </div>
+      <img class="quienes__img" src="assets/img/tuoi_quienes_somos.jpg" alt="TUOI equipo">
+    </div>
+  </section>
+
+  <!-- SECCIÓN FILOSOFÍA — fondo MORADO -->
+  <section class="sec--morado">
+    <div class="sec__inner">
+      <span class="sec__label">Nuestra filosofía</span>
+      <h2>Cuatro estados, una misma idea.</h2>
+      <div class="cards-grid">
+        <div class="card-m card-m--balance">
+          <span class="badge-m badge-m--verde">Balance</span>
+          <h3>Encuentra el equilibrio.</h3>
+          <p>Recetas suaves, hidratación inteligente y proteína vegetal para mantenerte en tu eje.</p>
+        </div>
+        <div class="card-m card-m--energy">
+          <span class="badge-m badge-m--naranja">Energy</span>
+          <h3>Enciéndete bien.</h3>
+          <p>Cafeína de calidad + adaptógenos para arrancar sin bajón.</p>
+        </div>
+        <div class="card-m card-m--focus">
+          <span class="badge-m badge-m--morado">Focus</span>
+          <h3>Mente clara.</h3>
+          <p>L-teanina, omega 3 y cacao puro para horas de trabajo profundo.</p>
+        </div>
+        <div class="card-m card-m--power">
+          <span class="badge-m badge-m--amarillo">Power</span>
+          <h3>Fuerza que dura.</h3>
+          <p>Carbohidratos lentos y proteína completa para los días largos.</p>
+        </div>
+      </div>
+      <div class="values--morado">
+        <div class="val--m"><span class="val__dot val--m"></span><p>Sin azúcares añadidos en ninguna preparación</p></div>
+        <div class="val--m"><span class="val__dot val--m"></span><p>Ingredientes locales y de temporada siempre</p></div>
+        <div class="val--m"><span class="val__dot val--m"></span><p>Café de especialidad con trazabilidad total</p></div>
+        <div class="val--m"><span class="val__dot val--m"></span><p>Cocina en directo — sin procesados ni aditivos</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div><h4>TUOI</h4><p>Functional coffee &amp; smart food. Una pausa que te suma.</p></div>
+      <div><h4>Sitio</h4><a href="#">Carta</a><a href="#">Eventos</a><a href="#">Quiénes somos</a></div>
+      <div><h4>Visítanos</h4><p>Calle Ejemplo 123 · Valencia<br>L–D 8:00 – 22:00</p></div>
+    </div>
+    <div class="footer__bottom"><span>© 2026 TUOI</span><span>Made with care · Valencia</span></div>
+  </footer>
+</div>
+
+<span class="note">Mockup · no afecta al sitio real</span>
+
+<script>
+function switchTo(name, btn){
+  document.querySelectorAll('.variant').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('v-'+name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

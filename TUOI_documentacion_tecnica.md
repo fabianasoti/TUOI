@@ -1,7 +1,7 @@
 # Documentación Técnica — TUOI Web
 
-> **Versión:** Mayo 2026  
-> **Stack:** PHP · MySQL · HTML/CSS/JS vanilla  
+> **Versión:** Mayo 2026 (rev. 27-05-2026)
+> **Stack:** PHP · MySQL · HTML/CSS/JS vanilla
 > **Entorno:** Apache + mod_rewrite, PHP ≥ 8.0, MySQL ≥ 5.7
 
 ---
@@ -31,9 +31,9 @@ TUOI es el sitio web corporativo de una cafetería de alimentación funcional en
 **Características principales:**
 
 - Sitio bilingüe (ES/EN) con cambio de idioma via cookie
-- Contenido editable desde panel admin (textos e imágenes)
-- Carta con categorías de platos, gestión de imágenes por sección
-- Página de eventos con formulario de contacto con anti-spam
+- Contenido editable desde panel admin (textos, imágenes y carta plato a plato)
+- Carta gestionada como base de datos (tabla `carta_items`): ítems con nombre, descripción, ingredientes, precio, foto, alérgenos, sub-grupo y orden
+- Formulario de contacto único en `/pages/contacto/` (con anti-spam y consentimiento RGPD)
 - Panel admin protegido con autenticación, sesiones endurecidas y CSRF
 - Imágenes convertidas automáticamente a WebP al subirse
 
@@ -50,27 +50,33 @@ TUOI/
 ├── config/
 │   ├── conexion.php             # Conexión MySQLi compartida ($conexion)
 │   ├── lang.php                 # i18n: strings de UI + helper t()
-│   └── content_helper.php       # Carga de contenido editable desde BD
+│   ├── content_helper.php       # Carga de contenido editable desde BD
+│   └── carta_meta.php           # Categorías de la carta + catálogo de alérgenos (fuente única ES/EN)
 │
 ├── includes/
 │   ├── header.php               # Header HTML compartido (navbar + <head>)
 │   ├── footer.php               # Footer HTML compartido
 │   ├── carta-subnav.php         # Subnavegación de la carta (categorías)
-│   └── carta-page.php           # Template compartido para páginas de carta
+│   ├── carta-page.php           # Template legacy de páginas de carta por imágenes (fallback)
+│   ├── contact-form.php         # Markup del formulario de contacto (reutilizable)
+│   └── contact-handler.php      # Lógica de POST/AJAX del formulario de contacto
 │
 ├── pages/
 │   ├── quienes-somos.php        # Página "Quiénes somos"
+│   ├── contacto/
+│   │   └── index.php            # Formulario único de contacto del sitio
 │   ├── carta/
-│   │   ├── index.php            # Índice de la carta (vista general)
-│   │   ├── desayunos.php        # Categoría Desayunos
-│   │   ├── toque-salado.php     # Categoría Toque Salado
-│   │   ├── momento-dulce.php    # Categoría Momento Dulce
-│   │   ├── bebidas.php          # Categoría Bebidas
-│   │   └── superalimentos.php   # Categoría Superalimentos
+│   │   ├── index.php            # Render de la carta a partir de carta_items (?cat=slug)
+│   │   ├── desayunos.php        # Páginas-shortcut por categoría (template carta-page.php)
+│   │   ├── menu-brunch.php
+│   │   ├── menu-lunch.php
+│   │   ├── toque-salado.php
+│   │   ├── momento-dulce.php
+│   │   └── bebidas.php
 │   ├── eventos/
-│   │   ├── index.php            # Página de Eventos (incluye formulario contacto)
-│   │   ├── eventos-listos/      # Sub-página: Eventos listos
-│   │   └── a-tu-medida/         # Sub-página: Eventos a medida
+│   │   ├── index.php            # Página de Eventos (hub con 2 opciones)
+│   │   ├── eventos-listos/      # Sub-página: "Listos para disfrutar" (experiencias prediseñadas)
+│   │   └── a-tu-medida/         # Sub-página: "Diseñado a tu medida"
 │   └── legal/
 │       ├── aviso-legal.php
 │       ├── privacidad.php
@@ -81,10 +87,12 @@ TUOI/
 │   ├── login.php                # Formulario de login
 │   ├── logout.php               # Cierre de sesión
 │   ├── index.php                # Dashboard principal del admin
-│   ├── contenido.php            # Editor de textos del sitio
+│   ├── contenido.php            # Editor de textos del sitio (hub por páginas, ES/EN)
+│   ├── carta.php                # Gestor de la carta plato a plato (categorías + ítems + EN)
 │   ├── imagenes.php             # Gestor de imágenes por sección
 │   ├── testimonios.php          # Gestión de testimonios
 │   ├── mensajes.php             # Bandeja de mensajes de contacto
+│   ├── sql/                     # Scripts SQL puntuales (p.ej. carta_translations_en.sql)
 │   ├── .htaccess                # Protección extra de acceso
 │   ├── assets/css/admin.css     # Estilos exclusivos del panel admin
 │   └── partials/
@@ -160,19 +168,43 @@ Las claves de idioma inglés llevan sufijo `_en`. Ejemplo: `hero_h1` (ES) + `her
 
 Índice compuesto UNIQUE en `(section, filename)`.
 
-#### `contact_submissions` — Formulario de contacto (Eventos)
+#### `contact_submissions` — Formulario de contacto
 
 | Columna | Tipo | Descripción |
 |---|---|---|
 | `id` | INT PK AUTO | — |
 | `name`, `email`, `phone` | VARCHAR | Datos del remitente |
 | `message` | TEXT | Cuerpo del mensaje |
-| `source_page` | VARCHAR | Página desde la que se envió |
+| `source_page` | VARCHAR | **Deprecada (mayo 2026).** El sitio tiene un único formulario en `/pages/contacto/`, ya no se distingue origen. La columna se mantiene para registros históricos pero el handler ya no escribe en ella. |
 | `consent_at` | DATETIME | Fecha del consentimiento RGPD |
 | `consent_ip` | VARCHAR(45) | IP en el momento del consentimiento |
 | `submitted_at` | TIMESTAMP | Fecha de envío |
 
 > Las columnas `consent_at` y `consent_ip` se añaden con `db/rgpd_migration.sql`. Si ya existen la migración las ignora.
+
+#### `carta_items` — Ítems de la carta
+
+| Columna | Tipo | Descripción |
+|---|---|---|
+| `id` | INT PK AUTO | — |
+| `categoria` | VARCHAR(50) | Slug de categoría (clave de `$CARTA_CATEGORIAS` en `config/carta_meta.php`) |
+| `subcategoria` | VARCHAR(100) NULL | Sub-grupo opcional dentro de la categoría (ej. "Tostadas", "Bowls") |
+| `subcategoria_en` | VARCHAR(100) NULL | Traducción EN del sub-grupo |
+| `nombre` | VARCHAR(255) | Nombre del plato/bebida |
+| `nombre_en` | VARCHAR(255) NULL | Traducción EN del nombre |
+| `descripcion` | TEXT NULL | Descripción corta |
+| `descripcion_en` | TEXT NULL | Traducción EN |
+| `ingredientes` | TEXT NULL | Lista/nota de ingredientes |
+| `ingredientes_en` | TEXT NULL | Traducción EN |
+| `precio` | DECIMAL(6,2) NULL | Precio en euros (puede ser NULL si no aplica) |
+| `es_suplemento` | TINYINT(1) | Si vale 1, el precio se muestra como `+X,XX €` |
+| `alergenos` | VARCHAR(255) NULL | CSV de claves de `$CARTA_ALERGENOS` (ej. `vegano,sin-gluten`) |
+| `foto` | VARCHAR(255) NULL | Nombre del archivo en `assets/img/carta/items/` |
+| `visible` | TINYINT(1) | 1 = visible en la web pública, 0 = oculto |
+| `sort_order` | INT | Orden dentro de la categoría (drag-and-drop en admin) |
+| `created_at`, `updated_at` | TIMESTAMP | Timestamps automáticos |
+
+La tabla se crea/migra de forma idempotente desde `admin/carta.php` la primera vez que se abre. Si `nombre_en` está vacío, el sitio público en EN cae al `nombre` español.
 
 ### Orden de ejecución de los scripts SQL
 
@@ -315,36 +347,47 @@ Tres bloques de contenido (`qs_page_b1_*`, `qs_page_b2_*`, `qs_page_b3_*`) + cie
 
 ### `pages/carta/` — La carta
 
-**`pages/carta/index.php`** muestra un índice visual con las categorías. Cada categoría enlaza a su página individual.
+La carta se renderiza desde la tabla `carta_items` (no desde imágenes sueltas).
 
-**`includes/carta-page.php`** es un template compartido que usan todas las páginas de categoría (`desayunos.php`, `bebidas.php`, etc.). Recibe:
+**`pages/carta/index.php`** es la página principal y soporta el parámetro `?cat=<slug>`. Sin parámetro carga la primera categoría definida en `$CARTA_CATEGORIAS` (`config/carta_meta.php`). Por cada categoría:
 
-| Variable | Descripción |
-|---|---|
-| `$current_carta` | Slug de la categoría (ej. `desayunos`) |
-| `$carta_titulo` | Título en español (se reemplaza si `$lang === 'en'`) |
-| `$carta_desc` | Descripción en español (ídem) |
+1. Carga título y subtítulo desde `$carta_info` (`lang.php`) según el idioma activo.
+2. Consulta `carta_items WHERE categoria=… AND visible=1 ORDER BY sort_order, id`.
+3. Agrupa ítems consecutivos por `subcategoria` para renderizar bloques con sub-cabecera.
+4. Para cada ítem, si `$lang === 'en'` y existen los campos `_en`, los usa; si no, cae al ES.
 
-El template resuelve la carpeta de imágenes correcta según idioma:
-- EN con carpeta `-en` existente y no vacía → usa `carta/desayunos-en/`
-- EN sin carpeta `-en` → fallback a `carta/desayunos/`
+**Páginas-shortcut por categoría** (`desayunos.php`, `bebidas.php`, etc.): mantienen URLs limpias y usan el template legacy `includes/carta-page.php`, que sigue siendo válido para el caso en que se quiera servir solo imágenes (fallback). En la práctica los enlaces internos del sitio apuntan a `index.php?cat=…`.
 
-### `pages/eventos/index.php` — Eventos
+**Datos de cada ítem en pantalla:** nombre, descripción, ingredientes (si existen), precio (formateado `X,XX €` o `+X,XX €` si `es_suplemento=1`), foto (si existe), badges de alérgenos (icono + label de `$CARTA_ALERGENOS`).
 
-Incluye:
-- Hero con CTAs
+### `pages/eventos/` — Eventos (hub + 2 sub-páginas)
+
+`pages/eventos/index.php` actúa como hub y presenta dos opciones que llevan a las sub-páginas:
+
+- **`eventos-listos/`** — "Listos para disfrutar": 6 experiencias prediseñadas (Coffee Break, Social Cocktail, Table Experience × Essential/Signature) + bloque de servicio incluido + condiciones de contratación.
+- **`a-tu-medida/`** — "Diseñado a tu medida": placeholder hasta que se defina el contenido final.
+
+Incluye además:
+- Hero con CTAs (CTA principal lleva a `/pages/contacto/`)
 - Carrusel de imágenes (de `eventos/carrusel/`)
+- Manifiesto / "Nuestra filosofía" (intro narrativa)
 - Sección "Por qué TUOI" (4 bloques)
-- Marquee animado de tipos de eventos
-- Menús disponibles (coffee break, brunch, tardeo)
 - Prueba social (testimonio + logos de clientes)
-- Formulario de contacto
+- Marquee animado de tipos de eventos
+- CTA final con enlace a contacto
 
-**Formulario de contacto:**
+### `pages/contacto/index.php` — Contacto
+
+Página única con el formulario de contacto del sitio. Antes existían CTAs con `?from=eventos`, `?from=eventos-listos`, etc. para diferenciar origen; **esto se eliminó en mayo 2026**: ahora todos los enlaces apuntan limpiamente a `/pages/contacto/` y el handler ya no escribe la columna `source_page`.
+
+**Flujo del formulario** (`includes/contact-handler.php` + `includes/contact-form.php`):
+
 - Validación de campos (nombre, email, mensaje, consentimiento RGPD)
-- Honeypot anti-spam: campo oculto `c_website`; si llega con valor, se simula éxito sin procesar
+- Honeypot anti-spam: campo oculto `c_website`; si llega con valor, se simula éxito sin procesar ni guardar
 - Soporte AJAX: si la petición lleva `X-Requested-With: XMLHttpRequest`, responde JSON
-- Los envíos se guardan en `contact_submissions`
+- Los envíos se guardan en `contact_submissions` (con `consent_at` + `consent_ip`)
+- Email de aviso al admin con asunto `Nuevo contacto · TUOI`. En entorno local (host `localhost`/`.local`) se loguea en `logs/mail.log` en lugar de enviar
+- `includes/contact-form.php` es reutilizable: si necesitas el formulario en otra página basta con `require` del handler antes del header y luego del form donde quieras
 
 ### `pages/legal/`
 
@@ -401,6 +444,7 @@ Incluido al inicio de cada página del admin. Realiza:
 |---|---|
 | `index.php` | Dashboard con resumen y accesos rápidos |
 | `contenido.php` | Editor de textos del sitio (ES y EN) organizado por secciones |
+| `carta.php` | Gestor de la carta plato a plato (CRUD + reorden + traducción EN) |
 | `imagenes.php` | Subida, reordenación y borrado de imágenes por sección |
 | `testimonios.php` | Gestión de testimonios de la página de Eventos |
 | `mensajes.php` | Bandeja de entrada de contacto (con filtros y borrado) |
@@ -408,10 +452,24 @@ Incluido al inicio de cada página del admin. Realiza:
 
 ### Editor de contenido (`contenido.php`)
 
-- Tiene un selector de idioma (`?edit_lang=es|en`) y un selector de sección (`?section=home|eventos|quienes|…`)
-- Por cada clave de texto renderiza un `<textarea>` o `<input>`
+- Hub por páginas: tarjetas para `home`, `eventos`, `eventos-listos`, `eventos-medida`, `quienes` (`?section=…`)
+- Selector de idioma por pestañas ES/EN (`?edit_lang=es|en`); si una clave EN está vacía el sitio cae al ES
+- Por cada clave de texto renderiza un `<textarea>` (con Quill como editor rico en los campos largos) o `<input>`
 - Al guardar hace `upsert_content()` para cada campo modificado
-- Los campos de la variante EN editan claves con sufijo `_en`
+- Los campos de la variante EN editan claves con sufijo `_en` en la tabla `site_content`
+
+### Gestor de la carta (`carta.php`)
+
+CRUD completo de `carta_items`. Estructura del UI:
+
+- **Tabs de idioma** ES / EN: en ES se edita todo, en EN solo los campos traducibles (`nombre_en`, `descripcion_en`, `ingredientes_en`, `subcategoria_en`). El formulario EN muestra el original ES como referencia.
+- **Pills de categoría** (de `$CARTA_CATEGORIAS`): filtran la lista y determinan a qué categoría se añaden los ítems nuevos. Cada pill muestra el contador de ítems.
+- **Formulario de alta** (solo en tab ES) con: sub-grupo (con autocompletado de los existentes), nombre, precio, flag `es_suplemento`, descripción, ingredientes, chips de alérgenos, foto y visibilidad.
+- **Lista de ítems** agrupada por sub-categoría, con drag-and-drop para reordenar. Cada fila muestra: thumbnail, nombre + precio, descripción truncada, badges de alérgenos, pill de visibilidad, pill de traducción EN, y acciones (editar / toggle / eliminar).
+- **Rename inline** de un sub-grupo: actualiza el campo `subcategoria` en bloque para todos los ítems del grupo.
+- **Reparar orden**: cuando se detectan `sort_order` duplicados, aparece un botón que reasigna 0,1,2,… preservando el orden actual.
+- **Subida de foto**: pipeline compartido con `imagenes.php` — conversión a WebP, redimensionado a 1400 px máx., límite de 20 MB. Las fotos se guardan en `assets/img/carta/items/` con nombre único.
+- **Traducción inicial**: el script `admin/sql/carta_translations_en.sql` (mayo 2026) contiene las traducciones EN de los 115 ítems iniciales. Se ejecutó una sola vez; cualquier ítem nuevo o cambio se traduce desde el admin.
 
 ---
 
@@ -426,13 +484,12 @@ Incluido al inicio de cada página del admin. Realiza:
 | `carteles` | `assets/img/carteles/` | Logos Balance/Energy/Focus/Power |
 | `quienes_somos` | `assets/img/quienes_somos/` | Foto de "Quiénes somos" |
 | `inicio` | `assets/img/` | Imagen principal del hero |
-| `carta/desayunos` | `assets/img/carta/desayunos/` | Carta: Desayunos (ES) |
-| `carta/desayunos-en` | `assets/img/carta/desayunos-en/` | Carta: Desayunos (EN) |
-| … | … | (ídem para cada categoría de carta) |
 | `eventos/carrusel` | `assets/img/eventos/carrusel/` | Carrusel de Eventos |
 | `eventos/por-que-tuoi` | `assets/img/eventos/por-que-tuoi/` | Bloque "Por qué TUOI" |
 | `eventos/logos` | `assets/img/eventos/logos/` | Logos de clientes |
 | `eventos/cta-fondo` | `assets/img/eventos/cta-fondo/` | Fondo del CTA de Eventos |
+
+> **Carta**: las fotos de los ítems no se gestionan desde `imagenes.php` sino desde `admin/carta.php` (campo *Foto* de cada ítem). Se guardan todas juntas en `assets/img/carta/items/` con nombre único y se referencian desde la columna `foto` de `carta_items`. Las antiguas carpetas `carta/<categoria>/` y `carta/<categoria>-en/` del modelo basado en imágenes han quedado obsoletas con la migración a `carta_items`.
 
 ### Pipeline de subida
 
@@ -471,7 +528,7 @@ Módulos al cargar (`DOMContentLoaded`):
 | 2 | Menú hamburguesa | Toggle del menú móvil, bloqueo del scroll del body, cierre de dropdowns |
 | 3 | Dropdown carta | En desktop: hover (CSS). En móvil (≤768px): click activa `.open`, previene navegación |
 | 4 | Cierre dropdown externo | Click fuera del dropdown lo cierra |
-| 5 | Formulario de contacto (Eventos) | Envío AJAX con validación de campos y mensaje de éxito/error |
+| 5 | Formulario de contacto | Envío AJAX con validación de campos y mensaje de éxito/error (página `/pages/contacto/`) |
 
 ### Cache-busting del CSS
 
@@ -577,4 +634,4 @@ chown -R www-data:www-data assets/img/
 
 ---
 
-*Documentación generada en Mayo 2026 a partir del código fuente del repositorio TUOI.*
+*Documentación generada en Mayo 2026 a partir del código fuente del repositorio TUOI. Revisión 27-05-2026: carta migrada a `carta_items`, formulario de contacto unificado en `/pages/contacto/`.*

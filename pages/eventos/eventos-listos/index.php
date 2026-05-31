@@ -1,6 +1,7 @@
 <?php
 $base         = '../../../';
 $current_page = 'eventos';
+$extra_css    = 'eventos';
 require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php';
@@ -14,31 +15,34 @@ $c = load_site_content($conexion, $lang);
 // "level_key" (que apunta a la clave compartida de nivel) son fijos.
 $el_categories = [
     [
-        'anchor'    => 'flow-coffee',
-        'label_key' => 'ev_el_cat1_label',
-        'title_key' => 'ev_el_cat1_title',
+        'anchor'       => 'flow-coffee',
+        'img_section'  => 'eventos/coffee-break',
+        'label_key'    => 'ev_el_cat1_label',
+        'title_key'    => 'ev_el_cat1_title',
         'audience_key' => 'ev_el_cat1_audience',
-        'cards'     => [
+        'cards'        => [
             ['key' => 'e1', 'level_key' => 'ev_el_level_essential', 'name_key' => 'ev_el_e1_name', 'level_class' => 'essential'],
             ['key' => 'e2', 'level_key' => 'ev_el_level_signature', 'name_key' => 'ev_el_e2_name', 'level_class' => 'signature'],
         ],
     ],
     [
-        'anchor'    => 'social-cocktail',
-        'label_key' => 'ev_el_cat2_label',
-        'title_key' => 'ev_el_cat2_title',
+        'anchor'       => 'social-cocktail',
+        'img_section'  => 'eventos/social-cocktail',
+        'label_key'    => 'ev_el_cat2_label',
+        'title_key'    => 'ev_el_cat2_title',
         'audience_key' => 'ev_el_cat2_audience',
-        'cards'     => [
+        'cards'        => [
             ['key' => 'e3', 'level_key' => 'ev_el_level_essential', 'name_key' => 'ev_el_e3_name', 'level_class' => 'essential'],
             ['key' => 'e4', 'level_key' => 'ev_el_level_signature', 'name_key' => 'ev_el_e4_name', 'level_class' => 'signature'],
         ],
     ],
     [
-        'anchor'    => 'table-experience',
-        'label_key' => 'ev_el_cat3_label',
-        'title_key' => 'ev_el_cat3_title',
+        'anchor'       => 'table-experience',
+        'img_section'  => 'eventos/table-experience',
+        'label_key'    => 'ev_el_cat3_label',
+        'title_key'    => 'ev_el_cat3_title',
         'audience_key' => 'ev_el_cat3_audience',
-        'cards'     => [
+        'cards'        => [
             ['key' => 'e5', 'level_key' => 'ev_el_level_essential', 'name_key' => 'ev_el_e5_name', 'level_class' => 'essential'],
             ['key' => 'e6', 'level_key' => 'ev_el_level_signature', 'name_key' => 'ev_el_e6_name', 'level_class' => 'signature'],
         ],
@@ -52,7 +56,7 @@ $el_categories = [
 <section class="page-hero ev-hero el-hero">
     <a href="<?= $base ?>pages/eventos/" class="el-hero__back">
         <span class="el-hero__back-arrow" aria-hidden="true">←</span>
-        <span class="el-hero__back-text"><?= htmlspecialchars($c['ev_el_back_text'] ?? 'Volver a Eventos') ?></span>
+        <span class="el-hero__back-text"><?= htmlspecialchars($c['ev_el_back_text'] ?? t('ev_el_back_text')) ?></span>
     </a>
     <span class="section-label"><?= htmlspecialchars($c['ev_opt1_label'] ?? 'Experiencias TUOI') ?></span>
     <h1><?= htmlspecialchars($c['ev_el_h1'] ?? 'Listos para disfrutar') ?></h1>
@@ -75,6 +79,8 @@ $el_categories = [
     $catLabel    = $c[$cat['label_key']]    ?? '';
     $catTitle    = $c[$cat['title_key']]    ?? '';
     $catAudience = $c[$cat['audience_key']] ?? '';
+    $img_dir     = dirname(__DIR__, 3) . '/assets/img/' . $cat['img_section'] . '/';
+    $cat_images  = load_ordered_images($conexion, $cat['img_section'], $img_dir, '*.{jpg,jpeg,png,webp,gif}');
 ?>
 <section class="el-section" id="<?= $cat['anchor'] ?>">
     <div class="el-section__inner">
@@ -87,6 +93,19 @@ $el_categories = [
             <p class="el-section__audience"><?= htmlspecialchars($catAudience) ?></p>
             <?php endif; ?>
         </header>
+
+        <?php if (!empty($cat_images)): ?>
+        <div class="el-gallery">
+            <?php foreach ($cat_images as $img_path):
+                $img_file = basename($img_path);
+                $img_url  = $base . 'assets/img/' . $cat['img_section'] . '/' . $img_file;
+            ?>
+            <img class="el-gallery__img" src="<?= htmlspecialchars($img_url) ?>"
+                 alt="<?= htmlspecialchars($catTitle) ?>" loading="lazy">
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
         <div class="el-cards">
             <?php foreach ($cat['cards'] as $card):
                 $tk        = "ev_el_{$card['key']}_tagline";
@@ -117,7 +136,7 @@ $el_categories = [
         <?php if (!empty($c['ev_el_service_label'])): ?>
         <span class="section-label"><?= htmlspecialchars($c['ev_el_service_label']) ?></span>
         <?php endif; ?>
-        <h2><?= htmlspecialchars($c['ev_el_service_h2'] ?? 'Lo que incluye el servicio') ?></h2>
+        <h2><?= htmlspecialchars($c['ev_el_service_h2'] ?? t('ev_el_service_h2')) ?></h2>
         <div class="el-service__body"><?= $c['ev_el_service_body'] ?></div>
     </div>
 </section>
@@ -129,7 +148,7 @@ $el_categories = [
     <div class="el-conditions__inner">
         <details class="el-conditions__details">
             <summary>
-                <span class="el-conditions__label"><?= htmlspecialchars($c['ev_el_conditions_label'] ?? 'Condiciones de contratación y pago') ?></span>
+                <span class="el-conditions__label"><?= htmlspecialchars($c['ev_el_conditions_label'] ?? t('ev_el_conditions_label')) ?></span>
                 <span class="el-conditions__icon" aria-hidden="true">+</span>
             </summary>
             <div class="el-conditions__body"><?= $c['ev_el_conditions_body'] ?></div>
@@ -141,10 +160,10 @@ $el_categories = [
 <!-- ── CTA FINAL ─────────────────────────────────────────────────────────── -->
 <section class="ev-cta">
     <div class="ev-cta__inner">
-        <h2><?= htmlspecialchars($c['ev_cta_h2'] ?? '¿Tienes un evento en mente?') ?></h2>
-        <p><?= htmlspecialchars($c['ev_cta_text'] ?? 'Cuéntanos cómo lo imaginas y diseñamos el menú a tu medida.') ?></p>
-        <a href="<?= $base ?>pages/eventos/#contacto" class="btn-primary ev-cta__btn">
-            <?= htmlspecialchars($c['ev_cta_btn'] ?? 'Hablamos →') ?>
+        <h2><?= htmlspecialchars($c['ev_cta_h2'] ?? t('ev_cta_h2')) ?></h2>
+        <p><?= htmlspecialchars($c['ev_cta_text'] ?? t('ev_cta_text')) ?></p>
+        <a href="<?= $base ?>pages/contacto/" class="btn-primary ev-cta__btn">
+            <?= htmlspecialchars($c['ev_cta_btn'] ?? t('ev_cta_btn')) ?>
         </a>
     </div>
 </section>

@@ -1,0 +1,212 @@
+/* ============================================================
+   TUOI — Contacto & formulario (contact-form.php)
+   ============================================================ */
+
+/* ── Sección de contacto ────────────────────────────────────── */
+.ev-contact {
+    background: var(--fondo-oscuro);
+    color: var(--fondo-beige);
+    padding: 6.5rem 5%;
+    scroll-margin-top: calc(var(--navbar-h) + 50px);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.ev-contact__inner {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 6rem;
+    max-width: 1050px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+.ev-contact .section-label,
+.ev-contact__label { color: var(--verde-menta) !important; }
+
+.ev-contact__info h2 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    color: var(--blanco);
+}
+
+.ev-contact__info > p {
+    font-size: 0.97rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 2.5rem;
+    text-align: justify;
+}
+
+.ev-contact__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+.ev-contact__list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.93rem;
+}
+
+.ev-contact__icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--verde-menta);
+}
+
+.ev-contact__list a          { color: rgba(255,255,255,0.65); text-decoration: none; transition: color .2s; }
+.ev-contact__list a:hover    { color: var(--naranja); }
+.ev-contact__list span:not(.ev-contact__icon) { color: rgba(255,255,255,0.65); }
+
+/* ── Formulario ─────────────────────────────────────────────── */
+.ev-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    transition: opacity .25s ease;
+}
+
+.ev-form__row--half {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.ev-form__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.ev-form__group label,
+.ev-form__consent {
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.4);
+}
+
+.ev-form__group input,
+.ev-form__group textarea {
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    color: var(--fondo-beige);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    width: 100%;
+    transition: border-color .2s, background .2s;
+}
+
+.ev-form__group input::placeholder,
+.ev-form__group textarea::placeholder { color: rgba(255,255,255,0.18); }
+
+.ev-form__group input:focus,
+.ev-form__group textarea:focus {
+    border-color: var(--verde-menta);
+    background: rgba(255,255,255,0.09);
+}
+
+.ev-form__group textarea { resize: vertical; min-height: 130px; }
+.ev-form__btn { align-self: flex-start; margin-top: 0.4rem; }
+
+/* Notices */
+.ev-form-notice {
+    padding: 0.9rem 1.1rem; border-radius: 10px;
+    font-size: 0.88rem; line-height: 1.5; margin-bottom: 0.5rem;
+}
+.ev-form-notice--ok {
+    background: rgba(149,202,186,.13); border: 1.5px solid rgba(149,202,186,.45);
+    color: var(--verde-menta);
+}
+.ev-form-notice--err {
+    background: rgba(227,148,53,.1); border: 1.5px solid rgba(227,148,53,.4);
+    color: var(--naranja);
+}
+
+/* ── GDPR consent ───────────────────────────────────────────── */
+.ev-form__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: .55rem;
+    margin: .25rem 0 1rem;
+    font-size: .88rem;
+    line-height: 1.45;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+.ev-form__consent input[type="checkbox"] { margin-top: .25rem; flex: none; }
+.ev-form__consent a { color: #b06a2c; text-decoration: underline; }
+.ev-form__consent.has-error { color: #c0392b; }
+.ev-form__consent.has-error input[type="checkbox"] { outline: 2px solid #c0392b; outline-offset: 2px; }
+
+/* Honeypot anti-spam */
+.ev-form__hp {
+    position: absolute; left: -9999px; top: auto;
+    width: 1px; height: 1px; overflow: hidden;
+}
+
+/* Errores inline */
+.ev-form__error {
+    color: #c0392b; font-size: .82rem; margin: 0 0 .35rem;
+    font-weight: 600; line-height: 1.3;
+}
+.ev-form__error[hidden] { display: none; }
+.ev-form input.is-invalid,
+.ev-form textarea.is-invalid {
+    border-color: #c0392b !important;
+    box-shadow: 0 0 0 2px rgba(192, 57, 43, .15);
+}
+
+/* Fade al enviar */
+.ev-form.is-hidden { opacity: 0; pointer-events: none; max-height: 0; overflow: hidden; margin: 0; padding: 0; }
+
+/* ── Mensaje de éxito ───────────────────────────────────────── */
+.ev-form-success {
+    background: rgba(149, 202, 186, .14);
+    border: 1.5px solid rgba(149, 202, 186, .55);
+    border-radius: 14px;
+    padding: 1.5rem 1.4rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity .35s ease, transform .35s ease;
+}
+.ev-form-success[hidden]   { display: none; }
+.ev-form-success.is-visible { opacity: 1; transform: translateY(0); }
+.ev-form-success__msg {
+    color: var(--verde-menta); font-weight: 600; margin: 0 0 .85rem; font-size: 1rem;
+}
+.ev-form-success__again {
+    background: none; border: none; color: var(--verde-menta);
+    font: inherit; font-weight: 600; cursor: pointer;
+    padding: .35rem .6rem; border-radius: 8px; transition: background .15s ease;
+}
+.ev-form-success__again:hover { background: rgba(149, 202, 186, .2); }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .ev-contact__inner  { grid-template-columns: 1fr; gap: 3.5rem; }
+    .ev-form__row--half { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .ev-contact { padding: 4.5rem 5%; }
+}
