@@ -3,6 +3,9 @@
 *.env
 .env.*
 
+# Claude Code — configuración local del IDE
+.claude/
+
 # Logs
 /logs/*.log
 
