@@ -15,13 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if ($username && $password && isset($conexion)) {
-        $u    = mysqli_real_escape_string($conexion, $username);
-        $res  = mysqli_query($conexion, "SELECT id, password_hash FROM admin_users WHERE username = '$u' LIMIT 1");
+        $stmt = mysqli_prepare($conexion, "SELECT id, password_hash, role FROM admin_users WHERE username = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmt, 's', $username);
+        mysqli_stmt_execute($stmt);
+        $res  = mysqli_stmt_get_result($stmt);
         $user = $res ? mysqli_fetch_assoc($res) : null;
+        mysqli_stmt_close($stmt);
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_user']      = $username;
+            $_SESSION['admin_role']      = $user['role'] ?? 'editor';
             header('Location: index.php');
             exit;
         } else {

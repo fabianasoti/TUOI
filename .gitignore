@@ -1,0 +1,17 @@
+# Credenciales y configuración local — nunca al repositorio
+/etc/tuoi/
+*.env
+.env.*
+
+# Logs
+/logs/*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -42,6 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 }
 
+// ── Rol del usuario en sesión ────────────────────────────────────────
+function is_admin(): bool {
+    return ($_SESSION['admin_role'] ?? '') === 'admin';
+}
+
+function require_admin(): void {
+    if (!is_admin()) {
+        http_response_code(403);
+        exit('No tienes permisos para realizar esta acción.');
+    }
+}
+
 function admin_escape($conexion, $value) {
     return mysqli_real_escape_string($conexion, trim($value));
 }

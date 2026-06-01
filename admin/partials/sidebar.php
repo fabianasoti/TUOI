@@ -63,6 +63,10 @@ if (isset($conexion) && $conexion) {
             <?php endif; ?>
         </a>
 
+        <a href="usuarios.php" class="nav-item <?= $current_admin_page === 'usuarios.php' ? 'active' : '' ?>">
+            <span class="nav-icon">👤</span> Usuarios
+        </a>
+
         <div class="nav-section" style="margin-top:12px;">Sitio</div>
         <a href="../index.php" target="_blank" class="nav-item">
             <span class="nav-icon">🌐</span> Ver sitio
