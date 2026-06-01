@@ -2,6 +2,8 @@
 
 > Para el equipo de TUOI con acceso al panel de gestión de la web.  
 > No hace falta saber programar para usar esta guía.
+>
+> **Revisión:** 01-06-2026 — añadida sección de Usuarios y roles.
 
 ---
 
@@ -14,10 +16,11 @@
 5. [Gestionar imágenes](#5-gestionar-imágenes)
 6. [Testimonios de clientes](#6-testimonios-de-clientes)
 7. [Mensajes de contacto](#7-mensajes-de-contacto)
-8. [Traducción al inglés](#8-traducción-al-inglés)
-9. [Ver cómo queda en la web](#9-ver-cómo-queda-en-la-web)
-10. [Cerrar sesión](#10-cerrar-sesión)
-11. [Preguntas frecuentes](#11-preguntas-frecuentes)
+8. [Usuarios y roles](#8-usuarios-y-roles)
+9. [Traducción al inglés](#9-traducción-al-inglés)
+10. [Ver cómo queda en la web](#10-ver-cómo-queda-en-la-web)
+11. [Cerrar sesión](#11-cerrar-sesión)
+12. [Preguntas frecuentes](#12-preguntas-frecuentes)
 
 ---
 
@@ -272,7 +275,55 @@ Pulsa **Eliminar** junto al mensaje. Se pedirá confirmación. Una vez borrado n
 
 ---
 
-## 8. Traducción al inglés
+## 8. Usuarios y roles
+
+Ve a **👤 Usuarios** desde el menú lateral.
+
+### Tipos de usuario
+
+El panel tiene dos niveles de acceso:
+
+| Rol | Qué puede hacer |
+|---|---|
+| **Administrador** | Todo: editar contenido, gestionar la carta, imágenes, testimonios, mensajes **y** crear/eliminar usuarios y cambiar roles |
+| **Editor** | Editar contenido, gestionar carta, imágenes, testimonios y mensajes. **No puede** crear ni eliminar usuarios |
+
+### Ver los usuarios existentes
+
+La tabla muestra todos los usuarios con su rol y fecha de creación. Tu propia cuenta aparece con la etiqueta **Tú**.
+
+### Crear un usuario nuevo *(solo administradores)*
+
+Rellena el formulario en la parte inferior de la página:
+
+1. **Nombre de usuario** — solo letras, números y guiones (3–50 caracteres).
+2. **Contraseña** — mínimo 8 caracteres.
+3. **Confirmar contraseña** — debe coincidir exactamente.
+4. **Rol** — elige *Editor* (recomendado para el equipo) o *Administrador*.
+5. Pulsa **+ Crear usuario**.
+
+### Cambiar el rol de un usuario *(solo administradores)*
+
+En la tabla de usuarios, pulsa el botón **🏷 Cambiar rol** junto al usuario que quieras modificar. Selecciona el nuevo rol y guarda.
+
+> ⚠️ No puedes cambiar tu propio rol. Si necesitas hacerlo, pide a otro administrador que lo haga.
+
+### Cambiar contraseña
+
+- Los **administradores** pueden cambiar la contraseña de cualquier usuario.
+- Los **editores** solo pueden cambiar su propia contraseña.
+
+Pulsa el botón **🔑 Contraseña** junto al usuario, introduce la nueva contraseña dos veces y guarda.
+
+### Eliminar un usuario *(solo administradores)*
+
+Pulsa el botón **🗑 Eliminar** junto al usuario. Se pedirá confirmación.
+
+> ⚠️ No puedes eliminar tu propia cuenta ni al último usuario que quede en el sistema.
+
+---
+
+## 9. Traducción al inglés
 
 La web de TUOI está disponible en español e inglés. Los visitantes pueden cambiar de idioma con el selector **ES / EN** del menú.
 
@@ -301,7 +352,7 @@ La carta es el bloque más largo (más de 100 ítems). Para traducirla:
 
 ---
 
-## 9. Ver cómo queda en la web
+## 10. Ver cómo queda en la web
 
 Desde cualquier página del panel admin puedes pulsar el botón **🌐 Ver sitio** (arriba a la derecha) para abrir la web pública en una nueva pestaña y comprobar cómo se ven tus cambios.
 
@@ -319,7 +370,7 @@ También puedes ir directamente a cualquier página del sitio:
 
 ---
 
-## 10. Cerrar sesión
+## 11. Cerrar sesión
 
 Cuando termines, cierra siempre la sesión para evitar que otra persona acceda al panel desde el mismo ordenador.
 
@@ -329,7 +380,7 @@ Pulsa **Cerrar sesión** en la parte inferior del menú lateral.
 
 ---
 
-## 11. Preguntas frecuentes
+## 12. Preguntas frecuentes
 
 **¿Puedo romper la web si cambio algo mal?**  
 Los textos siempre tienen un valor por defecto guardado en el sistema. Si borras el contenido de un campo y guardas, el sitio puede quedar con ese campo vacío, pero no se "rompe". Para restaurar un texto, simplemente vuelve al editor y escríbelo de nuevo.
@@ -344,7 +395,7 @@ Primero comprueba que has subido la imagen en la sección correcta. Luego recarg
 Técnicamente sí, pero no es recomendable editar la misma sección de textos simultáneamente desde dos ordenadores diferentes, ya que los cambios del último en guardar sobreescribirán los del anterior.
 
 **¿Cómo cambio mi contraseña?**  
-La gestión de contraseñas no está disponible desde el panel de usuario actual. Contacta con el responsable técnico para que la cambie.
+Ve a **👤 Usuarios** en el menú lateral. Pulsa el botón **🔑 Contraseña** junto a tu usuario, introduce la nueva contraseña dos veces y guarda.
 
 **¿Se guarda un historial de cambios?**
 No hay historial de versiones. Cada vez que guardas, el texto anterior se sobreescribe. Si necesitas recuperar una versión antigua de un texto, tendrás que recordarlo o pedírselo al responsable técnico.
@@ -360,4 +411,4 @@ No, la eliminación es permanente y también borra la foto del servidor. Vuelve 
 
 ---
 
-*Guía elaborada en Mayo 2026 (revisión 27-05-2026: nueva sección de Carta editable plato a plato y formulario de contacto unificado) · Para dudas o problemas técnicos, contacta con el equipo de desarrollo.*
+*Guía elaborada en Mayo 2026 · Revisión 01-06-2026: nueva sección de Usuarios y roles, contraseña cambiable desde el panel · Para dudas o problemas técnicos, contacta con el equipo de desarrollo.*

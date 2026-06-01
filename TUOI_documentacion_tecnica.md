@@ -1,6 +1,6 @@
 # Documentación Técnica — TUOI Web
 
-> **Versión:** Mayo 2026 (rev. 27-05-2026)
+> **Versión:** Junio 2026 (rev. 01-06-2026)
 > **Stack:** PHP · MySQL · HTML/CSS/JS vanilla
 > **Entorno:** Apache + mod_rewrite, PHP ≥ 8.0, MySQL ≥ 5.7
 
@@ -16,11 +16,12 @@
 6. [Sistema de contenido editable](#6-sistema-de-contenido-editable)
 7. [Páginas públicas](#7-páginas-públicas)
 8. [Panel de administración](#8-panel-de-administración)
-9. [Gestión de imágenes](#9-gestión-de-imágenes)
-10. [Frontend: CSS y JavaScript](#10-frontend-css-y-javascript)
-11. [Seguridad](#11-seguridad)
-12. [Guía de despliegue](#12-guía-de-despliegue)
-13. [Tareas pendientes (TO-DO)](#13-tareas-pendientes-to-do)
+9. [Gestión de usuarios admin](#9-gestión-de-usuarios-admin)
+10. [Gestión de imágenes](#10-gestión-de-imágenes)
+11. [Frontend: CSS y JavaScript](#11-frontend-css-y-javascript)
+12. [Seguridad](#12-seguridad)
+13. [Guía de despliegue](#13-guía-de-despliegue)
+14. [Tareas pendientes (TO-DO)](#14-tareas-pendientes-to-do)
 
 ---
 
@@ -83,8 +84,8 @@ TUOI/
 │       └── cookies.php
 │
 ├── admin/
-│   ├── config.php               # Guard de sesión + CSRF + helpers admin
-│   ├── login.php                # Formulario de login
+│   ├── config.php               # Guard de sesión + CSRF + helpers admin (is_admin, require_admin)
+│   ├── login.php                # Formulario de login (guarda rol en sesión)
 │   ├── logout.php               # Cierre de sesión
 │   ├── index.php                # Dashboard principal del admin
 │   ├── contenido.php            # Editor de textos del sitio (hub por páginas, ES/EN)
@@ -92,6 +93,7 @@ TUOI/
 │   ├── imagenes.php             # Gestor de imágenes por sección
 │   ├── testimonios.php          # Gestión de testimonios
 │   ├── mensajes.php             # Bandeja de mensajes de contacto
+│   ├── usuarios.php             # Gestión de usuarios admin (crear, eliminar, roles, contraseña)
 │   ├── sql/                     # Scripts SQL puntuales (p.ej. carta_translations_en.sql)
 │   ├── .htaccess                # Protección extra de acceso
 │   ├── assets/css/admin.css     # Estilos exclusivos del panel admin
@@ -115,6 +117,7 @@ TUOI/
 │           ├── toque-salado/
 │           └── …
 │
+├── .gitignore                   # Excluye .claude/, logs y archivos de entorno
 └── db/
     ├── tuoi_db.sql              # Script inicial: crea BD, usuario y privilegios
     ├── admin_migration.sql      # Crea tablas del panel admin
@@ -154,8 +157,11 @@ Las claves de idioma inglés llevan sufijo `_en`. Ejemplo: `hero_h1` (ES) + `her
 |---|---|---|
 | `id` | INT PK AUTO | — |
 | `username` | VARCHAR(50) UNIQUE | Nombre de usuario |
-| `password_hash` | VARCHAR(255) | Hash `password_hash()` de PHP |
+| `role` | ENUM('admin','editor') | Rol del usuario. `admin` = acceso total; `editor` = solo edición de contenido |
+| `password_hash` | VARCHAR(255) | Hash `password_hash()` de PHP (bcrypt) |
 | `created_at` | TIMESTAMP | — |
+
+> La columna `role` se añade automáticamente (auto-migración en `admin/usuarios.php`) si la tabla ya existe sin ella. El primer usuario existente hereda el rol `admin`.
 
 #### `image_order` — Orden personalizado de imágenes
 
@@ -223,22 +229,31 @@ La tabla se crea/migra de forma idempotente desde `admin/carta.php` la primera v
 
 Crea la variable global `$conexion` (recurso `mysqli`). Si la conexión falla, escribe el error en `$error_db` y deja que la página continúe renderizando con los valores por defecto.
 
+Las credenciales se cargan desde **`/etc/tuoi/db.php`**, un archivo fuera del webroot y del repositorio git. Nunca se editan credenciales en `conexion.php`.
+
 ```php
-$conexion = mysqli_connect($host, $user, $password, $database);
+// /etc/tuoi/db.php — en cada servidor, con sus propias credenciales
+return [
+    'host'     => 'localhost',
+    'user'     => 'tuoi_admin2026',
+    'password' => '...',
+    'database' => 'tuoi_db',
+];
+```
+
+```php
+// config/conexion.php — carga el archivo externo
+$_db = require '/etc/tuoi/db.php';
+$conexion = mysqli_connect($_db['host'], $_db['user'], $_db['password'], $_db['database']);
 if (!$conexion) {
     $error_db = "Error de conexión: " . mysqli_connect_error();
 } else {
     mysqli_set_charset($conexion, "utf8mb4");
 }
+unset($_db);
 ```
 
-**Variables de conexión** (actualmente en el archivo — ver TO-DO de seguridad):
-
-| Variable | Valor por defecto |
-|---|---|
-| `$host` | `localhost` |
-| `$user` | `tuoi_admin2026` |
-| `$database` | `tuoi_db` |
+Si `/etc/tuoi/db.php` no existe, `conexion.php` escribe el error en `$error_db` y retorna sin bloquear la ejecución.
 
 ### Patrón de inclusión en páginas
 
@@ -429,7 +444,17 @@ Incluido al inicio de cada página del admin. Realiza:
 2. Llama a `session_start()`
 3. Redirige a `login.php` si no hay sesión activa
 4. Carga `config/conexion.php`
-5. Define los helpers de CSRF y el helper `upsert_content()`
+5. Define los helpers de CSRF, el helper `upsert_content()` y los helpers de rol:
+
+```php
+function is_admin(): bool {
+    return ($_SESSION['admin_role'] ?? '') === 'admin';
+}
+
+function require_admin(): void {
+    if (!is_admin()) { http_response_code(403); exit('Sin permisos.'); }
+}
+```
 
 ### CSRF
 
@@ -440,15 +465,16 @@ Incluido al inicio de cada página del admin. Realiza:
 
 ### Secciones del admin
 
-| Página | Función |
-|---|---|
-| `index.php` | Dashboard con resumen y accesos rápidos |
-| `contenido.php` | Editor de textos del sitio (ES y EN) organizado por secciones |
-| `carta.php` | Gestor de la carta plato a plato (CRUD + reorden + traducción EN) |
-| `imagenes.php` | Subida, reordenación y borrado de imágenes por sección |
-| `testimonios.php` | Gestión de testimonios de la página de Eventos |
-| `mensajes.php` | Bandeja de entrada de contacto (con filtros y borrado) |
-| `logout.php` | Destruye la sesión y redirige a login |
+| Página | Función | Rol mínimo |
+|---|---|---|
+| `index.php` | Dashboard con resumen y accesos rápidos | Editor |
+| `contenido.php` | Editor de textos del sitio (ES y EN) organizado por secciones | Editor |
+| `carta.php` | Gestor de la carta plato a plato (CRUD + reorden + traducción EN) | Editor |
+| `imagenes.php` | Subida, reordenación y borrado de imágenes por sección | Editor |
+| `testimonios.php` | Gestión de testimonios de la página de Eventos | Editor |
+| `mensajes.php` | Bandeja de entrada de contacto (con filtros y borrado) | Editor |
+| `usuarios.php` | Gestión de usuarios (crear, eliminar, cambiar rol/contraseña) | Admin (parcial: editor puede ver y cambiar su propia contraseña) |
+| `logout.php` | Destruye la sesión y redirige a login | — |
 
 ### Editor de contenido (`contenido.php`)
 
@@ -473,7 +499,52 @@ CRUD completo de `carta_items`. Estructura del UI:
 
 ---
 
-## 9. Gestión de imágenes
+## 9. Gestión de usuarios admin
+
+**Archivo:** `admin/usuarios.php`
+
+### Sistema de roles
+
+| Rol | Descripción |
+|---|---|
+| `admin` | Acceso completo: puede crear usuarios, eliminarlos y cambiar roles |
+| `editor` | Puede editar todo el contenido del sitio pero no gestionar usuarios (excepto su propia contraseña) |
+
+El rol se guarda en `admin_users.role` y se carga en sesión (`$_SESSION['admin_role']`) al hacer login. Los helpers `is_admin()` y `require_admin()` (definidos en `admin/config.php`) permiten proteger operaciones sensibles en cualquier página del admin.
+
+### Flujo de login con rol
+
+```
+POST /admin/login.php
+  → SELECT id, password_hash, role FROM admin_users WHERE username = ?
+  → password_verify()
+  → $_SESSION['admin_role'] = $user['role'] ?? 'editor'
+```
+
+### Auto-migración de la columna `role`
+
+`admin/usuarios.php` añade la columna `role` automáticamente si la tabla existe sin ella (instalaciones anteriores a junio 2026). El primer usuario existente hereda el rol `admin`.
+
+### Operaciones disponibles
+
+| Operación | Admin | Editor |
+|---|---|---|
+| Ver lista de usuarios | ✅ | ✅ |
+| Cambiar su propia contraseña | ✅ | ✅ |
+| Cambiar contraseña de otro usuario | ✅ | ❌ |
+| Crear nuevo usuario | ✅ | ❌ |
+| Cambiar rol de un usuario | ✅ (no el propio) | ❌ |
+| Eliminar usuario | ✅ (no el propio, no si es el único) | ❌ |
+
+### Seguridad de contraseñas
+
+- Longitud mínima: 8 caracteres
+- Almacenamiento: `password_hash($pass, PASSWORD_DEFAULT)` (bcrypt)
+- Todas las operaciones usan sentencias preparadas (`mysqli_prepare`)
+
+---
+
+## 10. Gestión de imágenes
 
 **Admin:** `admin/imagenes.php` + `admin/partials/image_utils.php`
 
@@ -508,7 +579,7 @@ Las imágenes pueden reordenarse en el admin con drag-and-drop. El nuevo orden s
 
 ---
 
-## 10. Frontend: CSS y JavaScript
+## 11. Frontend: CSS y JavaScript
 
 ### `assets/css/style.css`
 
@@ -541,7 +612,7 @@ $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time();
 
 ---
 
-## 11. Seguridad
+## 12. Seguridad
 
 ### Autenticación admin
 
@@ -574,13 +645,23 @@ $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time();
 - `.htaccess` en `admin/` con protección adicional de acceso
 - Cada página del admin incluye `config.php` que redirige si no hay sesión activa
 
+### Credenciales de base de datos
+
+Las credenciales viven en `/etc/tuoi/db.php`, **fuera del webroot y del repositorio git**. El historial de git fue limpiado (junio 2026) para eliminar credenciales anteriores. El archivo de configuración nunca debe commitearse; está protegido por `.gitignore`.
+
+### Control de acceso por rol
+
+- Dos roles: `admin` y `editor` (ver sección 9)
+- El rol se verifica en cada operación sensible con `is_admin()` tanto en el servidor (PHP) como en la UI (botones ocultos para editores)
+- Un editor no puede escalar privilegios: todas las restricciones se comprueban server-side
+
 ### Puntos de mejora pendientes (ver TO-DO)
 
-- Las credenciales de BD están actualmente en `config/conexion.php` en texto plano
+_(Las credenciales de BD ya están fuera del repo desde junio 2026)_
 
 ---
 
-## 12. Guía de despliegue
+## 13. Guía de despliegue
 
 ### Requisitos del servidor
 
@@ -591,27 +672,43 @@ $css_v = @filemtime(dirname(__DIR__) . '/assets/css/style.css') ?: time();
 ### Pasos de instalación
 
 ```bash
-# 1. Subir los archivos al servidor
-rsync -av TUOI/ usuario@servidor:/var/www/html/tuoi/
+# 1. Clonar el repositorio en el servidor
+git clone https://github.com/fabianasoti/TUOI.git /var/www/html/tuoi/
 
-# 2. Ejecutar los scripts SQL en orden
+# 2. Crear el archivo de credenciales FUERA del webroot
+sudo mkdir -p /etc/tuoi
+sudo tee /etc/tuoi/db.php << 'EOF'
+<?php
+return [
+    'host'     => 'localhost',
+    'user'     => 'tuoi_produccion',     # usuario MySQL de producción
+    'password' => 'contraseña_segura',   # contraseña de producción
+    'database' => 'tuoi_db',
+];
+EOF
+sudo chmod 640 /etc/tuoi/db.php
+sudo chown www-data:www-data /etc/tuoi/db.php
+
+# 3. Ejecutar los scripts SQL en orden
 mysql -u root -p < db/tuoi_db.sql
 mysql -u root -p < db/admin_migration.sql
 mysql -u root -p < db/rgpd_migration.sql
 mysql -u root -p < db/eventos_textos_update.sql
 
-# 3. Ajustar credenciales en config/conexion.php
-#    (o moverlas a variables de entorno — ver TO-DO)
-
-# 4. Crear el primer usuario admin (desde MySQL o via script)
-INSERT INTO admin_users (username, password_hash)
-VALUES ('admin', PASSWORD_HASH_GENERADO_CON_PHP);
-# Para generar el hash: php -r "echo password_hash('tu_contraseña', PASSWORD_DEFAULT);"
+# 4. Crear el primer usuario admin
+# Genera el hash primero:
+php -r "echo password_hash('tu_contraseña', PASSWORD_DEFAULT);"
+# Luego inserta en MySQL:
+# INSERT INTO admin_users (username, role, password_hash)
+# VALUES ('admin', 'admin', 'HASH_GENERADO');
+# (O entra al panel en /admin/usuarios.php una vez dentro)
 
 # 5. Dar permisos de escritura al servidor sobre la carpeta de imágenes
-chmod -R 775 assets/img/
-chown -R www-data:www-data assets/img/
+chmod -R 775 /var/www/html/tuoi/assets/img/
+chown -R www-data:www-data /var/www/html/tuoi/assets/img/
 ```
+
+> **Nota:** `config/conexion.php` no contiene credenciales. El único archivo con datos sensibles es `/etc/tuoi/db.php`, que el sysadmin crea manualmente en el servidor y nunca entra al repositorio.
 
 ### Verificación
 
@@ -622,16 +719,17 @@ chown -R www-data:www-data assets/img/
 
 ---
 
-## 13. Tareas pendientes (TO-DO)
+## 14. Tareas pendientes (TO-DO)
 
 | Prioridad | Descripción | Archivo |
 |---|---|---|
-| 🔴 Alta | Mover credenciales de BD a variables de entorno o archivo fuera del repositorio | `config/conexion.php` |
 | 🟡 Media | Configurar `secure=true` en la cookie de sesión admin también en desarrollo local (o usar HTTPS con cert autofirmado) | `admin/config.php` |
-| 🟡 Media | Añadir rate-limiting al formulario de contacto (p.ej. por IP en `contact_submissions`) | `pages/eventos/index.php` |
+| 🟡 Media | Añadir rate-limiting al formulario de contacto (p.ej. por IP en `contact_submissions`) | `includes/contact-handler.php` |
+| 🟡 Media | Modo edición inline en el sitio público: clic en el título → input flotante (fase 2 del rediseño admin) | — |
 | 🟢 Baja | Internacionalizar los textos de la carta con más granularidad (actualmente solo título y descripción de categoría) | `config/lang.php` |
 | 🟢 Baja | Añadir sitemap.xml y meta tags Open Graph | `includes/header.php` |
+| 🟢 Baja | Migrar estilos del `mockup.html` a `style.css` (rediseño visual aprobado: Fraunces + General Sans, bento cards, grain) | `assets/css/style.css` |
 
 ---
 
-*Documentación generada en Mayo 2026 a partir del código fuente del repositorio TUOI. Revisión 27-05-2026: carta migrada a `carta_items`, formulario de contacto unificado en `/pages/contacto/`.*
+*Documentación generada en Mayo 2026 · Revisión 01-06-2026: credenciales BD movidas fuera del repo, sistema de roles admin (admin/editor), nueva página `admin/usuarios.php`, `.gitignore` añadido, historial de git limpiado.*
