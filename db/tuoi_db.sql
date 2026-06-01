@@ -4,7 +4,7 @@ USE tuoi_db;
 
 CREATE USER 
 'tuoi_admin2026'@'localhost' 
-IDENTIFIED  BY 'Tuoi123$';
+IDENTIFIED  BY '***CREDENCIAL-ELIMINADA***';
 
 GRANT USAGE ON *.* TO 'tuoi_admin2026'@'localhost';
 
