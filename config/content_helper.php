@@ -188,6 +188,9 @@ function load_site_content($conexion, string $lang = 'es') {
         'contact_phone'      => '+34 604 39 43 47',
         'contact_email'      => 'hola@miobiosport.com',
         'contact_address'    => 'C. de la Travesía, 15B, 46024 València',
+        // Instagram CTA (aparece en home y en menú lunch)
+        'ig_cta_text'        => '¿Qué hay hoy en TUOI? El menú del día se publica cada mañana en nuestro Instagram.',
+        'ig_cta_url'         => 'https://www.instagram.com/tuoi.coffee/',
     ];
 
     // Traducciones en inglés definidas en código. La BD tiene prioridad (claves
@@ -308,6 +311,8 @@ function load_site_content($conexion, string $lang = 'es') {
         'contact_phone'         => '+34 604 39 43 47',
         'contact_email'         => 'hola@miobiosport.com',
         'contact_address'       => 'C. de la Travesía, 15B, 46024 València',
+        // Instagram CTA
+        'ig_cta_text'           => "What's on at TUOI today? The daily menu is posted every morning on our Instagram.",
     ];
 
     // Sin conexión: devolvemos los defaults (español) o los en-defaults según idioma.

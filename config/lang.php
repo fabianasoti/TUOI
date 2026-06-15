@@ -122,6 +122,8 @@ $_ui = [
     'atm_intro_p'       => ['es' => 'Sin formatos rígidos ni paquetes cerrados: partimos de tu idea, tu espacio y tu gente para diseñar contigo el menú, la propuesta y el ritmo del evento. Networking, presentaciones, celebraciones íntimas o brunches corporativos — lo construimos contigo, paso a paso, hasta que encaje.', 'en' => 'No rigid formats, no fixed packages: we start from your idea, your venue and your guests to design the menu, the proposal and the pace of the event together with you. Networking sessions, launches, intimate celebrations or corporate brunches — we build it with you, step by step, until it fits.'],
     'atm_gallery_h2'    => ['es' => 'Algunos momentos',                            'en' => 'A few moments'],
     'atm_cta_btn'       => ['es' => 'Cuéntanos tu evento →',                       'en' => 'Tell us about your event →'],
+    // Instagram CTA
+    'btn_instagram'     => ['es' => 'Ver menú del día',                             'en' => 'View today\'s menu'],
 ];
 
 /**

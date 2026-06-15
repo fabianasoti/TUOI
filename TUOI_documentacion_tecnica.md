@@ -353,6 +353,7 @@ Secciones:
 - **Hero:** imagen de fondo, etiqueta, h1, subtítulo y CTA a la carta
 - **¿Quiénes somos?:** preview con texto y enlace a la página completa
 - **Nuestra filosofía:** grid de 4 tarjetas (Balance / Energy / Focus / Power) + lista de valores
+- **CTA Instagram:** banner oscuro con icono de Instagram, texto editable (`ig_cta_text`) y botón con enlace editable (`ig_cta_url`) que abre Instagram en pestaña nueva
 
 Todo el texto viene de `load_site_content()`.
 
@@ -372,6 +373,8 @@ La carta se renderiza desde la tabla `carta_items` (no desde imágenes sueltas).
 4. Para cada ítem, si `$lang === 'en'` y existen los campos `_en`, los usa; si no, cae al ES.
 
 **Páginas-shortcut por categoría** (`desayunos.php`, `bebidas.php`, etc.): mantienen URLs limpias y usan el template legacy `includes/carta-page.php`, que sigue siendo válido para el caso en que se quiera servir solo imágenes (fallback). En la práctica los enlaces internos del sitio apuntan a `index.php?cat=…`.
+
+**CTA de Instagram en Menú lunch:** `carta-page.php` incluye condicionalmente (solo cuando `$current_carta === 'menu-lunch'`) el mismo bloque de CTA de Instagram de la home. El texto y la URL se toman de las mismas claves `ig_cta_text` e `ig_cta_url`.
 
 **Datos de cada ítem en pantalla:** nombre, descripción, ingredientes (si existen), precio (formateado `X,XX €` o `+X,XX €` si `es_suplemento=1`), foto (si existe), badges de alérgenos (icono + label de `$CARTA_ALERGENOS`).
 
@@ -695,6 +698,9 @@ mysql -u root -p < db/admin_migration.sql
 mysql -u root -p < db/rgpd_migration.sql
 mysql -u root -p < db/eventos_textos_update.sql
 
+# 3b. Importar el contenido inicial (textos, carta, testimonios, orden de imágenes)
+mysql -u root -p tuoi_db < db/content_seed.sql
+
 # 4. Crear el primer usuario admin
 # Genera el hash primero:
 php -r "echo password_hash('tu_contraseña', PASSWORD_DEFAULT);"
@@ -704,11 +710,14 @@ php -r "echo password_hash('tu_contraseña', PASSWORD_DEFAULT);"
 # (O entra al panel en /admin/usuarios.php una vez dentro)
 
 # 5. Dar permisos de escritura al servidor sobre la carpeta de imágenes
+# (necesario para que el admin pueda subir fotos nuevas)
 chmod -R 775 /var/www/html/tuoi/assets/img/
 chown -R www-data:www-data /var/www/html/tuoi/assets/img/
 ```
 
 > **Nota:** `config/conexion.php` no contiene credenciales. El único archivo con datos sensibles es `/etc/tuoi/db.php`, que el sysadmin crea manualmente en el servidor y nunca entra al repositorio.
+
+> **Imágenes:** la carpeta `assets/img/` **sí está en el repositorio git** (no está en `.gitignore`), por lo que el `git clone` del paso 1 ya las incluye. No hace falta transferirlas por separado.
 
 ### Verificación
 

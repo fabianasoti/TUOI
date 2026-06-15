@@ -63,6 +63,8 @@ $base_keys = [
     'ev_marquee_text',
     // Contacto
     'contact_phone', 'contact_email', 'contact_address',
+    // Instagram CTA (home + menú lunch)
+    'ig_cta_text', 'ig_cta_url',
     // Quiénes somos page
     'qs_page_hero_label', 'qs_page_hero_h1', 'qs_page_hero_sub',
     'qs_page_b1_label', 'qs_page_b1_h2', 'qs_page_b1_p1', 'qs_page_b1_p2', 'qs_page_b1_p3',
@@ -410,6 +412,38 @@ if ($section) {
                     <?php endfor; ?>
 
                     <button type="submit" class="btn btn-primary">💾 Guardar filosofía</button>
+                </form>
+            </div>
+
+            <!-- ── INSTAGRAM CTA ────────────────────────── -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📸</span> CTA de Instagram
+                        <span class="section-badge">Portada · Menú lunch</span>
+                    </div>
+                </div>
+                <form method="post" action="<?= htmlspecialchars($form_action) ?>">
+                    <?= csrf_field() ?>
+                    <div class="form-group">
+                        <label class="form-label">
+                            Texto del bloque
+                            <span class="hint">aparece en la portada y en la página de Menú lunch</span>
+                        </label>
+                        <textarea name="ig_cta_text<?= $key_suffix ?>" class="form-control" rows="2"><?= cv($content, 'ig_cta_text' . $key_suffix) ?></textarea>
+                    </div>
+                    <?php if ($edit_lang === 'es'): ?>
+                    <div class="form-group">
+                        <label class="form-label">
+                            URL de destino
+                            <span class="hint">el mismo enlace para ES y EN</span>
+                        </label>
+                        <input name="ig_cta_url" type="url" class="form-control"
+                               value="<?= cv($content, 'ig_cta_url') ?>"
+                               placeholder="https://www.instagram.com/tuoi.coffee/">
+                    </div>
+                    <?php endif; ?>
+                    <button type="submit" class="btn btn-primary">💾 Guardar CTA Instagram</button>
                 </form>
             </div>
 

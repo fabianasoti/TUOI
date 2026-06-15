@@ -68,6 +68,26 @@ $images   = load_ordered_images($conexion, $img_section, $img_dir);
         <?php endif; ?>
     </div>
 
+    <?php if ($current_carta === 'menu-lunch'):
+        $c = load_site_content($conexion, $lang);
+    ?>
+    <section class="section-ig-cta">
+        <div class="section-ig-cta__inner">
+            <svg class="section-ig-cta__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="1.8"/>
+                <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+            </svg>
+            <p class="section-ig-cta__text"><?= htmlspecialchars($c['ig_cta_text']) ?></p>
+            <a href="<?= htmlspecialchars($c['ig_cta_url']) ?>"
+               target="_blank" rel="noopener noreferrer"
+               class="btn-primary">
+                <?= t('btn_instagram') ?>
+            </a>
+        </div>
+    </section>
+    <?php endif; ?>
+
 </main>
 
 <?php require $base . 'includes/footer.php'; ?>

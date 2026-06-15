@@ -6,6 +6,7 @@ $page_title   = 'Carta | TUOI';
 
 require $base . 'config/conexion.php';
 require $base . 'config/carta_meta.php';
+require $base . 'config/content_helper.php';
 require $base . 'includes/header.php';
 // $lang lo define lang.php (cargado desde header.php).
 global $carta_info;
@@ -62,12 +63,29 @@ function carta_field(array $item, string $base_field, string $lang): string {
 }
 
 $items_url = $base . 'assets/img/carta/items/';
+$c = load_site_content($conexion, $lang);
 ?>
 
 <section class="page-hero">
     <span class="section-label"><?= t('carta_page_label') ?></span>
     <h1><?= t('carta_page_title') ?></h1>
     <p><?= t('carta_page_sub') ?></p>
+</section>
+
+<section class="section-ig-cta">
+    <div class="section-ig-cta__inner">
+        <svg class="section-ig-cta__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+        </svg>
+        <p class="section-ig-cta__text"><?= htmlspecialchars($c['ig_cta_text']) ?></p>
+        <a href="<?= htmlspecialchars($c['ig_cta_url']) ?>"
+           target="_blank" rel="noopener noreferrer"
+           class="btn-primary">
+            <?= t('btn_instagram') ?>
+        </a>
+    </div>
 </section>
 
 <!-- Filtros sticky — fuera del main para no quedar limitado por su padding -->

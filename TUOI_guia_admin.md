@@ -74,7 +74,7 @@ Los textos están organizados por página de la web. Al entrar en **Editar conte
 
 | Tarjeta | Qué contiene |
 |---|---|
-| 🏠 **Página de inicio** | Hero principal, "¿Quiénes somos?" preview, tarjetas de filosofía (Balance, Energy, Focus, Power) y valores |
+| 🏠 **Página de inicio** | Hero principal, "¿Quiénes somos?" preview, tarjetas de filosofía (Balance, Energy, Focus, Power), valores y **CTA de Instagram** |
 | 👥 **Quiénes somos** | Hero, los tres bloques (origen, propuesta, etc.) y cierre |
 | 🎉 **Eventos** (grupo) | Tarjeta padre + 2 hijas dentro del mismo grupo: |
 | ↳ Página principal de Eventos | Hero, intro/filosofía, "Por qué TUOI", las 2 opciones, CTA y datos de contacto |
@@ -107,6 +107,15 @@ Sí, en los campos de párrafo puedes usar etiquetas HTML básicas:
 - `<br>` para forzar un salto de línea
 
 Evita usar HTML complejo (tablas, scripts, etc.) en estos campos.
+
+### Editar el CTA de Instagram
+
+Dentro de la página de inicio encontrarás la tarjeta **📸 CTA de Instagram**. Desde aquí puedes cambiar:
+
+- **Texto del bloque** — la frase que anima a seguir TUOI en Instagram (aparece tanto en la portada como en la página de *Menú lunch*).
+- **URL de destino** — el enlace al que lleva el botón "Ver en Instagram" (solo editable en español; el botón usa el mismo enlace en ambos idiomas).
+
+> ✅ Si cambias la URL recuerda que el sitio la usa tal cual: incluye siempre `https://`.
 
 ---
 
