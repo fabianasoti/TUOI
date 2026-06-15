@@ -12,6 +12,9 @@
 # Sistema operativo
 .DS_Store
 Thumbs.db
+*Zone.Identifier
+*Zone - copia.Identifier
+/nul
 
 # Editores
 .vscode/
