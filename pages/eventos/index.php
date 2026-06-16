@@ -6,6 +6,10 @@ require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php';
 $page_title = $lang === 'en' ? 'Events | TUOI' : 'Eventos | TUOI';
+$page_url         = 'https://tuoi.es/pages/eventos/';
+$page_description = $lang === 'en'
+    ? 'Host your event at TUOI Valencia. Ready-made celebrations or fully tailored gastronomic experiences for groups and special occasions.'
+    : 'Organiza tu evento en TUOI Valencia. Celebraciones listas para disfrutar o diseñadas a tu medida con gastronomía funcional y saludable.';
 
 require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);
@@ -57,14 +61,6 @@ if ($conexion) {
             $testimonios[] = $row;
         }
     }
-}
-// Fallback al testimonio en site_content si la tabla está vacía
-if (empty($testimonios) && !empty($c['ev_social_quote'])) {
-    $testimonios[] = [
-        'quote'  => $c['ev_social_quote'],
-        'author' => $c['ev_social_author'] ?? '',
-        'role'   => $c['ev_social_role']   ?? '',
-    ];
 }
 
 // ── Marquee items ───────────────────────────────────────────────────────────

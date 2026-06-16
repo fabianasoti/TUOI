@@ -15,6 +15,25 @@ require_once $base . 'config/lang.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'TUOI | Functional Coffee & Smart Food') ?></title>
     <?php
+        $_meta_title = $page_title ?? 'TUOI | Functional Coffee & Smart Food';
+        $_meta_desc  = $page_description ?? ($lang === 'en'
+            ? 'Functional coffee & smart food café in Valencia. Healthy breakfasts, brunch, lunch and drinks adapted to your day.'
+            : 'Cafetería de comida funcional y smart food en Valencia. Desayunos saludables, brunch, lunch y bebidas adaptadas a las necesidades de tu día.');
+    ?>
+    <meta name="description" content="<?= htmlspecialchars($_meta_desc) ?>">
+    <meta name="robots" content="index, follow">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="<?= $lang === 'en' ? 'en_US' : 'es_ES' ?>">
+    <meta property="og:site_name" content="TUOI">
+    <meta property="og:title" content="<?= htmlspecialchars($_meta_title) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($_meta_desc) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($page_url ?? 'https://tuoi.es') ?>">
+    <meta property="og:image" content="https://tuoi.es/assets/img/og_image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($_meta_title) ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($_meta_desc) ?>">
+    <meta name="twitter:image" content="https://tuoi.es/assets/img/og_image.png">
+    <?php
         // Cache-busting del CSS: añadimos ?v=<mtime> al src para que cuando
         // se modifique el archivo, el navegador descargue la versión nueva
         // sin que el usuario tenga que limpiar caché. time() es un fallback
@@ -29,6 +48,7 @@ require_once $base . 'config/lang.php';
     <link rel="stylesheet" href="<?= $base ?>assets/css/<?= htmlspecialchars($extra_css) ?>.css?v=<?= $extra_v ?>">
     <?php endif; ?>
     <link rel="stylesheet" href="<?= $base ?>assets/fonts/inter.css">
+    <link rel="icon" type="image/png" href="<?= $base ?>assets/img/favicon.png">
 </head>
 <body>
 

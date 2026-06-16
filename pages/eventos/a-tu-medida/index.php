@@ -6,6 +6,10 @@ require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php';
 $page_title = $lang === 'en' ? 'Designed for you | TUOI' : 'Diseñado a tu medida | TUOI';
+$page_url         = 'https://tuoi.es/pages/eventos/a-tu-medida/';
+$page_description = $lang === 'en'
+    ? 'Design your bespoke event at TUOI Valencia. We personalise every detail: menu, space and gastronomic experience for your special occasion.'
+    : 'Diseña tu evento a medida en TUOI Valencia. Personalizamos cada detalle: menú, espacio y experiencia gastronómica para tu ocasión especial.';
 
 require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);

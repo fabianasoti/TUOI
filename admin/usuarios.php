@@ -28,11 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'crear
         $username  = trim($_POST['username'] ?? '');
         $password  = $_POST['password'] ?? '';
         $password2 = $_POST['password2'] ?? '';
+        $new_email = trim($_POST['new_email'] ?? '');
         $role      = in_array($_POST['role'] ?? '', ['admin', 'editor'], true)
                      ? $_POST['role'] : 'editor';
 
         if ($username === '' || $password === '') {
             $error = 'El nombre de usuario y la contraseña son obligatorios.';
+        } elseif ($new_email !== '' && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+            $error = 'El email no tiene un formato válido.';
         } elseif (!preg_match('/^[a-zA-Z0-9_\-]{3,50}$/', $username)) {
             $error = 'El usuario solo puede contener letras, números, guiones o guiones bajos (3–50 caracteres).';
         } elseif (strlen($password) < 8) {
@@ -50,10 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'crear
             if ($exists) {
                 $error = 'Ya existe un usuario con ese nombre.';
             } else {
-                $hash = password_hash($password, PASSWORD_DEFAULT);
+                $hash       = password_hash($password, PASSWORD_DEFAULT);
+                $email_val  = $new_email !== '' ? $new_email : null;
                 $stmt = mysqli_prepare($conexion,
-                    "INSERT INTO admin_users (username, role, password_hash) VALUES (?, ?, ?)");
-                mysqli_stmt_bind_param($stmt, 'sss', $username, $role, $hash);
+                    "INSERT INTO admin_users (username, email, role, password_hash) VALUES (?, ?, ?, ?)");
+                mysqli_stmt_bind_param($stmt, 'ssss', $username, $email_val, $role, $hash);
                 if (mysqli_stmt_execute($stmt)) {
                     $success = "Usuario «{$username}» creado correctamente.";
                 } else {
@@ -174,10 +178,116 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'cambi
     }
 }
 
+// ── Actualizar email ───────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'actualizar_email') {
+    $target_id = (int) ($_POST['target_id'] ?? 0);
+    $new_email = trim($_POST['new_email'] ?? '');
+
+    $me_id = 0;
+    $stmt = mysqli_prepare($conexion, "SELECT id FROM admin_users WHERE username = ? LIMIT 1");
+    $me   = $_SESSION['admin_user'] ?? '';
+    mysqli_stmt_bind_param($stmt, 's', $me);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $me_id);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    $allowed = is_admin() || ($target_id === $me_id);
+
+    if (!$allowed) {
+        $error = 'Solo puedes editar tu propio email.';
+    } elseif ($target_id <= 0) {
+        $error = 'Usuario no válido.';
+    } elseif ($new_email !== '' && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'El email no tiene un formato válido.';
+    } else {
+        $email_val = $new_email === '' ? null : $new_email;
+        $stmt = mysqli_prepare($conexion,
+            "UPDATE admin_users SET email = ? WHERE id = ?");
+        mysqli_stmt_bind_param($stmt, 'si', $email_val, $target_id);
+        if (mysqli_stmt_execute($stmt)) {
+            $success = 'Email actualizado correctamente.';
+        } else {
+            $error = 'Error al guardar el email.';
+        }
+        mysqli_stmt_close($stmt);
+    }
+}
+
+// ── Enviar reset por email (admin puede enviarlo a otro usuario) ────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'enviar_reset') {
+    if (!is_admin()) {
+        $error = 'No tienes permisos para esta acción.';
+    } else {
+        $target_id = (int) ($_POST['target_id'] ?? 0);
+        $stmt = mysqli_prepare($conexion,
+            "SELECT id, username, email FROM admin_users WHERE id = ? LIMIT 1");
+        mysqli_stmt_bind_param($stmt, 'i', $target_id);
+        mysqli_stmt_execute($stmt);
+        $res  = mysqli_stmt_get_result($stmt);
+        $user = $res ? mysqli_fetch_assoc($res) : null;
+        mysqli_stmt_close($stmt);
+
+        if (!$user || empty($user['email'])) {
+            $error = 'Este usuario no tiene email configurado.';
+        } else {
+            $token      = bin2hex(random_bytes(32));
+            $token_hash = hash('sha256', $token);
+            $expires_at = date('Y-m-d H:i:s', time() + 3600);
+
+            $stmt = mysqli_prepare($conexion,
+                "INSERT INTO password_resets (user_id, token_hash, expires_at)
+                 VALUES (?, ?, ?)
+                 ON DUPLICATE KEY UPDATE
+                   token_hash = VALUES(token_hash),
+                   expires_at = VALUES(expires_at),
+                   created_at = NOW()");
+            mysqli_stmt_bind_param($stmt, 'iss',
+                $user['id'], $token_hash, $expires_at);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+            $protocol  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host      = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $reset_url = "{$protocol}://{$host}/admin/reset-password.php?token={$token}";
+
+            $subject_text = 'Recuperación de contraseña · TUOI Admin';
+            $mail_subject = '=?UTF-8?B?' . base64_encode($subject_text) . '?=';
+            $mail_body    = "Hola {$user['username']},\n\n"
+                . "Un administrador ha generado un enlace para restablecer tu contraseña.\n\n"
+                . "Haz clic en el siguiente enlace (válido durante 1 hora):\n"
+                . "{$reset_url}\n\n"
+                . "Si no esperabas este correo, contacta con el administrador.\n\n"
+                . "— TUOI Admin";
+            $mail_headers  = "From: TUOI Admin <noreply@tuoi.es>\r\n";
+            $mail_headers .= "Reply-To: noreply@tuoi.es\r\n";
+            $mail_headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+            $is_local = str_contains($host, 'localhost')
+                || str_starts_with($host, '127.')
+                || str_contains($host, '.local');
+
+            if ($is_local) {
+                $log_path = dirname(__DIR__) . '/logs/mail.log';
+                @mkdir(dirname($log_path), 0775, true);
+                $entry  = "==== " . date('Y-m-d H:i:s') . " [PASSWORD RESET — admin] ====\n";
+                $entry .= "To:      {$user['email']}\n";
+                $entry .= "Subject: {$subject_text}\n";
+                $entry .= "Body:\n{$mail_body}\n\n";
+                @file_put_contents($log_path, $entry, FILE_APPEND);
+            } else {
+                @mail($user['email'], $mail_subject, $mail_body, $mail_headers);
+            }
+
+            $success = "Enlace de recuperación enviado a {$user['email']}.";
+        }
+    }
+}
+
 // ── Cargar lista ────────────────────────────────────────────────────────
 $usuarios = [];
 $res = mysqli_query($conexion,
-    "SELECT id, username, role, created_at FROM admin_users ORDER BY id ASC");
+    "SELECT id, username, email, role, created_at FROM admin_users ORDER BY id ASC");
 if ($res) while ($row = mysqli_fetch_assoc($res)) $usuarios[] = $row;
 
 $me_username = $_SESSION['admin_user'] ?? '';
@@ -279,6 +389,7 @@ $role_colors = ['admin' => '#3730a3;background:#e0e7ff', 'editor' => '#065f46;ba
                             <tr>
                                 <th>#</th>
                                 <th>Usuario</th>
+                                <th>Email</th>
                                 <th>Rol</th>
                                 <th>Creado</th>
                                 <th>Acciones</th>
@@ -300,6 +411,35 @@ $role_colors = ['admin' => '#3730a3;background:#e0e7ff', 'editor' => '#065f46;ba
                                     <strong><?= htmlspecialchars($u['username']) ?></strong>
                                     <?php if ($is_me): ?>
                                         <span class="badge badge-me">Tú</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!empty($u['email'])): ?>
+                                        <span style="font-size:13px;"><?= htmlspecialchars($u['email']) ?></span>
+                                    <?php else: ?>
+                                        <span style="font-size:12px;color:var(--muted);">Sin email</span>
+                                    <?php endif; ?>
+                                    <!-- formulario inline editar email -->
+                                    <?php if (is_admin() || $is_me): ?>
+                                    <div class="pass-form" id="email-<?= $uid ?>">
+                                        <form method="post">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="action" value="actualizar_email">
+                                            <input type="hidden" name="target_id" value="<?= $uid ?>">
+                                            <div class="form-row">
+                                                <div style="flex:1;min-width:180px;">
+                                                    <label class="form-label">Email</label>
+                                                    <input type="email" name="new_email" class="form-input"
+                                                           placeholder="usuario@email.com"
+                                                           value="<?= htmlspecialchars($u['email'] ?? '') ?>"
+                                                           autocomplete="off">
+                                                </div>
+                                                <div style="padding-top:22px;">
+                                                    <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -334,9 +474,25 @@ $role_colors = ['admin' => '#3730a3;background:#e0e7ff', 'editor' => '#065f46;ba
 
                                         <?php if (is_admin() || $is_me): ?>
                                         <button type="button" class="btn btn-secondary btn-sm"
+                                                onclick="toggleEmail(<?= $uid ?>)">
+                                            ✉️ Email
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm"
                                                 onclick="togglePass(<?= $uid ?>)">
                                             🔑 Contraseña
                                         </button>
+                                        <?php endif; ?>
+
+                                        <?php if (is_admin() && !$is_me && !empty($u['email'])): ?>
+                                        <form method="post" style="display:inline;"
+                                              onsubmit="return confirm('¿Enviar enlace de recuperación a <?= htmlspecialchars(addslashes($u['email'])) ?>?');">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="action" value="enviar_reset">
+                                            <input type="hidden" name="target_id" value="<?= $uid ?>">
+                                            <button type="submit" class="btn btn-secondary btn-sm">
+                                                📧 Enviar reset
+                                            </button>
+                                        </form>
                                         <?php endif; ?>
 
                                         <?php if (is_admin() && !$is_me && count($usuarios) > 1): ?>
@@ -405,6 +561,18 @@ $role_colors = ['admin' => '#3730a3;background:#e0e7ff', 'editor' => '#065f46;ba
                                 </div>
                             </div>
                             <div>
+                                <label class="form-label" for="new_email_create">Email <span style="font-weight:400;color:var(--muted);">(para recuperar contraseña)</span></label>
+                                <input type="email" id="new_email_create" name="new_email" class="form-input"
+                                       placeholder="usuario@email.com" autocomplete="off">
+                            </div>
+                            <div>
+                                <label class="form-label" for="new_role">Rol</label>
+                                <select id="new_role" name="role" class="form-input">
+                                    <option value="editor" selected>Editor — puede editar contenido</option>
+                                    <option value="admin">Administrador — acceso completo</option>
+                                </select>
+                            </div>
+                            <div>
                                 <label class="form-label" for="new_password">Contraseña</label>
                                 <input type="password" id="new_password" name="password" class="form-input"
                                        placeholder="Mínimo 8 caracteres" autocomplete="new-password">
@@ -413,13 +581,6 @@ $role_colors = ['admin' => '#3730a3;background:#e0e7ff', 'editor' => '#065f46;ba
                                 <label class="form-label" for="new_password2">Confirmar contraseña</label>
                                 <input type="password" id="new_password2" name="password2" class="form-input"
                                        placeholder="Repite la contraseña" autocomplete="new-password">
-                            </div>
-                            <div>
-                                <label class="form-label" for="new_role">Rol</label>
-                                <select id="new_role" name="role" class="form-input">
-                                    <option value="editor" selected>Editor — puede editar contenido</option>
-                                    <option value="admin">Administrador — acceso completo</option>
-                                </select>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">+ Crear usuario</button>
@@ -440,6 +601,11 @@ function togglePass(id) {
 }
 function toggleRol(id) {
     document.getElementById('rol-' + id).classList.toggle('open');
+}
+function toggleEmail(id) {
+    const el = document.getElementById('email-' + id);
+    el.classList.toggle('open');
+    if (el.classList.contains('open')) el.querySelector('input[type=email]').focus();
 }
 </script>
 </body>

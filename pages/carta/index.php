@@ -3,6 +3,8 @@ $base         = '../../';
 $current_page = 'carta';
 $extra_css    = 'carta';
 $page_title   = 'Carta | TUOI';
+$page_url         = 'https://tuoi.es/pages/carta/';
+$page_description = 'Descubre la carta de TUOI Valencia: desayunos funcionales, brunch, toque salado, lunch, momento dulce y bebidas. Comida saludable adaptada a tu día.';
 
 require $base . 'config/conexion.php';
 require $base . 'config/carta_meta.php';

@@ -6,6 +6,10 @@ require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php'; // sets $lang early so page_title can be translated
 $page_title = $lang === 'en' ? 'About us | TUOI' : 'Quiénes somos | TUOI';
+$page_url         = 'https://tuoi.es/pages/quienes-somos.php';
+$page_description = $lang === 'en'
+    ? 'Discover the story and philosophy behind TUOI, Valencia\'s functional food and smart food café. Real ingredients, recipes tailored to your wellbeing.'
+    : 'Conoce la historia y filosofía de TUOI, la cafetería de comida funcional y smart food en Valencia. Ingredientes reales y recetas adaptadas a tu bienestar.';
 require $base . 'includes/header.php';  // uses require_once for lang.php — no double load
 
 $c = load_site_content($conexion, $lang);

@@ -75,6 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Entrar →
         </button>
     </form>
+    <p style="text-align:center;margin-top:16px;">
+        <a href="forgot-password.php" style="color:var(--naranja);font-size:14px;">
+            ¿Olvidaste tu contraseña?
+        </a>
+    </p>
 </div>
 </body>
 </html>

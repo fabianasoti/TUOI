@@ -326,7 +326,7 @@
 .ev-social__inner  { max-width: 680px; margin: 0 auto; }
 .ev-social__label  { display: inline-block; margin-bottom: 1rem; }
 
-.ev-social__carousel { position: relative; padding: 0 2.5rem; }
+.ev-social__carousel { position: relative; padding: 0.6rem 2.5rem 0; }
 .ev-social__card {
     position: relative;
     background: var(--blanco);
@@ -337,7 +337,7 @@
 }
 .ev-social__mark {
     position: absolute;
-    top: -1.1rem;
+    top: -0.5rem;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Courier Prime', 'Courier New', monospace;

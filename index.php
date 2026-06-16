@@ -5,6 +5,11 @@ $extra_css    = 'home';
 $page_title   = 'TUOI | Functional Coffee & Smart Food';
 require 'config/conexion.php';
 require 'config/content_helper.php';
+require_once 'config/lang.php';
+$page_url         = 'https://tuoi.es/';
+$page_description = $lang === 'en'
+    ? 'Functional coffee & smart food café in Valencia. Healthy breakfasts, brunch, lunch and drinks adapted to your day.'
+    : 'Cafetería de comida funcional y smart food en Valencia. Desayunos saludables, brunch, lunch y bebidas adaptadas a las necesidades de tu día.';
 require 'includes/header.php';
 // $lang is set by header.php via config/lang.php
 

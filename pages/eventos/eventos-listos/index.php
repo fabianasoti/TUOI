@@ -6,6 +6,10 @@ require $base . 'config/conexion.php';
 require $base . 'config/content_helper.php';
 require_once $base . 'config/lang.php';
 $page_title = $lang === 'en' ? 'Ready to enjoy | TUOI' : 'Listos para disfrutar | TUOI';
+$page_url         = 'https://tuoi.es/pages/eventos/eventos-listos/';
+$page_description = $lang === 'en'
+    ? 'Ready-to-enjoy events at TUOI Valencia. Set menus for groups, celebrations and gatherings with functional, healthy food.'
+    : 'Eventos listos para disfrutar en TUOI Valencia. Menús cerrados para grupos, celebraciones y reuniones con comida funcional y saludable.';
 
 require $base . 'includes/header.php';
 $c = load_site_content($conexion, $lang);
